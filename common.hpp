@@ -6,6 +6,11 @@
 #include <random>
 #include <map>
 #include <algorithm>
+#include <stdexcept>
+#include <sstream>
+#include <iomanip>
+#include <string>
+#include <cstdint>
 
 // trim from right
 inline std::string& rtrim(std::string& s, const char* t = " \t\n\r\f\v") {

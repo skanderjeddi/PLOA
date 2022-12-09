@@ -17,6 +17,16 @@ Tile::Tile() {
     this->values = values;
 }
 
+void Tile::rotate() {
+    std::vector<std::vector<int>> new_values = std::vector<std::vector<int>>(4, std::vector<int>(3));
+    for (int side = 0; side < 4; side++) {
+        for (int value = 0; value < 3; value++) {
+            new_values[side][value] = this->values[(side + 3) % 4][value];
+        }
+    }
+    this->values = new_values;
+}
+
 std::string Tile::line_repr(const int line) const {
     switch (line) {
         case 0:
