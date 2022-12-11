@@ -11,11 +11,12 @@
 #include <iomanip>
 #include <string>
 #include <cstdint>
+#include <bits/stdc++.h>
 
-// trim from right
-inline std::string& rtrim(std::string& s, const char* t = " \t\n\r\f\v") {
-    s.erase(s.find_last_not_of(t) + 1);
-    return s;
-}
+#include "tile.hpp"
+#include "board.hpp"
+
+std::string tiles_to_terminal(std::map<int, std::map<int, Tile>> sorted, std::pair<int, int> mins, std::pair<int, int> maxs, int y, int k);
+int random_in_range(int, int);
 
 #endif

@@ -1,58 +1,78 @@
 #include "common.hpp"
-#include "tile.hpp"
 
 Tile::Tile() {
-    std::vector<std::vector<int>> values = std::vector<std::vector<int>>(4, std::vector<int>(3)); 
-    for (int side = 0; side < 4; side++) {
+    this->values = std::map<Side, std::vector<int>>();
+    for (int i = 0; i < 4; i++) {
+        auto side = (Side) i;
+        this->values[side] = std::vector<int>(3);
         for (int value = 0; value < 3; value++) {
-            // generate a random int between 0 and 6
-            std::random_device rd;
-            const long seed = rd();
-            std::mt19937 rng(seed);
-            std::uniform_int_distribution<int> dist(1, 6);
-            int random = dist(rng);
-            values[side][value] = random;
+            // generate a random int between 1 and 6
+            auto random = choose_random(1, 6);
+            this->values[side][value] = random;
         }
     }
-    this->values = values;
 }
 
-void Tile::rotate() {
-    std::vector<std::vector<int>> new_values = std::vector<std::vector<int>>(4, std::vector<int>(3));
-    for (int side = 0; side < 4; side++) {
-        for (int value = 0; value < 3; value++) {
-            new_values[side][value] = this->values[(side + 3) % 4][value];
+Tile Tile::rotate(Rotation rotation) {
+    auto new_values = std::map<Side, std::vector<int>>();
+    auto temp = std::vector<int>(12);
+    for (int i = 0; i < 4; i++) {
+        auto side = (Side) i;
+        for (int j = 0; j < 3; j++) {
+            // Convert i and j to a single array index
+            temp[i * 3 + j] = this->values.at(side)[j];
         }
     }
-    this->values = new_values;
+    if (rotation == Rotation::CLOCKWISE) {
+        // Rotate clockwise
+        new_values[TOP] = { temp[9], temp[10], temp[11] };
+        new_values[RIGHT] = { temp[0], temp[1], temp[2] };
+        new_values[BOTTOM] = { temp[3], temp[4], temp[5] };
+        new_values[LEFT] = { temp[6], temp[7], temp[8] };
+    } else { // 9-10-11 = LEFT | 0-1-2 = TOP | 3-4-5 = RIGHT | 6-7-8 = BOTTOM
+        new_values[BOTTOM] = { temp[9], temp[10], temp[11] };
+        new_values[LEFT] = { temp[0], temp[1], temp[2] };
+        new_values[TOP] = { temp[3], temp[4], temp[5] };
+        new_values[RIGHT] = { temp[6], temp[7], temp[8] };
+    }
+    return Tile(new_values);
 }
 
-std::string Tile::line_repr(const int line) const {
+std::string Tile::line_representation(const int line) const {
+    // Convert all values in this->values to strings and store them in a vector
+    auto strings = std::vector<std::string>(12);
+    for (int i = 0; i < 4; i++) {
+        Side side = (Side) i;
+        for (int j = 0; j < 3; j++) {
+            // Convert i and j to a single array index
+            strings[i * 3 + j] = std::to_string(this->values.at(side)[j]);
+        }
+    }
     switch (line) {
         case 0:
-            return " " + std::to_string(this->values[TOP][0]) + " " + std::to_string(this->values[TOP][1]) + " " + std::to_string(this->values[TOP][2]);
+            return " " + strings[0] + " " + strings[1] + " " + strings[2];
         case 1:
-            return std::to_string(this->values[LEFT][0]) + "     " + std::to_string(this->values[RIGHT][0]);
+            return strings[9] + "     " + strings[3]; 
         case 2:
-            return std::to_string(this->values[LEFT][1]) + "     " + std::to_string(this->values[RIGHT][1]);
+            return strings[10] + "     " + strings[4];
         case 3:
-            return std::to_string(this->values[LEFT][2]) + "     " + std::to_string(this->values[RIGHT][2]);
+            return strings[11] + "     " + strings[5];
         case 4:
-            return " " + std::to_string(this->values[BOTTOM][0]) + " " + std::to_string(this->values[BOTTOM][1]) + " " + std::to_string(this->values[BOTTOM][2]);
+            return " " + strings[6] + " " + strings[7] + " " + strings[8];
         default:
             return "";
     }
 }
 
 std::ostream& operator<<(std::ostream& os, const Tile& t) {
-    std::cout << t.line_repr(0) << std::endl << t.line_repr(1) << std::endl << t.line_repr(2) << std::endl << t.line_repr(3) << std::endl << t.line_repr(4);
+    std::cout << t.line_representation(0) << std::endl << t.line_representation(1) << std::endl << t.line_representation(2) << std::endl << t.line_representation(3) << std::endl << t.line_representation(4);
     return os;
 }
 
 bool operator==(const Tile& t1, const Tile& t2) {
-    for (int side = 0; side < 4; side++) {
+    for (int i = 0; i < 4; i++) {
         for (int value = 0; value < 3; value++) {
-            if (t1.values[side][value] != t2.values[side][value]) {
+            if (t1.values.at((Side) i)[value] != t2.values.at((Side) i)[value]) {
                 return false;
             }
         }

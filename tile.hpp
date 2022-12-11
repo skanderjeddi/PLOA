@@ -3,24 +3,31 @@
 
 #include "common.hpp"
 
-#define LEFT 0
-#define TOP 1
-#define RIGHT 2
-#define BOTTOM 3
+enum Side {
+    TOP,
+    RIGHT,
+    BOTTOM,
+    LEFT
+};
+
+enum Rotation {
+    CLOCKWISE,
+    COUNTERCLOCKWISE
+};
 
 class Tile {
 private:
-    std::vector<std::vector<int>> values;
+    std::map<Side, std::vector<int>> values;
     friend class Board;
-
+    
 public:
     Tile();
-    Tile(std::vector<std::vector<int>> values) : values(values) {};
-    void rotate();
-    std::string line_repr(const int line) const;
-    std::vector<std::vector<int>> get_values() const { return this->values; };
-    friend std::ostream& operator<<(std::ostream& os, const Tile& t);
-    friend bool operator==(const Tile& t1, const Tile& t2);
+    Tile(std::map<Side, std::vector<int>> values) : values(values) {};
+    Tile rotate(Rotation rotation);
+    std::string line_representation(const int line) const;
+    std::map<Side, std::vector<int>> get_values() const { return this->values; };
+    friend std::ostream& operator<<(std::ostream& os, const Tile& tile);
+    friend bool operator==(const Tile& tile1, const Tile& tile2);
 }; 
 
 #endif

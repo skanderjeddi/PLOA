@@ -1,8 +1,6 @@
 #ifndef __BOARD_HPP__
 #define __BOARD_HPP__
 
-#include "common.hpp"
-
 class Board {
 private:
     std::map<std::pair<int, int>, Tile> tiles;
@@ -10,10 +8,10 @@ private:
 
 public:
     Board(Tile initial);
+    std::vector<std::pair<Side, Tile>> get_neighbours(int x, int y);
     bool can_place_tile(Tile new_tile, int x, int y);
     void place_tile(Tile new_tile, int x, int y);
-    std::string print_line(std::map<int, std::map<int, Tile>> sorted_tiles, std::pair<int, int>, std::pair<int, int>, int y, int k) const;
-    friend std::ostream& operator<<(std::ostream& os, const Board& b);
+    friend std::ostream& operator<<(std::ostream& os, const Board& board);
 };
 
 #endif
