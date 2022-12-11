@@ -61,35 +61,63 @@ void Board::place_tile(Tile new_tile, int x, int y) {
     this->tiles[std::make_pair(x, y)] = new_tile;
 }
 
+std::string Board::print_line(std::map<int, std::map<int, Tile>> sorted_tiles, std::pair<int, int> min_values, std::pair<int, int> max_values, int y, int k) const {
+    std::string line = std::string();
+    auto ys = sorted_tiles[y];
+    for (int x = 0; x <= min_values.first + max_values.first; x++) {
+        if (ys.find(x) != ys.end()) {
+            line += ys[x].line_repr(k) + "\t";
+        } else {
+            line += "        ";
+        }
+    }
+    return line;
+}
+
 std::ostream& operator<<(std::ostream& os, const Board& b) {
-    // Sort the tiles into groups of same y
-    auto tiles = std::map<int, std::vector<std::pair<int, Tile>>>();
+    // Find the min and max x and y of b.tiles and put them in 2 std::pairs
+    auto min_x = 0; auto max_x = 0;
+    auto min_y = 0; auto max_y = 0; 
     for (auto const& tile : b.tiles) {
         auto coord = tile.first;
         auto x = coord.first;
         auto y = coord.second;
-        if (tiles.find(y) == tiles.end()) {
-            tiles[y] = std::vector<std::pair<int, Tile>>();
+        if (x < min_x) {
+            min_x = x;
         }
-        tiles[y].push_back(std::make_pair(x, tile.second));
+        if (x > max_x) {
+            max_x = x;
+        }
+        if (y < min_y) {
+            min_y = y;
+        }
+        if (y > max_y) {
+            max_y = y;
+        }
     }
-    for (auto const& tile : tiles) {
-        std::string line = "";
-        auto tiles = tile.second;
-        std::string spacing = "";
-        for (int i = 0; i < 5; i++) {
-            for (auto const& t : tiles) {
-                int diff = 0;
-                while (diff < t.first) {
-                    spacing += "\t";
-                    diff++;
-                }
-                line += t.second.line_repr(i) + spacing + "\t";
-            }
-            line += "\n";
-            spacing = "";
+    // Create new tiles map with the x and y centered at 0
+    auto new_tiles = std::map<std::pair<int, int>, Tile>();
+    for (auto const& tile : b.tiles) {
+        auto coord = tile.first;
+        auto x = coord.first;
+        auto y = coord.second;
+        new_tiles[std::make_pair(x - min_x, y - min_y)] = tile.second;
+    }
+    // Sort new_tiles by y keeping x somewhere
+    auto tiles = std::map<int, std::map<int, Tile>>();
+    for (auto const& tile : new_tiles) {
+        auto coord = tile.first;
+        auto x = coord.first;
+        auto y = coord.second;
+        if (tiles.find(y) == tiles.end()) {
+            tiles[y] = std::map<int, Tile>();
         }
-        os << line;
+        tiles[y][x] = tile.second;
+    }
+    for (int y = 0; y <= max_y + min_y; y++) {
+        for (int k = 0; k < 5; k++) {
+            os << b.print_line(tiles, std::make_pair(min_x, min_y), std::make_pair(max_x, max_y), y, k) << std::endl;
+        }
     }
     return os;
 }

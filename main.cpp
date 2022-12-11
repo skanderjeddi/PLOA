@@ -7,15 +7,16 @@ int main(void) {
     Board board(initial);
     board.place_tile(Tile(), 1, 0);
     board.place_tile(Tile(), 2, 0);
-    board.place_tile(Tile(), 0, 1);
-    board.place_tile(Tile(), 1, 1);
+    board.place_tile(Tile(), 3, 0);
+    board.place_tile(Tile(), 5, 0);
+    board.place_tile(Tile(), 2, 1);
     board.place_tile(Tile(), 3, 1);
-    board.place_tile(Tile(), 1, 2); 
+    board.place_tile(Tile(), 4, 2);
     // board.place_tile(Tile(), 3, 2);
     std::cout << board;
     // board.place_tile(Tile(), 4, 3);
     // board.place_tile(Tile(), 2, 3);
-    Tile candidate = Tile();
+    /** Tile candidate = Tile();
     bool keep_going = true;
     while (keep_going) {
         for (int i = 0; i < 4; i++) {
@@ -29,7 +30,7 @@ int main(void) {
             break;
         }
         candidate = Tile();
-    }
+    } **/
     // std::cout << candidate << std::endl;
     return 0;
 }
