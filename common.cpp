@@ -21,3 +21,11 @@ int random_in_range(int min, int max) {
     std::uniform_int_distribution<int> dist(min, max);
     return dist(rng);
 }
+
+float random_in_0_1_range() {
+    std::random_device rd;
+    const long seed = rd();
+    std::mt19937 rng(seed);
+    std::uniform_real_distribution<float> dist(0.0, 1.0);
+    return dist(rng);
+}

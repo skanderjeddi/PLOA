@@ -7,7 +7,7 @@ Tile::Tile() {
         this->values[side] = std::vector<int>(3);
         for (int value = 0; value < 3; value++) {
             // generate a random int between 1 and 6
-            auto random = choose_random(1, 6);
+            auto random = random_in_range(1, 6);
             this->values[side][value] = random;
         }
     }

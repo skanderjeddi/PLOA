@@ -21,25 +21,184 @@ std::vector<std::pair<Side, Tile>> Board::get_neighbours(int x, int y) {
     return adjacent;
 }
 
-bool Board::can_place_tile(Tile tile, int x, int y) {
+/**
+ * Generate a random tile that is guaranteed to fit on the board next to already placed tiles
+ */
+Tile Board::find_good_tile() {
+    Tile good_tile;
+    if (tiles.size() == 1) {
+        if (random_in_0_1_range() > 0.5) {
+            good_tile.values[TOP] = std::vector<int>(tiles.at(std::make_pair(0, 0)).values[BOTTOM]);
+        } else {
+            good_tile.values[LEFT] = std::vector<int>(tiles.at(std::make_pair(0, 0)).values[RIGHT]);
+        }
+        return good_tile;
+    }
+    for (auto tile : tiles) {
+        auto coords = tile.first;
+        auto neighbors = this->get_neighbours(coords.first, coords.second);
+        if (neighbors.size() == 1) {
+            switch (neighbors[0].first) {
+                case TOP:
+                    good_tile.values[TOP] = std::vector<int>(tile.second.values[BOTTOM]);
+                    break;
+                case RIGHT:
+                    good_tile.values[RIGHT] = std::vector<int>(tile.second.values[LEFT]);
+                    break;
+                case BOTTOM:
+                    good_tile.values[BOTTOM] = std::vector<int>(tile.second.values[TOP]);
+                    break;
+                case LEFT:
+                    good_tile.values[LEFT] = std::vector<int>(tile.second.values[RIGHT]);
+                    break;
+            }
+        } else if (neighbors.size() == 2) {
+            auto n1 = neighbors[0];
+            auto n2 = neighbors[1];
+            switch (n1.first) {
+                case TOP:
+                    switch (n2.first) {
+                        case TOP:
+                            break;
+                        case BOTTOM:
+                            if (random_in_0_1_range() > 0.5)
+                                good_tile.values[LEFT] = std::vector<int>(tile.second.values[RIGHT]);
+                            else
+                                good_tile.values[RIGHT] = std::vector<int>(tile.second.values[LEFT]);
+                            break;
+                        case LEFT:
+                            if (random_in_0_1_range() > 0.5)
+                                good_tile.values[TOP] = std::vector<int>(tile.second.values[BOTTOM]);
+                            else
+                                good_tile.values[LEFT] = std::vector<int>(tile.second.values[RIGHT]);
+                            break;
+                        case RIGHT:
+                            if (random_in_0_1_range() > 0.5)
+                                good_tile.values[RIGHT] = std::vector<int>(tile.second.values[LEFT]);
+                            else
+                                good_tile.values[TOP] = std::vector<int>(tile.second.values[BOTTOM]);
+                            break;
+                    }
+                    break;
+                case BOTTOM:
+                    switch (n2.first) {
+                        case BOTTOM:
+                            break;
+                        case TOP:
+                            if (random_in_0_1_range() > 0.5)
+                                good_tile.values[LEFT] = std::vector<int>(tile.second.values[RIGHT]);
+                            else
+                                good_tile.values[RIGHT] = std::vector<int>(tile.second.values[LEFT]);
+                            break;
+                        case LEFT:
+                            if (random_in_0_1_range() > 0.5)
+                                good_tile.values[BOTTOM] = std::vector<int>(tile.second.values[TOP]);
+                            else
+                                good_tile.values[LEFT] = std::vector<int>(tile.second.values[RIGHT]);
+                            break;
+                        case RIGHT:
+                            if (random_in_0_1_range() > 0.5)
+                                good_tile.values[RIGHT] = std::vector<int>(tile.second.values[LEFT]);
+                            else
+                                good_tile.values[BOTTOM] = std::vector<int>(tile.second.values[TOP]);
+                            break;
+                    }
+                    break;
+                case LEFT:
+                    switch (n2.first) {
+                        case BOTTOM:
+                            if (random_in_0_1_range() > 0.5)
+                                good_tile.values[LEFT] = std::vector<int>(tile.second.values[RIGHT]);
+                            else
+                                good_tile.values[BOTTOM] = std::vector<int>(tile.second.values[TOP]);
+                            break;
+                        case TOP:
+                            if (random_in_0_1_range() > 0.5)
+                                good_tile.values[LEFT] = std::vector<int>(tile.second.values[RIGHT]);
+                            else
+                                good_tile.values[TOP] = std::vector<int>(tile.second.values[BOTTOM]);
+                            break;
+                        case LEFT:
+                            break;
+                        case RIGHT:
+                            if (random_in_0_1_range() > 0.5)
+                                good_tile.values[BOTTOM] = std::vector<int>(tile.second.values[TOP]);
+                            else
+                                good_tile.values[TOP] = std::vector<int>(tile.second.values[BOTTOM]);
+                            break;
+                    }
+                    break;
+                case RIGHT:
+                    switch (n2.first) {
+                        case BOTTOM:
+                            if (random_in_0_1_range() > 0.5)
+                                good_tile.values[RIGHT] = std::vector<int>(tile.second.values[LEFT]);
+                            else
+                                good_tile.values[BOTTOM] = std::vector<int>(tile.second.values[TOP]);
+                            break;
+                        case TOP:
+                            if (random_in_0_1_range() > 0.5)
+                                good_tile.values[RIGHT] = std::vector<int>(tile.second.values[LEFT]);
+                            else
+                                good_tile.values[TOP] = std::vector<int>(tile.second.values[BOTTOM]);
+                            break;
+                        case LEFT:
+                            if (random_in_0_1_range() > 0.5)
+                                good_tile.values[BOTTOM] = std::vector<int>(tile.second.values[TOP]);
+                            else
+                                good_tile.values[TOP] = std::vector<int>(tile.second.values[BOTTOM]);
+                            break;
+                        case RIGHT:
+                            break;
+                    }
+                    break;
+            }
+        } else if (neighbors.size() == 3) {
+            auto n1 = neighbors[0];
+            auto n2 = neighbors[1];
+            auto n3 = neighbors[2];
+            if (n1.first == TOP && n2.first == RIGHT && n3.first == BOTTOM) {
+                good_tile.values[LEFT] = std::vector<int>(tile.second.values[RIGHT]);
+            } else if (n1.first == TOP && n2.first == BOTTOM && n3.first == LEFT) {
+                good_tile.values[RIGHT] = std::vector<int>(tile.second.values[LEFT]);
+            } else if (n1.first == RIGHT && n2.first == BOTTOM && n3.first == LEFT) {
+                good_tile.values[TOP] = std::vector<int>(tile.second.values[BOTTOM]);
+            } else if (n1.first == TOP && n2.first == RIGHT && n3.first == LEFT) {
+                good_tile.values[BOTTOM] = std::vector<int>(tile.second.values[TOP]);
+            }
+        } else {
+            continue;
+        }
+    }
+    return good_tile;
+}
+
+bool Board::can_place_tile(Tile candidate, int x, int y) {
     auto xy = std::make_pair(x, y);
     if (this->tiles.find(xy) != this->tiles.end()) {
         return false;
     }
     auto neighbours = this->get_neighbours(x, y);
+    if (neighbours.size() == 0) { 
+        return false;
+    }
     for (auto neighbour : neighbours) {
         auto side = neighbour.first;
         auto tile = neighbour.second;
         for (int valueIndex = 0; valueIndex < 3; valueIndex++) {
             switch (side) {
                 case TOP:
-                    if (tile.values[TOP][valueIndex] != tile.values[BOTTOM][valueIndex]) return false;
+                    if (candidate.values[TOP][valueIndex] != tile.values[BOTTOM][valueIndex]) return false;
+                    break;
                 case RIGHT:
-                    if (tile.values[RIGHT][valueIndex] != tile.values[LEFT][valueIndex]) return false;
+                    if (candidate.values[RIGHT][valueIndex] != tile.values[LEFT][valueIndex]) return false;
+                    break;
                 case BOTTOM:
-                    if (tile.values[BOTTOM][valueIndex] != tile.values[TOP][valueIndex]) return false;
+                    if (candidate.values[BOTTOM][valueIndex] != tile.values[TOP][valueIndex]) return false;
+                    break;
                 case LEFT:
-                    if (tile.values[LEFT][valueIndex] != tile.values[RIGHT][valueIndex]) return false;
+                    if (candidate.values[LEFT][valueIndex] != tile.values[RIGHT][valueIndex]) return false;
+                    break;
             }
         }
     }
