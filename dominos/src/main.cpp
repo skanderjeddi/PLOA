@@ -3,6 +3,7 @@
 #define NUMBER_OF_TILES 10
 #define NUMBER_OF_PLAYERS 1
 #define NUMBER_OF_ATTEMPTS 3
+#define LUCKY_EPSILON 0.09
 
 #define DEBUG true  
 
@@ -36,7 +37,7 @@ int main(void) {
         Tile random_tile;
         if (!lucky_strike) {
             float r = randomIn01();
-            if (r > 0.1) {
+            if (r > static_cast<float>(LUCKY_EPSILON)) {
                 std::cout << "> Lucky strike! You get a special tile!" << std::endl;
                 random_tile = board.findAppropriateTile();
                 lucky_strike = true;
