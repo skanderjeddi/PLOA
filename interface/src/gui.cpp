@@ -108,7 +108,7 @@ int main(void) {
     tileInstructions[2].setString("Space to discard");
     tileInstructions[2].setCharacterSize(16);
     
-    RenderWindow window(VideoMode(WINDOW_SIZE + 200, WINDOW_SIZE + 50), "Quadriminos", Style::Close);
+    RenderWindow window(VideoMode(WINDOW_SIZE + 200, WINDOW_SIZE + 50), "Dominos", Style::Close);
     while (window.isOpen()) {
         Event event;
         while (window.pollEvent(event)) {
@@ -138,7 +138,10 @@ int main(void) {
                 }
             }
             if (Keyboard::isKeyPressed(Keyboard::Space)) {
-                currentTile = Tile();
+                if (randomFloat() < 0.5)
+                    currentTile = Tile();
+                else
+                    currentTile = board.findTileThatFits();
             }
             // Refresh tile
             {
