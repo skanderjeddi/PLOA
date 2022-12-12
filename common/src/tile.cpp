@@ -9,7 +9,7 @@ Tile::Tile() {
     this->valuesByEdge = std::map<Edge, std::vector<int>>();
     for (int i = 0; i < EDGES; i++) {
         auto side = (Edge) i; // cast int to Edge enum
-        this->valuesByEdge[side] = std::vector<int>(EDGES);
+        this->valuesByEdge[side] = std::vector<int>(VALUES);
         for (int value = 0; value < VALUES; value++) {
             // generate a random int between 1 and 6
             auto randomValue = randomInt(1, 6);

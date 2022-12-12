@@ -56,6 +56,8 @@ void drawBoard(std::map<int, Image>& assets, const Board& board, RenderWindow& w
     }
 }
 
+
+
 int main(void) {
     std::cout << "Loading assets...";
     auto assets = loadAssets();
@@ -115,36 +117,56 @@ int main(void) {
             }
             if (Mouse::isButtonPressed(Mouse::Left)) {
                 auto mousePos = Mouse::getPosition(window);
-                auto x = mousePos.x / TILE_TOTAL_SIZE_PXL;
-                auto y = mousePos.y / TILE_TOTAL_SIZE_PXL;
-                if (x < BOARD_SIZE && y < BOARD_SIZE) {
-                    if (board.canPlaceTile(currentTile, x, y)) {
-                        board.placeTile(currentTile, x, y);
-                        currentTile = Tile();
-                    }
-                } else if (currentTileSprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
+                if (currentTileSprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
                     currentTile = currentTile.rotate(Rotation::COUNTERCLOCKWISE);
-                    currentTileImage = imageFromTile(currentTile, assets);
-                    currentTileTexture.loadFromImage(currentTileImage);
-                    currentTileSprite.setTexture(currentTileTexture);
-                    width = currentTileSprite.getGlobalBounds().width;
-                    height = currentTileSprite.getGlobalBounds().height;
-                    currentTileSprite.setPosition(WINDOW_SIZE + 100 - width / 2, WINDOW_SIZE / 2 - height / 2);
-                }
+                } else {
+                    auto x = mousePos.x / TILE_TOTAL_SIZE_PXL;
+                    auto y = mousePos.y / TILE_TOTAL_SIZE_PXL;
+                    if (x < BOARD_SIZE && y < BOARD_SIZE) {
+                        std::cout << "Placing tile at " << x << ", " << y << std::endl;
+                        if (board.canPlaceTile(currentTile, x, y)) {
+                            std::cout << "Placed tile at " << x << ", " << y << std::endl;
+                            board.placeTile(currentTile, x, y);
+                            currentTile = Tile();
+                        } else {
+                            auto center = board.retrieveTile(5, 5);
+                            std::cout << center.isSome() << std::endl;
+                            if (center.isSome()) {
+                                std::cout << "Tile values:" << std::endl;
+                                for (int i = 0; i < 4; i++) {
+                                    auto edge = (Edge) i;
+                                    std::cout << "Edge " << edge << ": ";
+                                    for (int v = 0; v < VALUES; v++) {
+                                        std::cout << center.unwrap().getValues()[edge][v] << ", ";
+                                    }
+                                    std::cout << std::endl;
+                                }
+                            }
+                            std::cout << "Could not place tile at " << x << ", " << y << std::endl;
+                            std::cout << "Tile values:" << std::endl;
+                            for (int v : board.retrieveTile(5, 5).unwrap().getValues()[Edge::LEFT]) {
+                                std::cout << v << ", ";
+                            }
+                            std::cout << std::endl;
+                            std::cout << "Tile values:" << std::endl;
+                            for (int v : currentTile.getValues()[Edge::RIGHT]) {
+                                std::cout << v << ",";
+                            }
+                            std::cout << std::endl;
+                        }
+                    }
+                } 
             } else if (Mouse::isButtonPressed(Mouse::Right)) {
                 auto mousePos = Mouse::getPosition(window);
                 if (currentTileSprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
                     currentTile = currentTile.rotate(Rotation::CLOCKWISE);
-                    currentTileImage = imageFromTile(currentTile, assets);
-                    currentTileTexture.loadFromImage(currentTileImage);
-                    currentTileSprite.setTexture(currentTileTexture);
-                    width = currentTileSprite.getGlobalBounds().width;
-                    height = currentTileSprite.getGlobalBounds().height;
-                    currentTileSprite.setPosition(WINDOW_SIZE + 100 - width / 2, WINDOW_SIZE / 2 - height / 2);
                 }
             }
             if (Keyboard::isKeyPressed(Keyboard::Space)) {
                 currentTile = board.findTileThatFits();
+            }
+            // Refresh tile
+            {
                 currentTileImage = imageFromTile(currentTile, assets);
                 currentTileTexture.loadFromImage(currentTileImage);
                 currentTileSprite.setTexture(currentTileTexture);
@@ -161,7 +183,7 @@ int main(void) {
         window.draw(currentTileSprite);
         window.draw(lowerInstructions, Transform().translate(30, WINDOW_SIZE + 15));
         for (size_t i = 0; i < tileInstructions.size(); i++) {
-            window.draw(tileInstructions[i], Transform().translate(WINDOW_SIZE + 10, 200 + WINDOW_SIZE / 2 - 50 + i * 20));
+            window.draw(tileInstructions[i], Transform().translate(WINDOW_SIZE + 15, 200 + WINDOW_SIZE / 2 - 50 + i * 20));
         }
         window.display();
     }

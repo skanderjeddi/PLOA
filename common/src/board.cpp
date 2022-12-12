@@ -31,10 +31,10 @@ std::vector<Tile> Board::generateRandomTiles(int numberOfTiles) {
         auto oppositeSide = getOppositeSide(side);
         if (tileIndex == 0) { // If this is the first tile, set one of the edges to the same values of one of the initial tile's edges.
             auto initialTile = this->getInitialTile();
-            randomTiles[tileIndex].getValues().at(side) = initialTile.getValues().at(oppositeSide);
+            randomTiles[tileIndex].getValues().at(side) = std::vector<int>(initialTile.getValues().at(oppositeSide));
         } else { // If this is not the first tile, set one of the edges to the same values of one of the previous tile's edges.
             auto randomIndex = randomInt(0, tileIndex - 1);
-            randomTiles[tileIndex].getValues().at(side) = randomTiles[randomIndex].getValues().at(oppositeSide);
+            randomTiles[tileIndex].getValues().at(side) = std::vector<int>(randomTiles[randomIndex].getValues().at(oppositeSide));
         }
     }
     return randomTiles;
@@ -95,8 +95,10 @@ bool Board::canPlaceTile(Tile candidateTile, int x, int y) const {
         auto neighborSide = neighbor.first;
         auto neighborTile = neighbor.second;
         auto oppositeSide = getOppositeSide(neighborSide);
-        if (candidateTile.getValues().at(neighborSide) != neighborTile.getValues().at(oppositeSide)) {
-            return false; // The values of the edges of the tile do not match the values of the edges of the neighboringEdges.
+        for (int i = 0; i < VALUES; i++) {
+            if (candidateTile.getValues().at(neighborSide)[i] != neighborTile.getValues().at(oppositeSide)[i]) {
+                return false; // The values of the edges of the tile do not match the values of the edges of the neighboringEdges.
+            }
         }
     }
     return true; // The tile can be placed on the board.
@@ -184,7 +186,7 @@ Tile Board::findTileThatFits() const {
         auto targetSide = findFreeEdge(neighborsSides); // Find a free side.
         auto oppositeSide = getOppositeSide(targetSide);
         // Create a new tile with the values of the current tile, but with the values of the target side replaced by the values of the opposite side.
-        fittingTile.valuesByEdge[targetSide] = currentTile.second.valuesByEdge[oppositeSide];
+        fittingTile.valuesByEdge[targetSide] = std::vector<int>(currentTile.second.valuesByEdge[oppositeSide]);
     }
     return fittingTile;
 }
