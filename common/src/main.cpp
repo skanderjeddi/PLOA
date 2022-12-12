@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
     int option = atoi(argv[1]);
     switch (option) {
         case 1: {
-            std::cout << "You chose option 1: Quadriminos" << std::endl;
+            std::cout << "You chose option 1: Quadriminos!" << std::endl;
             handleQuadriminos();
             break;
         }
