@@ -2,17 +2,19 @@
 #define __BOARD_HPP__
 
 class Board {
-private:
-    std::map<std::pair<int, int>, Tile> tiles;
-    friend class Tile;
+    private:
+        std::map<std::pair<int, int>, Tile> tilesMap;
+        friend class Tile;
 
-public:
-    Board(Tile initial);
-    std::vector<std::pair<Side, Tile>> get_neighbours(int x, int y);
-    bool can_place_tile(Tile new_tile, int x, int y);
-    void place_tile(Tile new_tile, int x, int y);
-    Tile find_good_tile();
-    friend std::ostream& operator<<(std::ostream& os, const Board& board);
+    public:
+        Board(Tile initialTile);
+        std::vector<std::pair<Side, Tile>> getNeighbors(const int x, const int y) const;
+        bool canPlaceTile(Tile new_tile, const int x, const int y) const;
+        void placeTile(Tile new_tile, const int x, const int y);
+        Side getOppositeSide(Side) const;
+        Side findFreeNeighboringSide(const std::vector<Side>) const; 
+        Tile findAppropriateTile() const;
+        friend std::ostream& operator<<(std::ostream& stream, const Board& board);
 };
 
 #endif

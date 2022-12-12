@@ -28,19 +28,19 @@ int main(void) {
         scores[players[i]] = 0;
     }
     std::cout << std::endl << "> The game will now begin!" << std::endl;
-    auto current_player = (NUMBER_OF_PLAYERS <= 1) ? 0 : random_in_range(0, NUMBER_OF_PLAYERS - 1);
+    auto current_player = (NUMBER_OF_PLAYERS <= 1) ? 0 : randomInRange(0, NUMBER_OF_PLAYERS - 1);
     bool lucky_strike = false;
     bool game_over = false;
     while (!game_over) {
         std::cout << std::endl << "> It is " << players[current_player] << "'s turn!" << std::endl;
         std::cout << "Selecting a random tile..." << std::endl;
-        auto random_index = random_in_range(0, random_tiles.size() - 1);
+        auto random_index = randomInRange(0, random_tiles.size() - 1);
         Tile random_tile;
         if (!lucky_strike) {
-            float r = random_in_0_1_range();
+            float r = randomIn01();
             if (r > 0.1) {
                 std::cout << "> Lucky strike! You get a special tile!" << std::endl;
-                random_tile = board.find_good_tile();
+                random_tile = board.findAppropriateTile();
                 lucky_strike = true;
             }
         } else {
@@ -104,17 +104,17 @@ int main(void) {
                         continue;
                     }
                     std::cout << std::endl << "> You have chosen to place the tile at (" << x << ", " << y << ")." << std::endl;
-                    std::cout << board.can_place_tile(random_tile, x, y) << std::endl;
+                    std::cout << board.canPlaceTile(random_tile, x, y) << std::endl;
                     attempts--;
-                    if (board.can_place_tile(random_tile, x, y)) {
+                    if (board.canPlaceTile(random_tile, x, y)) {
                         std::cout << "> You have successfully placed the tile!" << std::endl;
-                        board.place_tile(random_tile, x, y);
+                        board.placeTile(random_tile, x, y);
                         // Gather neighbors to the placed tile
-                        auto neighbours = board.get_neighbours(x, y);
+                        auto neighbours = board.getNeighbors(x, y);
                         auto points_gained = 0;
                         for (auto neighbour : neighbours) {
                             for (int i = 0; i < 4; i++) {
-                                points_gained += 2 * random_tile.get_values().at(neighbour.first)[i];
+                                points_gained += 2 * random_tile.getValues().at(neighbour.first)[i];
                             }
                         }
                         std::cout << "> You have earned " << points_gained << " points!" << std::endl;
