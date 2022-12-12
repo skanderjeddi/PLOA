@@ -4,7 +4,7 @@ OUT = loapro
 
 all:
 	@g++ -std=c++11 -Wall -o $(OUT) $(SOURCES)
-	@./loapro $(game)
+	@./loapro
 
 # clean house
 clean:

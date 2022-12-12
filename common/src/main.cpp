@@ -65,24 +65,40 @@ int handleQuadriminos() {
 }
 
 int main(int argc, char** argv) {
-    if (argc != 2) {
-        std::cout << "Usage: " << argv[0] << " <1 | 2 | 3>" << std::endl;
+    // Check that there's no extra arguments
+    if (argc > 1) {
+        std::cout << "Usage: " << argv[0] << std::endl;
         return 1;
     }
-    int option = atoi(argv[1]);
-    switch (option) {
-        case 1: {
-            std::cout << "You chose option 1: Quadriminos!" << std::endl;
-            handleQuadriminos();
-            break;
+    // Greet user
+    std::cout << "Welcome. Please select a game to play today:" << std::endl << std::endl;
+    std::cout << "\t1. Quadriminos" << std::endl;
+    std::cout << "\t2. WIP" << std::endl;
+    std::cout << "\t3. WIP" << std::endl;
+    std::cout << "\t0. Exit" << std::endl;
+    std::string choice;
+    std::cout << std::endl << "Your choice? ";
+    std::getline(std::cin, choice);
+    try {
+        int choiceInt = stoi(choice);
+        switch (choiceInt) {
+            case 0:
+                std::cout << "Goodbye!" << std::endl;
+                return 0;
+            case 1:
+                std::cout << "You have selected Quadriminos!" << std::endl;
+                return handleQuadriminos();
+            case 2:
+            case 3:
+                std::cout << "This game is not yet implemented." << std::endl;
+                return 1;
+            default:
+                std::cout << "Invalid choice." << std::endl;
+                return 1;
         }
-        case 2: // TODO
-        case 3: // TODO
-            std::cout << "Not implemented yet." << std::endl;
-            return 0;
-        default:
-            std::cout << "Invalid option. Please choose 1, 2, or 3." << std::endl;
-            return 1;
+    } catch (std::exception& e) {
+        std::cout << "Invalid choice." << std::endl;
+        return 1;
     }
     return 0;
 }

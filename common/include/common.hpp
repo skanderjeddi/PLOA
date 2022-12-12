@@ -9,6 +9,7 @@
 #include <sstream>
 #include <iomanip>
 #include <string>
+#include <stdio.h>
 #include <cstdint>
 #include <bits/stdc++.h>
 #include <map>
