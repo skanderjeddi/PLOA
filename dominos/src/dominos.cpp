@@ -1,7 +1,5 @@
 #include "../include/dominos.hpp"
 
-#define DEBUG true
-
 void Dominos::play() {
     play(DEFAULT_PLAYERS, DEFAULT_TILES_IN_BAG, DEFAULT_ATTEMPTS_PER_TILE);
 }
@@ -66,7 +64,7 @@ int Dominos::nextTurnFor(int playerId, float luck) {
     }
     std::cout << std::endl << "> " << playerName << " has drawn the following tile:" << std::endl;
     std::cout << std::endl << tileToPlay << std::endl;
-    std::cout << "Press [K] to rotate the tile clockwise, [L] to rotate the tile counterclockwise.\nPress [P] to place it or [D] to discard it.\nPress [Q] to quit." << std::endl;
+    std::cout << "Press [K] to rotate the tile clockwise, [LINES] to rotate the tile counterclockwise.\nPress [P] to place it or [D] to discard it.\nPress [Q] to quit." << std::endl;
     readPlayerInput(playerId, tileToPlay);
     return (playerId + 1) % playersAndScores.size();
 }
@@ -81,7 +79,7 @@ void Dominos::readPlayerInput(int playerId, Tile& tileToPlay) {
         } else if (input == "K") {
             tileToPlay = tileToPlay.rotate(Rotation::CLOCKWISE);
             std::cout << std::endl << "> Here's your rotated tile:" << std::endl << std::endl << tileToPlay << std::endl;
-        } else if (input == "L") {
+        } else if (input == "LINES") {
             tileToPlay = tileToPlay.rotate(Rotation::COUNTERCLOCKWISE);
             std::cout << std::endl << "> Here's your rotated tile:" << std::endl << std::endl << tileToPlay << std::endl;
         } else if (input == "P") {

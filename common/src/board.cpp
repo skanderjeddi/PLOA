@@ -27,7 +27,7 @@ std::vector<Tile> Board::generateRandomTiles(int numberOfTiles) {
         // Generate a random tile at index i.
         randomTiles[tileIndex] = Tile();
         // Get a random side of the tile and compute its opposite.
-        auto side = (Edge) randomInt(0, E - 1);
+        auto side = (Edge) randomInt(0, EDGES - 1);
         auto oppositeSide = getOppositeSide(side);
         if (tileIndex == 0) { // If this is the first tile, set one of the edges to the same values of one of the initial tile's edges.
             auto initialTile = this->getInitialTile();
@@ -58,7 +58,7 @@ std::vector<std::pair<Edge, Tile>> Board::getNeighbors(int x, int y) const {
         std::make_pair(x, y + 1),
         std::make_pair(x - 1, y)
     };
-    for (int e = 0; e < E; e++) {
+    for (int e = 0; e < EDGES; e++) {
         auto neighbor = adjacentPositions[e];
         auto edge = (Edge) e;
         if (this->tilesMap.find(neighbor) != this->tilesMap.end()) {
@@ -121,8 +121,11 @@ void Board::placeTile(Tile newTile, int x, int y) {
  * @param y     The y coordinate of the tile.
  * @return Tile     The tile at the given coordinates.
  */
-Tile Board::retrieveTile(int x, int y) const {
-    return this->tilesMap.at(std::make_pair(x, y));
+Option<Tile> Board::retrieveTile(int x, int y) const {
+    if (this->tilesMap.find(std::make_pair(x, y)) == this->tilesMap.end()) {
+        return Option<Tile>();
+    }
+    return Option<Tile>(this->tilesMap.at(std::make_pair(x, y)));
 }
 
 /**
@@ -135,23 +138,23 @@ Tile Board::retrieveTile(int x, int y) const {
 Edge Board::findFreeEdge(std::vector<Edge> neighboringEdges) const {
     std::vector<Edge> possibleTargets;
     if (neighboringEdges.size() == 0) { // If the tile has no neighboringEdges, all sides are possible.
-        for (int e = 0; e < E; e++) {
+        for (int e = 0; e < EDGES; e++) {
             possibleTargets.push_back((Edge) e);
         }
     } else if (neighboringEdges.size() == 1) { // If the tile has one neighbor, all sides except the one that is already occupied are possible.
-        for (int e = 0; e < E; e++) {
+        for (int e = 0; e < EDGES; e++) {
             if ((Edge) e != neighboringEdges[0]) {
                 possibleTargets.push_back((Edge) e);
             }
         }
     } else if (neighboringEdges.size() == 2) { // If the tile has two neighboringEdges, all sides except the two that are already occupied are possible.
-        for (int e = 0; e < E; e++) {
+        for (int e = 0; e < EDGES; e++) {
             if ((Edge) e != neighboringEdges[0] && (Edge) e != neighboringEdges[1]) {
                 possibleTargets.push_back((Edge) e);
             }
         }
     } else if (neighboringEdges.size() == 3) { // If the tile has three neighboringEdges, all sides except the three that are already occupied are possible.
-        for (int e = 0; e < E; e++) {
+        for (int e = 0; e < EDGES; e++) {
             if ((Edge) e != neighboringEdges[0] && (Edge) e != neighboringEdges[1] && (Edge) e != neighboringEdges[2]) {
                 possibleTargets.push_back((Edge) e);
             }

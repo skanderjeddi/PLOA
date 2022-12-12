@@ -7,10 +7,10 @@
  */
 Tile::Tile() {
     this->valuesByEdge = std::map<Edge, std::vector<int>>();
-    for (int i = 0; i < E; i++) {
+    for (int i = 0; i < EDGES; i++) {
         auto side = (Edge) i; // cast int to Edge enum
-        this->valuesByEdge[side] = std::vector<int>(E);
-        for (int value = 0; value < V; value++) {
+        this->valuesByEdge[side] = std::vector<int>(EDGES);
+        for (int value = 0; value < VALUES; value++) {
             // generate a random int between 1 and 6
             auto randomValue = randomInt(1, 6);
             this->valuesByEdge[side][value] = randomValue;
@@ -27,12 +27,12 @@ Tile::Tile() {
  */
 Tile Tile::rotate(Rotation rotation) const {
     auto rotatedValues = std::map<Edge, std::vector<int>>(); // create a new map of edges
-    auto backup = std::vector<int>(E * V); // create a backup of the values
-    for (int i = 0; i < E; i++) {
+    auto backup = std::vector<int>(EDGES * VALUES); // create a backup of the values
+    for (int i = 0; i < EDGES; i++) {
         auto side = (Edge) i; // cast int to Edge enum
         auto sideValues = this->valuesByEdge.at(side); // get the values of the current side
-        for (int j = 0; j < V; j++) {
-            backup[i * V + j] = sideValues[j]; // backup the values using a 1D array
+        for (int j = 0; j < VALUES; j++) {
+            backup[i * VALUES + j] = sideValues[j]; // backup the values using a 1D array
         }
     }
     if (rotation == Rotation::CLOCKWISE) { // rotate the values clockwise 
@@ -59,13 +59,13 @@ Tile Tile::rotate(Rotation rotation) const {
  * @return std::string  String representation of the tile
  */
 std::string Tile::toLine(const int n) const {
-    auto valuesAsStrings = std::vector<std::string>(E * V);
+    auto valuesAsStrings = std::vector<std::string>(EDGES * VALUES);
     // convert the values to strings
-    for (int i = 0; i < E; i++) {
+    for (int i = 0; i < EDGES; i++) {
         Edge side = (Edge) i;
         auto values = this->valuesByEdge.at(side);
-        for (int j = 0; j < V; j++) {
-            valuesAsStrings[i * V + j] = std::to_string(values[j]);
+        for (int j = 0; j < VALUES; j++) {
+            valuesAsStrings[i * VALUES + j] = std::to_string(values[j]);
         }
     }
     switch (n) { // return the nth line of the tile's multiline string representation
@@ -93,7 +93,7 @@ std::string Tile::toLine(const int n) const {
  * @return std::ostream& 
  */
 std::ostream& operator<<(std::ostream& stream, const Tile& tile) {
-    for (int i = 0; i < L; i++) {
+    for (int i = 0; i < DISPLAY_LINES; i++) {
         stream << tile.toLine(i) << std::endl;
     }
     return stream;
@@ -110,11 +110,11 @@ std::ostream& operator<<(std::ostream& stream, const Tile& tile) {
  * @return false 
  */
 bool operator==(const Tile& tile1, const Tile& tile2) {
-    for (int i = 0; i < E; i++) {
+    for (int i = 0; i < EDGES; i++) {
         auto side = (Edge) i;
         auto values1 = tile1.valuesByEdge.at(side);
         auto values2 = tile2.valuesByEdge.at(side);
-        for (int j = 0; j < V; j++) {
+        for (int j = 0; j < VALUES; j++) {
             if (values1[j] != values2[j]) {
                 return false;
             }

@@ -1,6 +1,8 @@
 #ifndef __BOARD_HPP__
 #define __BOARD_HPP__
 
+#include "common.hpp"
+
 /**
  * @brief Board class
  * This class represents the board of the game. It is a map of tiles, where each tile is identified by a pair of integers.
@@ -24,7 +26,7 @@ class Board {
         std::vector<std::pair<Edge, Tile>> getNeighbors(const int, const int) const;
         bool canPlaceTile(Tile, const int, const int) const;
         void placeTile(Tile, const int, const int);
-        Tile retrieveTile(const int, const int) const;
+        Option<Tile> retrieveTile(const int, const int) const;
         Edge findFreeEdge(const std::vector<Edge>) const; 
         Tile findTileThatFits() const;
         Tile getInitialTile() const;

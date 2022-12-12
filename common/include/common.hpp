@@ -14,16 +14,6 @@
 #include <bits/stdc++.h>
 #include <map>
 
-#include "tile.hpp"
-#include "board.hpp"
-
-/**
- * @brief This common header file contains all the common functions and definitions used in the project that don't really fit anywhere else.
- * Also used to avoid circular dependencies.
- */
-
-#define DEBUG true
-
 template <typename S> class Option {
     private:
         bool hasValue;
@@ -34,6 +24,14 @@ template <typename S> class Option {
         bool isSome() const { return hasValue; }
         S unwrap() const { return value; }
 };
+
+#include "tile.hpp"
+#include "board.hpp"
+
+/**
+ * @brief This common header file contains all the common functions and definitions used in the project that don't really fit anywhere else.
+ * Also used to avoid circular dependencies.
+ */
 
 int randomInt(int, int);
 float randomFloat();

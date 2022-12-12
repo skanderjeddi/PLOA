@@ -64,7 +64,7 @@ int handleQuadriminos() {
     return 0;
 }
 
-int main(int argc, char** argv) {
+/** int main(int argc, char** argv) {
     // Check that there's no extra arguments
     if (argc > 1) {
         std::cout << "Usage: " << argv[0] << std::endl;
@@ -101,4 +101,4 @@ int main(int argc, char** argv) {
         return 1;
     }
     return 0;
-}
+} **/

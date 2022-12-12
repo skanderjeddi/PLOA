@@ -3,7 +3,7 @@ OBJS = $(SOURCES:.cpp=.o)
 OUT = loapro
 
 all:
-	@g++ -std=c++11 -Wall -o $(OUT) $(SOURCES)
+	@g++ -std=c++11 -Wall -o $(OUT) $(SOURCES) -lsfml-graphics -lsfml-window -lsfml-system
 	@./loapro
 
 # clean house

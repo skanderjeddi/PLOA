@@ -3,9 +3,9 @@
 
 #include "common.hpp"
 
-#define E 4
-#define V 3
-#define L 5
+#define EDGES 4
+#define VALUES 3
+#define DISPLAY_LINES 5
 
 /**
  * @brief Edge enum
