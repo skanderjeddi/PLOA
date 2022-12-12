@@ -123,36 +123,11 @@ int main(void) {
                     auto x = mousePos.x / TILE_TOTAL_SIZE_PXL;
                     auto y = mousePos.y / TILE_TOTAL_SIZE_PXL;
                     if (x < BOARD_SIZE && y < BOARD_SIZE) {
-                        std::cout << "Placing tile at " << x << ", " << y << std::endl;
                         if (board.canPlaceTile(currentTile, x, y)) {
-                            std::cout << "Placed tile at " << x << ", " << y << std::endl;
                             board.placeTile(currentTile, x, y);
                             currentTile = Tile();
                         } else {
-                            auto center = board.retrieveTile(5, 5);
-                            std::cout << center.isSome() << std::endl;
-                            if (center.isSome()) {
-                                std::cout << "Tile values:" << std::endl;
-                                for (int i = 0; i < 4; i++) {
-                                    auto edge = (Edge) i;
-                                    std::cout << "Edge " << edge << ": ";
-                                    for (int v = 0; v < VALUES; v++) {
-                                        std::cout << center.unwrap().getValues()[edge][v] << ", ";
-                                    }
-                                    std::cout << std::endl;
-                                }
-                            }
-                            std::cout << "Could not place tile at " << x << ", " << y << std::endl;
-                            std::cout << "Tile values:" << std::endl;
-                            for (int v : board.retrieveTile(5, 5).unwrap().getValues()[Edge::LEFT]) {
-                                std::cout << v << ", ";
-                            }
-                            std::cout << std::endl;
-                            std::cout << "Tile values:" << std::endl;
-                            for (int v : currentTile.getValues()[Edge::RIGHT]) {
-                                std::cout << v << ",";
-                            }
-                            std::cout << std::endl;
+                            currentTile = Tile();
                         }
                     }
                 } 
@@ -163,7 +138,7 @@ int main(void) {
                 }
             }
             if (Keyboard::isKeyPressed(Keyboard::Space)) {
-                currentTile = board.findTileThatFits();
+                currentTile = Tile();
             }
             // Refresh tile
             {

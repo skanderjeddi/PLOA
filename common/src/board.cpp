@@ -186,7 +186,7 @@ Tile Board::findTileThatFits() const {
         auto targetSide = findFreeEdge(neighborsSides); // Find a free side.
         auto oppositeSide = getOppositeSide(targetSide);
         // Create a new tile with the values of the current tile, but with the values of the target side replaced by the values of the opposite side.
-        fittingTile.valuesByEdge[targetSide] = std::vector<int>(currentTile.second.valuesByEdge[oppositeSide]);
+        fittingTile.valuesByEdge[oppositeSide] = std::vector<int>(currentTile.second.valuesByEdge[targetSide]);
     }
     return fittingTile;
 }
