@@ -32,13 +32,17 @@ int main(void) {
     bool game_over = false;
     while (!game_over) {
         std::cout << std::endl << "> It is " << players[current_player] << "'s turn!" << std::endl;
-        std::cout << "Selecting a random tile..." << std::endl;
+        std::cout << "Here's the current board:" << std::endl;
+        std::cout << std::endl << board;
+        std::cout << std::endl << "Selecting a random tile..." << std::endl;
         auto random_index = randomInRange(0, random_tiles.size() - 1);
         Tile random_tile;
         if (!lucky_strike) {
             float r = randomIn01();
-            if (r > static_cast<float>(LUCKY_EPSILON)) {
-                std::cout << "> Lucky strike! You get a special tile!" << std::endl;
+            if (r < static_cast<float>(LUCKY_EPSILON)) {
+                std::cout << std::endl << "------------------------------------" << std::endl;
+                std::cout << "Lucky strike! You get a special tile" << std::endl;
+                std::cout << "------------------------------------" << std::endl;
                 random_tile = board.findAppropriateTile();
                 lucky_strike = true;
             }
@@ -47,8 +51,7 @@ int main(void) {
             random_tile = random_tiles[random_index];
             random_tiles.erase(random_tiles.begin() + random_index);
         }
-        std::cout << std::endl << "Here's the current board:" << std::endl;
-        std::cout << std::endl << board;
+        
         std::cout << std::endl << "> " << players[current_player] << " has drawn the following tile:" << std::endl;
         std::cout << std::endl << random_tile << std::endl;
         std::cout << std::endl << "[" << random_tiles.size() << " remaining tiles]" << std::endl;
