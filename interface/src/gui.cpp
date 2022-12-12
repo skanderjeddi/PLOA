@@ -4,22 +4,24 @@
 
 using namespace sf;
 
-#define TILE_TOTAL_SIZE_PXL 80
+#define NUMBER_SIZE_PIXELS 80
+#define TILE_IMAGE_SIZE (NUMBER_SIZE_PIXELS * 5)
+#define TILE_DIFF (TILE_IMAGE_SIZE - NUMBER_SIZE_PIXELS)
 #define BOARD_SIZE 11
-#define WINDOW_SIZE (TILE_TOTAL_SIZE_PXL * BOARD_SIZE)
+#define WINDOW_SIZE (NUMBER_SIZE_PIXELS * BOARD_SIZE)
 
 Image imageFromTile(Tile tile, std::map<int, Image> assets) {
     Image image;
-    image.create(400, 400, Color::White);
+    image.create(TILE_IMAGE_SIZE, TILE_IMAGE_SIZE, Color::White);
     image.copy(assets[0], 0, 0);
-    image.copy(assets[0], 320, 0);
-    image.copy(assets[0], 0, 320);
-    image.copy(assets[0], 320, 320);
+    image.copy(assets[0], TILE_DIFF, 0);
+    image.copy(assets[0], 0, TILE_DIFF);
+    image.copy(assets[0], TILE_DIFF, TILE_DIFF);
     for (int i = 0; i < 3; i++) {
-        image.copy(assets[tile.getValues()[Edge::TOP][i]], 80 * (i + 1), 0);
-        image.copy(assets[tile.getValues()[Edge::BOTTOM][i]], 80 * (i + 1), 320);
-        image.copy(assets[tile.getValues()[Edge::LEFT][i]], 0, 80 * (i + 1));
-        image.copy(assets[tile.getValues()[Edge::RIGHT][i]], 320, 80 * (i + 1));
+        image.copy(assets[tile.getValues()[Edge::TOP][i]], NUMBER_SIZE_PIXELS * (i + 1), 0);
+        image.copy(assets[tile.getValues()[Edge::BOTTOM][i]], NUMBER_SIZE_PIXELS * (i + 1), TILE_DIFF);
+        image.copy(assets[tile.getValues()[Edge::LEFT][i]], 0, NUMBER_SIZE_PIXELS * (i + 1));
+        image.copy(assets[tile.getValues()[Edge::RIGHT][i]], TILE_DIFF, NUMBER_SIZE_PIXELS * (i + 1));
     }
     return image;
 }
@@ -49,7 +51,7 @@ void drawBoard(std::map<int, Image>& assets, const Board& board, RenderWindow& w
                 Sprite sprite;
                 sprite.setTexture(texture);
                 sprite.scale(0.2, 0.2);
-                sprite.setPosition(x * TILE_TOTAL_SIZE_PXL, y * TILE_TOTAL_SIZE_PXL);
+                sprite.setPosition(x * NUMBER_SIZE_PIXELS, y * NUMBER_SIZE_PIXELS);
                 window.draw(sprite);
             }
         }
@@ -70,10 +72,10 @@ int main(void) {
     for (int x = 0; x < BOARD_SIZE; x++) {
         for (int y = 0; y < BOARD_SIZE; y++) {
             RectangleShape rectangle;
-            rectangle.setSize(Vector2f(TILE_TOTAL_SIZE_PXL, TILE_TOTAL_SIZE_PXL));
+            rectangle.setSize(Vector2f(NUMBER_SIZE_PIXELS, NUMBER_SIZE_PIXELS));
             rectangle.setOutlineColor(Color::Black);
             rectangle.setOutlineThickness(1);
-            rectangle.setPosition(x * TILE_TOTAL_SIZE_PXL, y * TILE_TOTAL_SIZE_PXL);
+            rectangle.setPosition(x * NUMBER_SIZE_PIXELS, y * NUMBER_SIZE_PIXELS);
             rectangles.push_back(rectangle);
         }
     }
@@ -120,8 +122,8 @@ int main(void) {
                 if (currentTileSprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
                     currentTile = currentTile.rotate(Rotation::CLOCKWISE);
                 } else {
-                    auto x = mousePos.x / TILE_TOTAL_SIZE_PXL;
-                    auto y = mousePos.y / TILE_TOTAL_SIZE_PXL;
+                    auto x = mousePos.x / NUMBER_SIZE_PIXELS;
+                    auto y = mousePos.y / NUMBER_SIZE_PIXELS;
                     if (x < BOARD_SIZE && y < BOARD_SIZE) {
                         if (board.canPlaceTile(currentTile, x, y)) {
                             board.placeTile(currentTile, x, y);
