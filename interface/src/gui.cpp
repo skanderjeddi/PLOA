@@ -118,7 +118,7 @@ int main(void) {
             if (Mouse::isButtonPressed(Mouse::Left)) {
                 auto mousePos = Mouse::getPosition(window);
                 if (currentTileSprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
-                    currentTile = currentTile.rotate(Rotation::COUNTERCLOCKWISE);
+                    currentTile = currentTile.rotate(Rotation::CLOCKWISE);
                 } else {
                     auto x = mousePos.x / TILE_TOTAL_SIZE_PXL;
                     auto y = mousePos.y / TILE_TOTAL_SIZE_PXL;
@@ -134,7 +134,7 @@ int main(void) {
             } else if (Mouse::isButtonPressed(Mouse::Right)) {
                 auto mousePos = Mouse::getPosition(window);
                 if (currentTileSprite.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
-                    currentTile = currentTile.rotate(Rotation::CLOCKWISE);
+                    currentTile = currentTile.rotate(Rotation::COUNTERCLOCKWISE);
                 }
             }
             if (Keyboard::isKeyPressed(Keyboard::Space)) {
@@ -153,15 +153,17 @@ int main(void) {
                 currentTileSprite.setPosition(WINDOW_SIZE + 100 - width / 2, WINDOW_SIZE / 2 - height / 2);
             }
         }
-        window.clear();
+        window.clear(Color::Black);
         for (auto& rectangle : rectangles) {
+            rectangle.setFillColor(Color::Black);
+            rectangle.setOutlineColor(Color::White);
             window.draw(rectangle);
         }
         drawBoard(assets, board, window);
         window.draw(currentTileSprite);
         window.draw(lowerInstructions, Transform().translate(30, WINDOW_SIZE + 15));
         for (size_t i = 0; i < tileInstructions.size(); i++) {
-            window.draw(tileInstructions[i], Transform().translate(WINDOW_SIZE + 15, 200 + WINDOW_SIZE / 2 - 50 + i * 20));
+            window.draw(tileInstructions[i], Transform().translate(WINDOW_SIZE + 25, 200 + WINDOW_SIZE / 2 - 50 + i * 20));
         }
         window.display();
     }
