@@ -8,7 +8,7 @@ void Dominos::play() {
     play(DEFAULT_PLAYERS, DEFAULT_TILES_IN_BAG, DEFAULT_ATTEMPTS_PER_TILE);
 }
 
-void Dominos::play(int players, int tilesInBag, int attemptsPerTile, float luck = DEFAULT_LUCK) {
+void Dominos::play(int players, int tilesInBag, int attemptsPerTile, float luck) {
     greetUser();
     registerPlayers(players);
     cout << endl << "> The game will now begin!";
@@ -51,7 +51,7 @@ void Dominos::loopTurns(int firstPlayerId, float luck) {
     }
 }
 
-int Dominos::nextTurnFor(int playerId, float luck = DEFAULT_LUCK) {
+int Dominos::nextTurnFor(int playerId, float luck) {
     auto playerName = playersAndScores[playerId].first;
     auto playerScore = playersAndScores[playerId].second;
     cout << endl << "> It is " << playerName << "'s turn! They currently have " << playerScore << " total points.";
