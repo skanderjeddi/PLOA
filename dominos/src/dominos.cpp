@@ -17,7 +17,7 @@ void Dominos::play(int players, int tilesInBag, int attemptsPerTile, float luck)
     loopTurns(randomInt(0, players - 1), luck);
 }
 
-void Dominos::greetUser() { cout << "Thank you for playing Quadriminos!" << endl; }
+void Dominos::greetUser() { cout << "Welcome to Quadriminos!" << endl; }
 
 void Dominos::registerPlayers(int maxPlayers) {
     auto players = vector<string>(maxPlayers);
