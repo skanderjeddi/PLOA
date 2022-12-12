@@ -16,8 +16,11 @@ class Board {
     private:
         map<pair<int, int>, Tile> tilesMap;
         friend class Tile;
-
+        friend class Dominos;
     public:
+        Board() {
+            Tile initialTile; tilesMap[make_pair(0, 0)] = initialTile;
+        }
         Board(Tile initialTile, pair<int, int>);
         vector<Tile> generateRandomTiles(int);
         vector<pair<Edge, Tile>> getNeighbors(const int, const int) const;

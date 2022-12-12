@@ -25,6 +25,17 @@
 
 using namespace std;
 
+template <typename S> class Option {
+    private:
+        bool hasValue;
+        S value;
+    public:
+        Option() : hasValue(false) {}
+        Option(S value) : hasValue(true), value(value) {}
+        bool isSome() const { return hasValue; }
+        S unwrap() const { return value; }
+};
+
 int randomInt(int, int);
 float randomFloat();
 Edge getOppositeSide(const Edge&);
