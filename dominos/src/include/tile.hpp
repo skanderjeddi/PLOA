@@ -3,33 +3,51 @@
 
 #include "common.hpp"
 
-#define EDGES 4
-#define VALUES 3
+#define E 4
+#define V 3
+#define L 5
 
-enum class Side {
+/**
+ * @brief Edge enum
+ * This enum represents the sides of a tile. It is used to identify the edges of a tile.
+ */
+enum class Edge {
     TOP,
     RIGHT,
     BOTTOM,
     LEFT
 };
 
+/**
+ * @brief Rotation enum
+ * This enum represents the rotation of a tile. It is used to rotate a tile clockwise or counterclockwise.
+ */
 enum class Rotation {
     CLOCKWISE,
     COUNTERCLOCKWISE
 };
 
+using namespace std;
+
+/**
+ * @brief Tile class
+ * This class represents a tile in the game. It is a map of edges, where each edge is identified by a Edge enum.
+ * Each edge is a vector of integers, where each integer represents a value on the edge.
+ * The tile is responsible for rotating itself. It is also responsible for handling its values.
+ * It can be compared to another tile through a custom operator==. It can be printed to the terminal.
+ */
 class Tile {
     private:
-        std::map<Side, std::vector<int>> valuesByEdge;
+        map<Edge, vector<int>> valuesByEdge;
         friend class Board;
     
     public:
         Tile();
-        Tile(std::map<Side, std::vector<int>> values) : valuesByEdge(values) {};
+        Tile(map<Edge, vector<int>> values) : valuesByEdge(values) {};
         Tile rotate(const Rotation rotation) const;
-        std::string toLine(const int line) const;
-        std::map<Side, std::vector<int>> getValues() const { return this->valuesByEdge; };
-        friend std::ostream& operator<<(std::ostream& stream, const Tile& tile);
+        string toLine(const int line) const;
+        map<Edge, vector<int>> getValues() const { return this->valuesByEdge; };
+        friend ostream& operator<<(ostream& stream, const Tile& tile);
         friend bool operator==(const Tile& tile1, const Tile& tile2);
 };
 

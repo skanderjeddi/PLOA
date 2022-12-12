@@ -5,150 +5,151 @@
 #define NUMBER_OF_ATTEMPTS 3
 #define LUCKY_EPSILON 0.09
 
-#define DEBUG true  
+#define DEBUG true
+
+using namespace std;
 
 int main(void) {
-    std::cout << "Welcome to AOKD!" << std::endl;
+    cout << "Welcome to AOKD!" << endl;
     auto initialTile = Tile();
-    auto board = Board(initialTile);
-    std::cout << std::endl << "> Here's the initial board:" << std::endl;
-    std::cout << std::endl << board << std::endl;
-    std::cout << "Generating " << NUMBER_OF_TILES << " random tile(s)...    ";
-    auto random_tiles = board.generateRandomTiles(NUMBER_OF_TILES);
-    std::cout << "Done!" << std::endl;
-    auto players = std::vector<std::string>(NUMBER_OF_PLAYERS);
-    std::cout << std::endl << "> Enter " << NUMBER_OF_PLAYERS << " distinct name(s): " << std::endl;
+    auto board = Board(initialTile, make_pair(0, 0));
+    cout << endl << "> Here's the initial board:" << endl;
+    cout << endl << board << endl;
+    cout << "Generating " << NUMBER_OF_TILES << " random tile(s)...    ";
+    auto randomTiles = board.generateRandomTiles(NUMBER_OF_TILES);
+    cout << "Done!" << endl;
+    auto players = vector<string>(NUMBER_OF_PLAYERS);
+    cout << endl << "> Enter " << NUMBER_OF_PLAYERS << " distinct name(s): " << endl;
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-        std::cout << "Player " << i + 1 << "? ";
-        std::cin >> players[i];
+        cout << "Player " << i + 1 << "? ";
+        cin >> players[i];
     }
-    auto scores = std::map<std::string, int>();
+    auto scores = map<string, int>();
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
         scores[players[i]] = 0;
     }
-    std::cout << std::endl << "> The game will now begin!" << std::endl;
-    auto current_player = (NUMBER_OF_PLAYERS <= 1) ? 0 : randomInRange(0, NUMBER_OF_PLAYERS - 1);
-    bool lucky_strike = false;
-    bool game_over = false;
-    while (!game_over) {
-        std::cout << std::endl << "> It is " << players[current_player] << "'s turn!" << std::endl;
-        std::cout << "Here's the current board:" << std::endl;
-        std::cout << std::endl << board;
-        std::cout << std::endl << "Selecting a random tile..." << std::endl;
-        auto random_index = randomInRange(0, random_tiles.size() - 1);
-        Tile random_tile;
-        if (!lucky_strike) {
-            float r = randomIn01();
+    cout << endl << "> The game will now begin!" << endl;
+    auto currentPlayer = (NUMBER_OF_PLAYERS <= 1) ? 0 : randomInt(0, NUMBER_OF_PLAYERS - 1);
+    bool luckyStrike = false;
+    bool gameOver = false;
+    while (!gameOver) {
+        cout << endl << "> It is " << players[currentPlayer] << "'s turn!" << endl;
+        cout << "Here's the current board:" << endl;
+        cout << endl << board;
+        cout << endl << "Selecting a random tile..." << endl;
+        auto randomTileIndex = randomInt(0, randomTiles.size() - 1);
+        Tile tileToPlay;
+        if (!luckyStrike) {
+            float r = randomFloat();
             if (r < static_cast<float>(LUCKY_EPSILON)) {
-                std::cout << std::endl << "------------------------------------" << std::endl;
-                std::cout << "Lucky strike! You get a special tile" << std::endl;
-                std::cout << "------------------------------------" << std::endl;
-                random_tile = board.findAppropriateTile();
-                lucky_strike = true;
+                cout << endl << "-------------------------------------" << endl;
+                cout << "Lucky strike! You get a special tile!" << endl;
+                cout << "-------------------------------------" << endl;
+                tileToPlay = board.findTileThatFits();
+                luckyStrike = true;
             }
         } else {
-            lucky_strike = false;
-            random_tile = random_tiles[random_index];
-            random_tiles.erase(random_tiles.begin() + random_index);
+            luckyStrike = false;
+            tileToPlay = randomTiles[randomTileIndex];
+            randomTiles.erase(randomTiles.begin() + randomTileIndex);
         }
-        
-        std::cout << std::endl << "> " << players[current_player] << " has drawn the following tile:" << std::endl;
-        std::cout << std::endl << random_tile << std::endl;
-        std::cout << std::endl << "[" << random_tiles.size() << " remaining tiles]" << std::endl;
-        std::cout << std::endl << "Press [K] to rotate the tile clockwise, [L] to rotate the tile counterclockwise.\nPress [P] to place it or [D] to discard it.\nPress [Q] to quit." << std::endl;
-        auto discarded = false;
-        auto read_input = true;
+        cout << endl << "> " << players[currentPlayer] << " has drawn the following tile:" << endl;
+        cout << endl << tileToPlay << endl;
+        cout << endl << "[" << randomTiles.size() << " remaining tiles]" << endl;
+        cout << endl << "Press [K] to rotate the tile clockwise, [L] to rotate the tile counterclockwise.\nPress [P] to place it or [D] to discard it.\nPress [Q] to quit." << endl;
+        auto tileWasDiscarded = false;
+        auto readInput = true;
         auto attempts = NUMBER_OF_ATTEMPTS;
-        while (read_input) {
-            std::string input;
-            std::cout << std::endl << "> ";
-            std::cin >> input;
+        while (readInput) {
+            string input;
+            cout << endl << "> ";
+            cin >> input;
             if (input == "Q") {
-                std::cout << std::endl << "Thanks for playing! See you next time!" << std::endl;
+                cout << endl << "Thanks for playing! See you next time!" << endl;
                 return 0;
             } else if (input == "K") {
-                random_tile = random_tile.rotate(Rotation::CLOCKWISE);
-                std::cout << std::endl << "> Here's your rotated tile:" << std::endl << std::endl << random_tile << std::endl;
+                tileToPlay = tileToPlay.rotate(Rotation::CLOCKWISE);
+                cout << endl << "> Here's your rotated tile:" << endl << endl << tileToPlay << endl;
             } else if (input == "L") {
-                random_tile = random_tile.rotate(Rotation::COUNTERCLOCKWISE);
-                std::cout << std::endl << "> Here's your rotated tile:" << std::endl << std::endl << random_tile << std::endl;
+                tileToPlay = tileToPlay.rotate(Rotation::COUNTERCLOCKWISE);
+                cout << endl << "> Here's your rotated tile:" << endl << endl << tileToPlay << endl;
             } else if (input == "P") {
                 while (attempts > 0) {
-                    std::cout << "Where would you like to place it? (Enter the coordinates as x#y, (negative) whole numbers allowed) [" << attempts << " possible attempt(s)]" << std::endl;
-                    std::string input;
-                    std::cout << "> ";
-                    std::cin >> input;
-                    std::stringstream ss(input);
-                    std::string token;
-                    std::vector<std::string> tokens;
-                    while (std::getline(ss, token, '#')) {
+                    cout << "Where would you like to place it? (Enter the coordinates as x#y, (negative) whole numbers allowed) [" << attempts << " possible attempt(s)]" << endl;
+                    string input;
+                    cout << "> ";
+                    cin >> input;
+                    stringstream ss(input);
+                    string token;
+                    vector<string> tokens;
+                    while (getline(ss, token, '#')) {
                         tokens.push_back(token);
                     }
                     if (tokens.size() != 2) {
-                        std::cout << "Invalid input. Please try again." << std::endl;
+                        cout << "Invalid input. Please try again." << endl;
                         continue;
                     }
                     int x, y;
-                    bool negative_x = false, negative_y = false;
+                    bool negX = false, negY = false;
                     if (tokens[0].at(0) == '-') {
-                        negative_x = true;
+                        negX = true;
                         tokens[0] = tokens[0].substr(1);
                     }
                     if (tokens[1].at(0) == '-') {
-                        negative_y = true;
+                        negY = true;
                         tokens[1] = tokens[1].substr(1);
                     }
                     try {
-                        x = std::stoi(tokens[0]) * (negative_x ? -1 : 1);
-                        y = std::stoi(tokens[1]) * (negative_y ? -1 : 1);
-                    } catch (std::invalid_argument& e) {
-                        std::cout << "Invalid input. Please try again." << std::endl;
+                        x = stoi(tokens[0]) * (negX ? -1 : 1);
+                        y = stoi(tokens[1]) * (negY ? -1 : 1);
+                    } catch (invalid_argument& e) {
+                        cout << "Invalid input. Please try again." << endl;
                         continue;
                     }
-                    std::cout << std::endl << "> You have chosen to place the tile at (" << x << ", " << y << ")." << std::endl;
-                    std::cout << board.canPlaceTile(random_tile, x, y) << std::endl;
+                    cout << endl << "> You have chosen to place the tile at (" << x << ", " << y << ")." << endl;
+                    cout << board.canPlaceTile(tileToPlay, x, y) << endl;
                     attempts--;
-                    if (board.canPlaceTile(random_tile, x, y)) {
-                        std::cout << "> You have successfully placed the tile!" << std::endl;
-                        board.placeTile(random_tile, x, y);
+                    if (board.canPlaceTile(tileToPlay, x, y)) {
+                        cout << "> You have successfully placed the tile!" << endl;
+                        board.placeTile(tileToPlay, x, y);
                         // Gather neighbors to the placed tile
-                        auto neighbours = board.getNeighbors(x, y);
-                        auto points_gained = 0;
-                        for (auto neighbour : neighbours) {
+                        auto neighbors = board.getNeighbors(x, y);
+                        auto pointsGained = 0;
+                        for (auto neighbor : neighbors) {
                             for (int i = 0; i < 4; i++) {
-                                points_gained += 2 * random_tile.getValues().at(neighbour.first)[i];
+                                pointsGained += 2 * tileToPlay.getValues().at(neighbor.first)[i];
                             }
                         }
-                        std::cout << "> You have earned " << points_gained << " points!" << std::endl;
-                        scores[players[current_player]] += points_gained;
-                        std::cout << "> Your total score is " << scores[players[current_player]] << "." << std::endl;
-                        current_player = (current_player + 1) % NUMBER_OF_PLAYERS;
-                        read_input = false;
+                        cout << "> You have earned " << pointsGained << " points!" << endl;
+                        scores[players[currentPlayer]] += pointsGained;
+                        cout << "> Your total score is " << scores[players[currentPlayer]] << "." << endl;
+                        currentPlayer = (currentPlayer + 1) % NUMBER_OF_PLAYERS;
+                        readInput = false;
                         break;
                     } else {
                         if (attempts > 0) {
-                            std::cout << "Invalid placement. Please try again." << std::endl;
+                            cout << "Invalid placement. Please try again." << endl;
                             attempts--;
                         } else {
-                            std::cout << "You have reached the maximum number of attempts. The tile has been discarded." << std::endl;
-                            read_input = false;
+                            cout << "You have reached the maximum number of attempts. The tile has been discarded." << endl;
+                            readInput = false;
                             break;
                         }
                     }
                 }
             } else if (input == "D") {
-                std::cout << "> You have discarded the tile." << std::endl;
-                current_player = (current_player + 1) % NUMBER_OF_PLAYERS;
-                discarded = true && !lucky_strike;
+                cout << "> You have discarded the tile." << endl;
+                currentPlayer = (currentPlayer + 1) % NUMBER_OF_PLAYERS;
+                tileWasDiscarded = true && !luckyStrike;
                 break;
             } else {
-                std::cout << "Invalid input. Please try again." << std::endl;
+                cout << "Invalid input. Please try again." << endl;
             }
         }
-        if (discarded) {
-            if (random_tiles.size() == 0) {
-                std::cout << std::endl << "> There are no more tiles left. The game is over!" << std::endl;
-                game_over = true;
+        if (tileWasDiscarded) {
+            if (randomTiles.size() == 0) {
+                cout << endl << "> There are no more tiles left. The game is over!" << endl;
+                gameOver = true;
                 break;
             } else {
                 continue;
@@ -156,17 +157,17 @@ int main(void) {
         }
     }
     // Announce that the game is over and display the final scores sorted by highest to lowest
-    std::cout << std::endl << "The game is over! Here are the final scores:" << std::endl;
-    std::vector<std::pair<std::string, int>> sorted_scores;
+    cout << endl << "The game is over! Here are the final scores:" << endl;
+    vector<pair<string, int>> sortedScores;
     for (auto score : scores) {
-        sorted_scores.push_back(score);
+        sortedScores.push_back(score);
     }
-    std::sort(sorted_scores.begin(), sorted_scores.end(), [](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
-        return a.second > b.second;
+    sort(sortedScores.begin(), sortedScores.end(), [](const pair<string, int>& pts1, const pair<string, int>& pts2) {
+        return pts1.second > pts2.second;
     });
-    for (auto score : sorted_scores) {
-        std::cout << score.first << ": " << score.second << std::endl;
+    for (auto score : sortedScores) {
+        cout << score.first << ": " << score.second << endl;
     }
-    std::cout << std::endl << "Thanks for playing! See you soon!" << std::endl;
+    cout << endl << "Thanks for playing! See you soon!" << endl;
     return 0;
 }

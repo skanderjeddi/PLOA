@@ -16,11 +16,19 @@
 #include "tile.hpp"
 #include "board.hpp"
 
+/**
+ * @brief This common header file contains all the common functions and definitions used in the project that don't really fit anywhere else.
+ * Also used to avoid circular dependencies.
+ */
+
 #define DEBUG true
 
-std::string printTilesToTerminal(std::map<int, std::map<int, Tile>>, std::pair<int, int>, std::pair<int, int>, int, int);
-int randomInRange(int, int);
-float randomIn01();
-std::ostream &operator<<(std::ostream&, const Side&);
+using namespace std;
+
+int randomInt(int, int);
+float randomFloat();
+Edge getOppositeSide(const Edge&);
+string tilesToString(map<int, map<int, Tile>>, pair<int, int>, pair<int, int>, pair<int, int>);
+ostream &operator<<(ostream&, const Edge&);
 
 #endif
