@@ -10,27 +10,25 @@
  * It is responsible for retrieving tiles from the tiles inner map, and for printing the board.
  */
 
-using namespace std;
-
 class Board {
     private:
-        map<pair<int, int>, Tile> tilesMap;
+        std::map<std::pair<int, int>, Tile> tilesMap;
         friend class Tile;
         friend class Dominos;
     public:
         Board() {
-            Tile initialTile; tilesMap[make_pair(0, 0)] = initialTile;
+            Tile initialTile; tilesMap[std::make_pair(0, 0)] = initialTile;
         }
-        Board(Tile initialTile, pair<int, int>);
-        vector<Tile> generateRandomTiles(int);
-        vector<pair<Edge, Tile>> getNeighbors(const int, const int) const;
+        Board(Tile initialTile, std::pair<int, int>);
+        std::vector<Tile> generateRandomTiles(int);
+        std::vector<std::pair<Edge, Tile>> getNeighbors(const int, const int) const;
         bool canPlaceTile(Tile, const int, const int) const;
         void placeTile(Tile, const int, const int);
         Tile retrieveTile(const int, const int) const;
-        Edge findFreeEdge(const vector<Edge>) const; 
+        Edge findFreeEdge(const std::vector<Edge>) const; 
         Tile findTileThatFits() const;
         Tile getInitialTile() const;
-        friend ostream& operator<<(ostream&, const Board&);
+        friend std::ostream& operator<<(std::ostream&, const Board&);
 };
 
 #endif

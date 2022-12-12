@@ -11,8 +11,8 @@
 class Dominos {
     private:
         Board board;
-        vector<Tile> randomTiles;
-        map<int, pair<string, int>> playersAndScores;
+        std::vector<Tile> randomTiles;
+        std::map<int, std::pair<std::string, int>> playersAndScores;
         friend class Board;
         void greetUser();
         void registerPlayers(int);
@@ -21,8 +21,8 @@ class Dominos {
         void loopTurns(int, float);
         int nextTurnFor(int, float = DEFAULT_LUCK);
         void readPlayerInput(int, Tile&);
-        Option<pair<int, int>> processPlayerInput();
-        bool handlePoints(int, Tile, pair<int, int>);
+        Option<std::pair<int, int>> processPlayerInput();
+        bool handlePoints(int, Tile, std::pair<int, int>);
         void announceScores(bool);
         
     public:

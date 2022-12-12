@@ -1,7 +1,5 @@
 #include "../include/common.hpp"
 
-using namespace std;
-
 /**
  * @brief Prints the tiles to the terminal
  * Since the tiles can be aligned in the terminal (when they're on the same y axis);
@@ -14,8 +12,8 @@ using namespace std;
  * @param yk     The y coordinate of the tiles to print and the kth line to print.
  * @return std::string      The string to print.
  */
-string tilesToString(map<int, map<int, Tile>> ySort, pair<int, int> infs, pair<int, int> sups, pair<int, int> yk) {
-    auto line = string();
+std::string tilesToString(std::map<int, std::map<int, Tile>> ySort, std::pair<int, int> infs, std::pair<int, int> sups, std::pair<int, int> yk) {
+    auto line = std::string();
     auto y = yk.first;
     auto linesWithY = ySort[y];
     for (int x = 0; x <= sups.first - infs.first; x++) {
@@ -36,10 +34,10 @@ string tilesToString(map<int, map<int, Tile>> ySort, pair<int, int> infs, pair<i
  * @return int  The random integer.
  */
 int randomInt(int min, int max) {
-    random_device rd;
+    std::random_device rd;
     const long seed = rd();
-    mt19937 rng(seed);
-    uniform_int_distribution<int> dist(min, max);
+    std::mt19937 rng(seed);
+    std::uniform_int_distribution<int> dist(min, max);
     return dist(rng);
 }
 
@@ -49,10 +47,10 @@ int randomInt(int min, int max) {
  * @return float    The random float.
  */
 float randomFloat() {
-    random_device rd;
+    std::random_device rd;
     const long seed = rd();
-    mt19937 rng(seed);
-    uniform_real_distribution<float> dist(0.0, 1.0);
+    std::mt19937 rng(seed);
+    std::uniform_real_distribution<float> dist(0.0, 1.0);
     return dist(rng);
 }
 
@@ -84,7 +82,7 @@ Edge getOppositeSide(const Edge& side) {
  * @param side    The side to print.
  * @return std::ostream&    The stream.
  */
-ostream& operator<<(ostream& stream, const Edge& side) {
+std::ostream& operator<<(std::ostream& stream, const Edge& side) {
     switch (side) {
         case Edge::TOP:
             stream << "TOP";

@@ -23,8 +23,6 @@
 
 #define DEBUG true
 
-using namespace std;
-
 template <typename S> class Option {
     private:
         bool hasValue;
@@ -39,7 +37,7 @@ template <typename S> class Option {
 int randomInt(int, int);
 float randomFloat();
 Edge getOppositeSide(const Edge&);
-string tilesToString(map<int, map<int, Tile>>, pair<int, int>, pair<int, int>, pair<int, int>);
-ostream &operator<<(ostream&, const Edge&);
+std::string tilesToString(std::map<int, std::map<int, Tile>>, std::pair<int, int>, std::pair<int, int>, std::pair<int, int>);
+std::ostream &operator<<(std::ostream&, const Edge&);
 
 #endif

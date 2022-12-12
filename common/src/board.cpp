@@ -1,7 +1,5 @@
 #include "../include/common.hpp"
 
-using namespace std;
-
 /**
  * @brief Construct a new Board object.
  * This constructor creates a new board with the initial tile placed in at (x, y).
@@ -10,7 +8,7 @@ using namespace std;
  * @param initialTilePosition   The position of the initial tile.
  * @return Board                The new board.
  */
-Board::Board(Tile initialTile, pair<int, int> initialTilePosition) {
+Board::Board(Tile initialTile, std::pair<int, int> initialTilePosition) {
     this->tilesMap[initialTilePosition] = initialTile;
 }
 
@@ -22,9 +20,9 @@ Board::Board(Tile initialTile, pair<int, int> initialTilePosition) {
  * @param numberOfTiles       The number of tiles to generate.
  * @return std::vector<Tile>    The vector of random tiles.
  */
-vector<Tile> Board::generateRandomTiles(int numberOfTiles) {
+std::vector<Tile> Board::generateRandomTiles(int numberOfTiles) {
     // Preallocate the vector of tiles.
-    auto randomTiles = vector<Tile>(numberOfTiles);
+    auto randomTiles = std::vector<Tile>(numberOfTiles);
     for (int tileIndex = 0; tileIndex < numberOfTiles; tileIndex++) {
         // Generate a random tile at index i.
         randomTiles[tileIndex] = Tile();
@@ -51,14 +49,14 @@ vector<Tile> Board::generateRandomTiles(int numberOfTiles) {
  * @param y     The y coordinate of the tile.
  * @return std::vector<std::pair<Edge, Tile>>   The vector of pairs of sides and tiles.
  */
-vector<pair<Edge, Tile>> Board::getNeighbors(int x, int y) const {
-    vector<pair<Edge, Tile>> neighboringEdges;
+std::vector<std::pair<Edge, Tile>> Board::getNeighbors(int x, int y) const {
+    std::vector<std::pair<Edge, Tile>> neighboringEdges;
     // Generate a vector of adjacent positions.
-    auto adjacentPositions = vector<pair<int, int>> { 
-        make_pair(x, y - 1),
-        make_pair(x + 1, y),
-        make_pair(x, y + 1),
-        make_pair(x - 1, y)
+    auto adjacentPositions = std::vector<std::pair<int, int>> { 
+        std::make_pair(x, y - 1),
+        std::make_pair(x + 1, y),
+        std::make_pair(x, y + 1),
+        std::make_pair(x - 1, y)
     };
     for (int e = 0; e < E; e++) {
         auto neighbor = adjacentPositions[e];
@@ -85,7 +83,7 @@ vector<pair<Edge, Tile>> Board::getNeighbors(int x, int y) const {
  * @return false    If the tile cannot be placed on the board.
  */
 bool Board::canPlaceTile(Tile candidateTile, int x, int y) const {
-    auto candidateCoords = make_pair(x, y);
+    auto candidateCoords = std::make_pair(x, y);
     if (this->tilesMap.find(candidateCoords) != this->tilesMap.end()) {
         return false; // The tile is already placed on the board.
     }
@@ -113,7 +111,7 @@ bool Board::canPlaceTile(Tile candidateTile, int x, int y) const {
  * @param y     The y coordinate of the tile.
  */
 void Board::placeTile(Tile newTile, int x, int y) {
-    this->tilesMap[make_pair(x, y)] = newTile;
+    this->tilesMap[std::make_pair(x, y)] = newTile;
 }
 
 /**
@@ -124,7 +122,7 @@ void Board::placeTile(Tile newTile, int x, int y) {
  * @return Tile     The tile at the given coordinates.
  */
 Tile Board::retrieveTile(int x, int y) const {
-    return this->tilesMap.at(make_pair(x, y));
+    return this->tilesMap.at(std::make_pair(x, y));
 }
 
 /**
@@ -134,8 +132,8 @@ Tile Board::retrieveTile(int x, int y) const {
  * @param neighboringEdges     The list of neighboringEdges of the tile.
  * @return Side     The side that is free.
  */
-Edge Board::findFreeEdge(vector<Edge> neighboringEdges) const {
-    vector<Edge> possibleTargets;
+Edge Board::findFreeEdge(std::vector<Edge> neighboringEdges) const {
+    std::vector<Edge> possibleTargets;
     if (neighboringEdges.size() == 0) { // If the tile has no neighboringEdges, all sides are possible.
         for (int e = 0; e < E; e++) {
             possibleTargets.push_back((Edge) e);
@@ -194,7 +192,7 @@ Tile Board::findTileThatFits() const {
  * @return Tile     The board's initial tile.
  */
 Tile Board::getInitialTile() const {
-    return this->tilesMap.at(make_pair(0, 0));
+    return this->tilesMap.at(std::make_pair(0, 0));
 }
 
 /**
@@ -204,7 +202,7 @@ Tile Board::getInitialTile() const {
  * @param board     The board to print.
  * @return std::ostream&    The stream.
  */
-ostream& operator<<(ostream& stream, const Board& board) {
+std::ostream& operator<<(std::ostream& stream, const Board& board) {
     // Find the min and max x and y of board.tiles and put them in 2 pairs
     auto minX = 0; auto maxX = 0;
     auto minY = 0; auto maxY = 0; 
@@ -218,28 +216,28 @@ ostream& operator<<(ostream& stream, const Board& board) {
         if (y > maxY) maxY = y;
     }
     // Create new tiles map with the x and y centered at 0
-    auto translatedTiles = map<pair<int, int>, Tile>();
+    auto translatedTiles = std::map<std::pair<int, int>, Tile>();
     for (auto const& currentTile : board.tilesMap) {
         auto coords = currentTile.first;
         auto x = coords.first;
         auto y = coords.second;
-        translatedTiles[make_pair(x - minX, y - minY)] = currentTile.second; // Translate the x and y of the tile to be centered at 0
+        translatedTiles[std::make_pair(x - minX, y - minY)] = currentTile.second; // Translate the x and y of the tile to be centered at 0
     }
     // Sort newTiles by y keeping x somewhere
-    auto sortedByYTiles = map<int, map<int, Tile>>();
+    auto sortedByYTiles = std::map<int, std::map<int, Tile>>();
     for (auto const& translateTile : translatedTiles) {
         auto coords = translateTile.first;
         auto x = coords.first;
         auto y = coords.second;
         if (sortedByYTiles.find(y) == sortedByYTiles.end()) {
-            sortedByYTiles[y] = map<int, Tile>(); // If the y is not in the map, add it.
+            sortedByYTiles[y] = std::map<int, Tile>(); // If the y is not in the map, add it.
         }
         sortedByYTiles[y][x] = translateTile.second; // Add the tile to the map.
     }
     for (int y = 0; y <= maxY - minY; y++) {
         for (int k = 0; k < 5; k++) {
             // Print the tiles to the terminal with the x and y centered at 0.
-            stream << tilesToString(sortedByYTiles, make_pair(minX, minY), make_pair(maxX, maxY), make_pair(y, k)) << endl;
+            stream << tilesToString(sortedByYTiles, std::make_pair(minX, minY), std::make_pair(maxX, maxY), std::make_pair(y, k)) << std::endl;
         }
     }
     return stream;

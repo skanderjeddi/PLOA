@@ -1,17 +1,15 @@
 #include "../include/common.hpp"
 
-using namespace std;
-
 /**
  * @brief Construct a new Tile object
  * This constructor generates a random tile. It generates a random value for each edge of the tile.
  * The values are generated between 1 and 6.
  */
 Tile::Tile() {
-    this->valuesByEdge = map<Edge, vector<int>>();
+    this->valuesByEdge = std::map<Edge, std::vector<int>>();
     for (int i = 0; i < E; i++) {
         auto side = (Edge) i; // cast int to Edge enum
-        this->valuesByEdge[side] = vector<int>(E);
+        this->valuesByEdge[side] = std::vector<int>(E);
         for (int value = 0; value < V; value++) {
             // generate a random int between 1 and 6
             auto randomValue = randomInt(1, 6);
@@ -28,8 +26,8 @@ Tile::Tile() {
  * @return Tile     Rotated tile
  */
 Tile Tile::rotate(Rotation rotation) const {
-    auto rotatedValues = map<Edge, vector<int>>(); // create a new map of edges
-    auto backup = vector<int>(E * V); // create a backup of the values
+    auto rotatedValues = std::map<Edge, std::vector<int>>(); // create a new map of edges
+    auto backup = std::vector<int>(E * V); // create a backup of the values
     for (int i = 0; i < E; i++) {
         auto side = (Edge) i; // cast int to Edge enum
         auto sideValues = this->valuesByEdge.at(side); // get the values of the current side
@@ -60,14 +58,14 @@ Tile Tile::rotate(Rotation rotation) const {
  * @param n  nth line of the tile's multiline string representation
  * @return std::string  String representation of the tile
  */
-string Tile::toLine(const int n) const {
-    auto valuesAsStrings = vector<string>(E * V);
+std::string Tile::toLine(const int n) const {
+    auto valuesAsStrings = std::vector<std::string>(E * V);
     // convert the values to strings
     for (int i = 0; i < E; i++) {
         Edge side = (Edge) i;
         auto values = this->valuesByEdge.at(side);
         for (int j = 0; j < V; j++) {
-            valuesAsStrings[i * V + j] = to_string(values[j]);
+            valuesAsStrings[i * V + j] = std::to_string(values[j]);
         }
     }
     switch (n) { // return the nth line of the tile's multiline string representation
@@ -94,7 +92,7 @@ string Tile::toLine(const int n) const {
  * @param tile 
  * @return std::ostream& 
  */
-std::ostream& operator<<(ostream& stream, const Tile& tile) {
+std::ostream& operator<<(std::ostream& stream, const Tile& tile) {
     for (int i = 0; i < L; i++) {
         stream << tile.toLine(i) << std::endl;
     }

@@ -27,8 +27,6 @@ enum class Rotation {
     COUNTERCLOCKWISE
 };
 
-using namespace std;
-
 /**
  * @brief Tile class
  * This class represents a tile in the game. It is a map of edges, where each edge is identified by a Edge enum.
@@ -38,16 +36,16 @@ using namespace std;
  */
 class Tile {
     private:
-        map<Edge, vector<int>> valuesByEdge;
+        std::map<Edge, std::vector<int>> valuesByEdge;
         friend class Board;
     
     public:
         Tile();
-        Tile(map<Edge, vector<int>> values) : valuesByEdge(values) {};
+        Tile(std::map<Edge, std::vector<int>> values) : valuesByEdge(values) {};
         Tile rotate(const Rotation rotation) const;
-        string toLine(const int line) const;
-        map<Edge, vector<int>> getValues() const { return this->valuesByEdge; };
-        friend ostream& operator<<(ostream& stream, const Tile& tile);
+        std::string toLine(const int line) const;
+        std::map<Edge, std::vector<int>> getValues() const { return this->valuesByEdge; };
+        friend std::ostream& operator<<(std::ostream& stream, const Tile& tile);
         friend bool operator==(const Tile& tile1, const Tile& tile2);
 };
 

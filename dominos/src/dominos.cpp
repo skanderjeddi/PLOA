@@ -2,8 +2,6 @@
 
 #define DEBUG true
 
-using namespace std;
-
 void Dominos::play() {
     play(DEFAULT_PLAYERS, DEFAULT_TILES_IN_BAG, DEFAULT_ATTEMPTS_PER_TILE);
 }
@@ -11,32 +9,32 @@ void Dominos::play() {
 void Dominos::play(int players, int tilesInBag, int attemptsPerTile, float luck) {
     greetUser();
     registerPlayers(players);
-    cout << endl << "> The game will now begin!";
+    std::cout << std::endl << "> The game will now begin!";
     showBoard();
     generateRandomTiles(tilesInBag);
     loopTurns(randomInt(0, players - 1), luck);
 }
 
-void Dominos::greetUser() { cout << "Welcome to Quadriminos!" << endl; }
+void Dominos::greetUser() { std::cout << "Welcome to Quadriminos!" << std::endl; }
 
 void Dominos::registerPlayers(int maxPlayers) {
-    auto players = vector<string>(maxPlayers);
-    cout << endl << "> Enter " << maxPlayers << " distinct name(s): " << endl;
+    auto players = std::vector<std::string>(maxPlayers);
+    std::cout << std::endl << "> Enter " << maxPlayers << " distinct name(s): " << std::endl;
     for (int i = 0; i < maxPlayers; i++) {
-        cout << "Player " << i + 1 << "? ";
-        cin >> players[i];
+        std::cout << "Player " << i + 1 << "? ";
+        std::cin >> players[i];
     }
-    auto scores = map<int, pair<string, int>>();
+    auto scores = std::map<int, std::pair<std::string, int>>();
     for (int i = 0; i < maxPlayers; i++) {
         scores[i] = make_pair(players[i], 0);
     }
     this->playersAndScores = scores;
 }
 
-void Dominos::showBoard() { cout << endl << "> Here's the current board:" << endl << endl << board; }
+void Dominos::showBoard() { std::cout << std::endl << "> Here's the current board:" << std::endl << std::endl << board; }
 
 void Dominos::generateRandomTiles(int number) {
-    randomTiles = vector<Tile>(number);
+    randomTiles = std::vector<Tile>(number);
     for (int i = 0; i < number; i++) randomTiles[i] = Tile();
 }
 
@@ -44,7 +42,7 @@ void Dominos::loopTurns(int firstPlayerId, float luck) {
     int currentPlayer = firstPlayerId;
     while (true) {
         if (randomTiles.size() == 0) {
-            cout << endl << "> There are no more tiles left. The game is over!" << endl;
+            std::cout << std::endl << "> There are no more tiles left. The game is over!" << std::endl;
             announceScores(true);
         }
         currentPlayer = nextTurnFor(currentPlayer, luck);
@@ -54,76 +52,76 @@ void Dominos::loopTurns(int firstPlayerId, float luck) {
 int Dominos::nextTurnFor(int playerId, float luck) {
     auto playerName = playersAndScores[playerId].first;
     auto playerScore = playersAndScores[playerId].second;
-    cout << endl << "> It is " << playerName << "'s turn! They currently have " << playerScore << " total points.";
+    std::cout << std::endl << "> It is " << playerName << "'s turn! They currently have " << playerScore << " total points.";
     showBoard();
     Tile tileToPlay;
     float r = randomFloat();
     if (r < luck) {
-        cout << endl << "* " << playerName << " got very lucky and will draw a special tile *";
+        std::cout << std::endl << "* " << playerName << " got very lucky and will draw a special tile *";
         tileToPlay = board.findTileThatFits();
     } else {
         auto randomTileIndex = randomInt(0, randomTiles.size() - 1);
         tileToPlay = randomTiles[randomTileIndex];
         randomTiles.erase(randomTiles.begin() + randomTileIndex);
     }
-    cout << endl << "> " << playerName << " has drawn the following tile:" << endl;
-    cout << endl << tileToPlay << endl;
-    cout << "Press [K] to rotate the tile clockwise, [L] to rotate the tile counterclockwise.\nPress [P] to place it or [D] to discard it.\nPress [Q] to quit." << endl;
+    std::cout << std::endl << "> " << playerName << " has drawn the following tile:" << std::endl;
+    std::cout << std::endl << tileToPlay << std::endl;
+    std::cout << "Press [K] to rotate the tile clockwise, [L] to rotate the tile counterclockwise.\nPress [P] to place it or [D] to discard it.\nPress [Q] to quit." << std::endl;
     readPlayerInput(playerId, tileToPlay);
     return (playerId + 1) % playersAndScores.size();
 }
 
 void Dominos::readPlayerInput(int playerId, Tile& tileToPlay) {
     while (true) {
-        string input;
-        cout << endl << "> ";
-        cin >> input;
+        std::string input;
+        std::cout << std::endl << "> ";
+        std::cin >> input;
         if (input == "Q") {
             announceScores(false);
         } else if (input == "K") {
             tileToPlay = tileToPlay.rotate(Rotation::CLOCKWISE);
-            cout << endl << "> Here's your rotated tile:" << endl << endl << tileToPlay << endl;
+            std::cout << std::endl << "> Here's your rotated tile:" << std::endl << std::endl << tileToPlay << std::endl;
         } else if (input == "L") {
             tileToPlay = tileToPlay.rotate(Rotation::COUNTERCLOCKWISE);
-            cout << endl << "> Here's your rotated tile:" << endl << endl << tileToPlay << endl;
+            std::cout << std::endl << "> Here's your rotated tile:" << std::endl << std::endl << tileToPlay << std::endl;
         } else if (input == "P") {
             auto attempts = 0;
             while (attempts < 3) {
-                cout << "Where would you like to place it? (Enter the coordinates as x#y, (negative) whole numbers allowed) [" << 3 - attempts << " attempt(s) remaining]" << endl;
+                std::cout << "Where would you like to place it? (Enter the coordinates as x#y, (negative) whole numbers allowed) [" << 3 - attempts << " attempt(s) remaining]" << std::endl;
                 auto option = processPlayerInput();
                 if (option.isSome()) {
                     attempts--;
                     auto coords = option.unwrap();
                     if (!handlePoints(playerId, tileToPlay, coords)) {
                         if (attempts > 0) {
-                            cout << "Invalid placement. Please try again." << endl;
+                            std::cout << "Invalid placement. Please try again." << std::endl;
                             attempts--;
                         } else {
-                            cout << "You have reached the maximum number of attempts. The tile has been discarded." << endl;
+                            std::cout << "You have reached the maximum number of attempts. The tile has been discarded." << std::endl;
                             return;
                         }
                     } else {
                         return;
                     }
                 } else {
-                    cout << "Invalid input. Please try again." << endl;
+                    std::cout << "Invalid input. Please try again." << std::endl;
                 }
             }
         } else if (input == "D") {
-            cout << "> You have discarded the tile." << endl;
+            std::cout << "> You have discarded the tile." << std::endl;
             return;
         } else {
-            cout << "Invalid input. Please try again." << endl;
+            std::cout << "Invalid input. Please try again." << std::endl;
         }
     }
 }
 
-bool Dominos::handlePoints(int playerId, Tile tileToPlay, pair<int, int> coords) {
+bool Dominos::handlePoints(int playerId, Tile tileToPlay, std::pair<int, int> coords) {
     auto x = coords.first;
     auto y = coords.second;
-    cout << endl << "> You have chosen to place the tile at (" << x << ", " << y << ")." << endl;
+    std::cout << std::endl << "> You have chosen to place the tile at (" << x << ", " << y << ")." << std::endl;
     if (board.canPlaceTile(tileToPlay, x, y)) {
-        cout << "> You have successfully placed the tile!" << endl;
+        std::cout << "> You have successfully placed the tile!" << std::endl;
         board.placeTile(tileToPlay, x, y);
         // Gather neighbors to the placed tile
         auto neighbors = board.getNeighbors(x, y);
@@ -133,27 +131,27 @@ bool Dominos::handlePoints(int playerId, Tile tileToPlay, pair<int, int> coords)
                 pointsGained += 2 * tileToPlay.getValues().at(neighbor.first)[i];
             }
         }
-        cout << "> You have earned " << pointsGained << " points!" << endl;
+        std::cout << "> You have earned " << pointsGained << " points!" << std::endl;
         this->playersAndScores[playerId].second += pointsGained;
-        cout << "> Your total score is " << this->playersAndScores[playerId].second << "." << endl;
+        std::cout << "> Your total score is " << this->playersAndScores[playerId].second << "." << std::endl;
         return true;
     } else {
         return false;
     }
 }
 
-Option<pair<int, int>> Dominos::processPlayerInput() {
-    string input;
-    cout << "> ";
-    cin >> input;
-    stringstream ss(input);
-    string token;
-    vector<string> tokens;
+Option<std::pair<int, int>> Dominos::processPlayerInput() {
+    std::string input;
+    std::cout << "> ";
+    std::cin >> input;
+    std::stringstream ss(input);
+    std::string token;
+    std::vector<std::string> tokens;
     while (getline(ss, token, '#')) {
         tokens.push_back(token);
     }
     if (tokens.size() != 2) {
-        return Option<pair<int, int>>();
+        return Option<std::pair<int, int>>();
     }
     int x, y;
     bool negX = false, negY = false;
@@ -168,37 +166,37 @@ Option<pair<int, int>> Dominos::processPlayerInput() {
     try {
         x = stoi(tokens[0]) * (negX ? -1 : 1);
         y = stoi(tokens[1]) * (negY ? -1 : 1);
-    } catch (invalid_argument& e) {
-        return Option<pair<int, int>>();
+    } catch (std::invalid_argument& e) {
+        return Option<std::pair<int, int>>();
     }
-    return Option<pair<int, int>>(make_pair(x, y));
+    return Option<std::pair<int, int>>(std::make_pair(x, y));
 }
 
 void Dominos::announceScores(bool gameOver) {
-    vector<pair<string, int>> sortedScores;
+    std::vector<std::pair<std::string, int>> sortedScores;
     for (auto score : this->playersAndScores) {
         sortedScores.push_back(score.second);
     }
-    sort(sortedScores.begin(), sortedScores.end(), [](const pair<string, int>& pts1, const pair<string, int>& pts2) {
+    sort(sortedScores.begin(), sortedScores.end(), [](const std::pair<std::string, int>& pts1, const std::pair<std::string, int>& pts2) {
         return pts1.second > pts2.second;
     });
     if (gameOver) {
-        cout << endl << "The game is over! Here are the final scores:" << endl;
+        std::cout << std::endl << "The game is over! Here are the final scores:" << std::endl;
         int i = 1;
         for (auto score : sortedScores) {
-            cout << i << ": " << score.first << ": " << score.second << endl;
+            std::cout << i << ": " << score.first << ": " << score.second << std::endl;
             i++;
         }
-        cout << endl << "Thanks for playing! See you soon!" << endl;
+        std::cout << std::endl << "Thanks for playing! See you soon!" << std::endl;
         exit(0);
     } else {
-        cout << endl << "The game wasn't completed. Here are the partial results:" << endl;
+        std::cout << std::endl << "The game wasn't completed. Here are the partial results:" << std::endl;
         int i = 1;
         for (auto score : sortedScores) {
-            cout << i << ": " << score.first << ": " << score.second << endl;
+            std::cout << i << ": " << score.first << ": " << score.second << std::endl;
             i++;
         }
-        cout << endl << "Thanks for playing! See you soon!" << endl;
+        std::cout << std::endl << "Thanks for playing! See you soon!" << std::endl;
         exit(0);
     }
 }
