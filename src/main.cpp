@@ -1,7 +1,7 @@
 #include "include/dominos.hpp"
 
 void handleDominos() {
-    Dominos dominos(9, 9, 30);
+    Dominos dominos(9, 9, 10);
     dominos.play();
 }
 

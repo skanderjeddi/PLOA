@@ -97,14 +97,14 @@ Tile Board::fitNewTile() const {
         int randomY = randomInt(0, height - 1);
         auto position = std::make_pair(randomX, randomY);
         if (this->tiles.find(position) == this->tiles.end()) {
-            continue;
-        }
-        auto adjacentTiles = this->gatherAdjacentTiles(position);
-        if (adjacentTiles.size() == 0) {
-            continue;
-        }
-        for (auto adjacentTile : adjacentTiles) {
-            fittingTile.setSide(adjacentTile.first, adjacentTile.second.getSide(getOppositeSide(adjacentTile.first)));
+            auto adjacentTiles = this->gatherAdjacentTiles(position);
+            if (adjacentTiles.size() == 0) {
+                continue;
+            }
+            for (auto adjacentTile : adjacentTiles) {
+                fittingTile.setSide(adjacentTile.first, adjacentTile.second.getSide(getOppositeSide(adjacentTile.first)));
+            }
+            found = true;
         }
     }
     return fittingTile;

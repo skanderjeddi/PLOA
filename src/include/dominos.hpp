@@ -36,7 +36,7 @@ class Dominos {
         std::vector<Tile> bag;
         std::map<int, std::pair<std::string, int>> scoreboard;        
         int registerPlayers();
-        void nextTurn();
+        bool nextTurn();
         void handlePoints(const std::pair<int, int>&);
         friend class Board;
         friend class DominosWindow;

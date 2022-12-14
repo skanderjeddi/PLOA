@@ -278,46 +278,88 @@ void DominosWindow::display() {
     windowWidth += windowWidth / 5;
     auto window_height = board.getHeight() * tileSize.second;
     sf::RenderWindow window(sf::VideoMode(windowWidth, window_height), "Dominos", sf::Style::Close);
+    window.setKeyRepeatEnabled(false);
     auto background = std::vector<sf::RectangleShape>();
+    bool gameOver = false;
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window.close();
-            }
-            if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    auto mouse_position = sf::Mouse::getPosition(window);
-                    auto x = mouse_position.x / tileSize.first;
-                    auto y = mouse_position.y / tileSize.second;
+            switch (event.type) {
+                case sf::Event::Closed: {
+                    window.close();
+                } break;
+                case sf::Event::MouseButtonPressed: {
+                    auto mousePosition = sf::Mouse::getPosition(window);
+                    auto x = mousePosition.x / tileSize.first;
+                    auto y = mousePosition.y / tileSize.second;
                     auto position = std::make_pair(x, y);
                     if (x < board.getWidth() && y < board.getHeight()) {
                         gameInstance.handlePoints(position);
-                        gameInstance.currentPlayerId += 1 % gameInstance.scoreboard.size();
-                        gameInstance.nextTurn();
+                        gameInstance.currentPlayerId += 1;
+                        gameInstance.currentPlayerId %= gameInstance.maxPlayers;
+                        gameOver = gameInstance.nextTurn();
                     }
-                }
-            }
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Left) {
-                    gameInstance.currentTile = gameInstance.currentTile.rotate(Rotation::COUNTERCLOCKWISE);
-                }
-                if (event.key.code == sf::Keyboard::Right) {
-                    gameInstance.currentTile = gameInstance.currentTile.rotate(Rotation::CLOCKWISE);
-                }
-                if (event.key.code == sf::Keyboard::Space) {
-                    gameInstance.currentPlayerId += 1;
-                    gameInstance.currentPlayerId %= gameInstance.maxPlayers;
-                    gameInstance.nextTurn();
-                }
+                } break;
+                case sf::Event::KeyPressed: {
+                    if (gameOver) {
+                        window.close();
+                    }
+                    if (event.key.code == sf::Keyboard::Space) {
+                        gameInstance.currentPlayerId += 1;
+                        gameInstance.currentPlayerId %= gameInstance.maxPlayers;
+                        gameOver = gameInstance.nextTurn();
+                    }
+                    if (event.key.code == sf::Keyboard::Left) {
+                        gameInstance.currentTile = gameInstance.currentTile.rotate(Rotation::COUNTERCLOCKWISE);
+                    }
+                    if (event.key.code == sf::Keyboard::Right) {
+                        gameInstance.currentTile = gameInstance.currentTile.rotate(Rotation::CLOCKWISE);
+                    }
+                } break;
+                default:
+                    break;
             }
         }
         window.clear(sf::Color::White);
-        drawBackground(window, background);
-        drawBoard(window);
-        auto scoreboardHeight = drawScoreboard(window);
-        auto currentTileHeight = drawCurrentTile(window, scoreboardHeight);
-        drawInstructions(window, currentTileHeight);
+        if (gameOver) {
+            // Draw "Game over!" text in the middle of the screen with the winner's name and score underneath it (centered)
+            auto text = sf::Text();
+            text.setFont(globalFont);
+            text.setCharacterSize(96);
+            text.setFillColor(sf::Color::Black);
+            text.setString("Game over!");
+            auto textBounds = text.getLocalBounds();
+            text.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
+            text.setPosition(windowWidth / 2.0f, window_height / 2.5f);
+            window.draw(text);
+            std::vector<std::pair<std::string, int>> sortedScoreboard;
+            for (auto score : gameInstance.scoreboard) {
+                sortedScoreboard.push_back(score.second);
+            }
+            sort(sortedScoreboard.begin(), sortedScoreboard.end(), [](const std::pair<std::string, int>& pts1, const std::pair<std::string, int>& pts2) {
+                return pts1.second > pts2.second;
+            });
+            auto winner = sortedScoreboard[0];
+            text.setCharacterSize(48);
+            text.setString(winner.first + " won with " + std::to_string(winner.second) + " points!");
+            textBounds = text.getLocalBounds();
+            text.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
+            text.setPosition(windowWidth / 2.0f, window_height / 2.0f);
+            window.draw(text);
+            // Press any key to exit
+            text.setCharacterSize(24);
+            text.setString("Press any key to exit");
+            textBounds = text.getLocalBounds();
+            text.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
+            text.setPosition(windowWidth / 2.0f, window_height - 100);
+            window.draw(text);
+        } else {
+            drawBackground(window, background);
+            drawBoard(window);
+            auto scoreboardHeight = drawScoreboard(window);
+            auto currentTileHeight = drawCurrentTile(window, scoreboardHeight);
+            drawInstructions(window, currentTileHeight);
+        }
         window.display();
     }
 }
@@ -326,9 +368,9 @@ void Dominos::play() {
     // cout << "Welcome to Domino's!" << endl;
     maxPlayers = registerPlayers();
     currentPlayerId = randomInt(0, maxPlayers - 1);
-    nextTurn();
     auto ui = DominosWindow(*this, std::make_pair(100, 100));
     ui.display();
+    nextTurn();
 }
 
 int Dominos::registerPlayers() {
@@ -343,16 +385,22 @@ int Dominos::registerPlayers() {
     return 4;
 }
 
-void Dominos::nextTurn() {
+bool Dominos::nextTurn() {
+    if (bag.size() == 0) {
+        return true;
+    }
     auto playerName = scoreboard[currentPlayerId].first;
     float r = randomFloat(0, 1);
-    if (r > 0.965) {
+    if (r > 0.934) {
         currentTile = board.fitNewTile();
+        auto randomTileIndex = randomInt(0, bag.size() - 1);
+        bag.erase(bag.begin() + randomTileIndex);
     } else {
-        auto random_tile_index = randomInt(0, bag.size() - 1);
-        currentTile = bag[random_tile_index];
-        bag.erase(bag.begin() + random_tile_index);
+        auto randomTileIndex = randomInt(0, bag.size() - 1);
+        currentTile = bag[randomTileIndex];
+        bag.erase(bag.begin() + randomTileIndex);
     }
+    return bag.size() == 0;
 }
 
 void Dominos::handlePoints(const std::pair<int, int>& coords) {
@@ -368,14 +416,3 @@ void Dominos::handlePoints(const std::pair<int, int>& coords) {
         this->scoreboard[currentPlayerId].second += pointsGained;
     } 
 }
-
-/** void Dominos::announce_scores(bool is_game_over) {
-    std::vector<std::pair<std::string, int>> sortedScoreboard;
-    for (auto score : this->scoreboard) {
-        sortedScoreboard.push_back(score.second);
-    }
-    sort(sortedScoreboard.begin(), sortedScoreboard.end(), [](const std::pair<std::string, int>& pts1, const std::pair<std::string, int>& pts2) {
-        return pts1.second > pts2.second;
-    });
-    // TODO
-} **/
