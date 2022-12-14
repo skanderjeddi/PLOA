@@ -1,0 +1,202 @@
+#include "../../dominos/include/dominos.hpp"
+
+#include <sstream>
+#include <algorithm>
+
+Dominos::Dominos(int boardWidth, int boardHeight, int tilesInBag) : board(boardWidth, boardHeight), bag(tilesInBag) {
+    ui = DominosUI(*this);
+}
+
+void Dominos::play() {
+    cout << "Welcome to Domino's!" << endl;
+    auto players = register_players();
+    if (ui != nullptr) {
+        ui->display();
+    } else {
+        cout << endl << "> The game will now begin!";
+        show_board();
+        loop_turns(random_int(0, players - 1), 0.965);
+    }
+}
+
+int Dominos::register_players() {
+    auto max_players = 0;
+    while (max_players < 2 || max_players > 8) {
+        cout << endl << "> How many players? (2-8) ";
+        cin >> max_players;
+    }
+    auto players = vector<string>(max_players);
+    cout << endl << "> Enter " << max_players << " distinct name(s): " << endl;
+    for (int i = 0; i < max_players; i++) {
+        cout << "Player " << i + 1 << "? ";
+        cin >> players[i];
+        scoreboard[i] = make_pair(players[i], 0);
+    }
+    return max_players;
+}
+
+inline void Dominos::show_board() {
+    cout << endl << "> Here's the current board:" << endl << endl << board;
+}
+
+void Dominos::loop_turns(int player_id, float lucky_tile_threshold) {
+    int currentPlayer = player_id;
+    while (true) {
+        if (bag.size() == 0) {
+            cout << endl << "> There are no more tiles left. The game is over!" << endl;
+            announce_scores(true);
+        }
+        currentPlayer = next_turn_for(currentPlayer, lucky_tile_threshold);
+    }
+}
+
+int Dominos::next_turn_for(int player_id, float lucky_tile_threshold) {
+    auto playerName = scoreboard[player_id].first;
+    auto playerScore = scoreboard[player_id].second;
+    cout << endl << "> It is " << playerName << "'s turn! They currently have " << playerScore << " total points.";
+    show_board();
+    Tile tile_to_play;
+    float r = random_float(0, 1);
+    if (r > lucky_tile_threshold) {
+        cout << endl << "* " << playerName << " got very lucky and will draw a special tile *";
+        tile_to_play = board.fit_new_tile();
+    } else {
+        auto random_tile_index = random_int(0, bag.size() - 1);
+        tile_to_play = bag[random_tile_index];
+        bag.erase(bag.begin() + random_tile_index);
+    }
+    cout << endl << "> " << playerName << " has drawn the following tile:" << endl;
+    cout << endl << tile_to_play << endl;
+    cout << "Press [K] to rotate the tile clockwise, [LINES] to rotate the tile counterclockwise.\nPress [P] to place it or [D] to discard it.\nPress [Q] to quit." << std::endl;
+    read_input(player_id, tile_to_play);
+    return (player_id + 1) % scoreboard.size();
+}
+
+void Dominos::read_input(int player_id, Tile& tile_to_play) {
+    while (true) {
+        string input;
+        cout << endl << "> ";
+        cin >> input;
+        if (input == "Q") {
+            announce_scores(false);
+        } else if (input == "K") {
+            tile_to_play = tile_to_play.rotate(Rotation::CLOCKWISE);
+            cout << endl << "> Here's your rotated tile:" << endl << endl << tile_to_play << endl;
+        } else if (input == "LINES") {
+            tile_to_play = tile_to_play.rotate(Rotation::COUNTERCLOCKWISE);
+            cout << endl << "> Here's your rotated tile:" << endl << endl << tile_to_play << endl;
+        } else if (input == "P") {
+            auto attempts = 0;
+            while (attempts < 3) {
+                cout << "Where would you like to place it? (Enter the coordinates as x#y, (negative) whole numbers allowed) [" << 3 - attempts << " attempt(s) remaining]" << endl;
+                auto option = process_input();
+                if (option != nullptr) {
+                    attempts--;
+                    auto coords = *option;
+                    if (!handle_points(player_id, tile_to_play, coords)) {
+                        if (attempts > 0) {
+                            cout << "Invalid placement. Please try again." << endl;
+                            attempts--;
+                        } else {
+                            cout << "You have reached the maximum number of attempts. The tile has been discarded." << endl;
+                            return;
+                        }
+                    } else {
+                        return;
+                    }
+                } else {
+                    cout << "Invalid input. Please try again." << endl;
+                }
+            }
+        } else if (input == "D") {
+            cout << "> You have discarded the tile." << endl;
+            return;
+        } else {
+            cout << "Invalid input. Please try again." << endl;
+        }
+    }
+}
+
+bool Dominos::handle_points(int player_id, const Tile& tile_to_play, const std::pair<int, int>& coords) {
+    cout << endl << "> You have chosen to place the tile at (" << coords.first << ", " << coords.second << ")." << endl;
+    if (board.can_place_tile(tile_to_play, coords)) {
+        cout << "> You have successfully placed the tile!" << endl;
+        board.place_tile(tile_to_play, coords);
+        // Gather adjacent_tiles to the placed tile
+        auto adjacent_tiles = board.gather_adjacent_tiles(coords);
+        auto points_gained = 0;
+        for (auto adjacent : adjacent_tiles) {
+            for (int i = 0; i < 4; i++) {
+                points_gained += 2 * tile_to_play.get_side(adjacent.first)[i];
+            }
+        }
+        cout << "> You have earned " << points_gained << " points!" << endl;
+        this->scoreboard[player_id].second += points_gained;
+        cout << "> Your total score is " << this->scoreboard[player_id].second << "." << endl;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+pair<int, int>* Dominos::process_input() {
+    string input;
+    cout << "> ";
+    cin >> input;
+    stringstream ss(input);
+    string token;
+    vector<string> tokens;
+    while (getline(ss, token, '#')) {
+        tokens.push_back(token);
+    }
+    if (tokens.size() != 2) {
+        return nullptr;
+    }
+    int x, y;
+    bool neg_x = false, neg_y = false;
+    if (tokens[0].at(0) == '-') {
+        neg_x = true;
+        tokens[0] = tokens[0].substr(1);
+    }
+    if (tokens[1].at(0) == '-') {
+        neg_y = true;
+        tokens[1] = tokens[1].substr(1);
+    }
+    try {
+        x = stoi(tokens[0]) * (neg_x ? -1 : 1);
+        y = stoi(tokens[1]) * (neg_y ? -1 : 1);
+    } catch (invalid_argument& e) {
+        return nullptr;
+    }
+    auto coords = new pair<int, int>(x, y);
+    return coords;
+}
+
+void Dominos::announce_scores(bool is_game_over) {
+    vector<pair<string, int>> sorted_scoreboard;
+    for (auto score : this->scoreboard) {
+        sorted_scoreboard.push_back(score.second);
+    }
+    sort(sorted_scoreboard.begin(), sorted_scoreboard.end(), [](const pair<string, int>& pts1, const pair<string, int>& pts2) {
+        return pts1.second > pts2.second;
+    });
+    if (is_game_over) {
+        cout << endl << "The game is over! Here are the final scores:" << endl;
+        int i = 1;
+        for (auto score : sorted_scoreboard) {
+            cout << i << ": " << score.first << ": " << score.second << endl;
+            i++;
+        }
+        cout << endl << "Thanks for playing! See you soon!" << endl;
+        exit(0);
+    } else {
+        cout << endl << "The game wasn't completed. Here are the partial results:" << endl;
+        int i = 1;
+        for (auto score : sorted_scoreboard) {
+            cout << i << ": " << score.first << ": " << score.second << endl;
+            i++;
+        }
+        cout << endl << "Thanks for playing! See you soon!" << endl;
+        exit(0);
+    }
+}
