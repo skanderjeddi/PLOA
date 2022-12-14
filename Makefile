@@ -1,10 +1,10 @@
 SOURCES := $(shell find . -name "*.cpp")
 OBJS = $(SOURCES:.cpp=.o)
-OUT = loapro
+OUT = launcher
 
 all:
 	@g++ -std=c++11 -Wall -o $(OUT) $(SOURCES) -lsfml-graphics -lsfml-window -lsfml-system
-	@./loapro
+	@./launcher
 
 # clean house
 clean:

@@ -35,13 +35,13 @@ class Dominos {
         int maxPlayers;
         std::vector<Tile> bag;
         std::map<int, std::pair<std::string, int>> scoreboard;        
-        int registerPlayers();
+        void registerPlayers(const int);
         bool nextTurn();
         void handlePoints(const std::pair<int, int>&);
         friend class Board;
         friend class DominosWindow;
     public:
-        Dominos(int boardWidth, int boardHeight, int tilesInBag) : board(boardWidth, boardHeight), bag(tilesInBag) {};
-        void play();
+        Dominos(const std::pair<int, int>& dimensions, int tilesInBag) : board(dimensions.first, dimensions.second), bag(tilesInBag) {};
+        void play(const std::pair<int, int>&, const int);
 };
 

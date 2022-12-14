@@ -364,25 +364,22 @@ void DominosWindow::display() {
     }
 }
 
-void Dominos::play() {
+void Dominos::play(const std::pair<int, int>& tileSize, const int playerCount) {
     // cout << "Welcome to Domino's!" << endl;
-    maxPlayers = registerPlayers();
-    currentPlayerId = randomInt(0, maxPlayers - 1);
-    auto ui = DominosWindow(*this, std::make_pair(100, 100));
+    registerPlayers(playerCount);
+    currentPlayerId = randomInt(0, playerCount - 1);
+    auto ui = DominosWindow(*this, tileSize);
     ui.display();
     nextTurn();
 }
 
-int Dominos::registerPlayers() {
-    /** auto maxPlayers = 0;
-    while (maxPlayers < 2 || maxPlayers > 8) {
-        cout << endl << "> How many players? (2-8) ";
-        cin >> maxPlayers;
-    }**/
-    for (int i = 0; i < 4; i++) {
-        scoreboard[i] = std::make_pair("Player " + std::to_string(i), 0);
+void Dominos::registerPlayers(const int playerCount) {
+    for (int i = 0; i < playerCount; i++) {
+        std::string name;
+        std::cout << "Enter player " << i + 1 << "'s name: ";
+        getline(std::cin, name);
+        scoreboard[i] = std::make_pair(name, 0);
     }
-    return 4;
 }
 
 bool Dominos::nextTurn() {
