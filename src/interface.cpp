@@ -9,7 +9,7 @@
 #include "include/trax.hpp"
 
 template <class B> UserInterface<B>::UserInterface(const B& board, const std::string& title, const sf::Vector2i& tileSize, const sf::Font& font) : board(board), tileSize(tileSize), font(font) {
-    window.create(sf::VideoMode(tileSize.x * board.getWidth(), tileSize.y * board.getHeight()), title, sf::Style::Close);
+    window.create(sf::VideoMode(tileSize.x * (board.getWidth() + 2), tileSize.y * board.getHeight() + 1), title, sf::Style::Close);
 }
 
 template <class B> void UserInterface<B>::run() {
@@ -41,8 +41,6 @@ void drawGrid(sf::RenderWindow& window, const sf::Vector2i& tileSize, const sf::
         window.draw(line);
     }
 }
-
-
 
 template class UserInterface<DominosBoard>;
 template class UserInterface<TraxBoard>;

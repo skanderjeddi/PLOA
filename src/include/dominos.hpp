@@ -32,3 +32,4 @@ class DominosInterface : virtual public UserInterface<DominosBoard> {
         void draw();
         void handleEvent(const sf::Event&);
 };
+
