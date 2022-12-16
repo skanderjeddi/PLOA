@@ -157,5 +157,7 @@ void DominosInterface::draw() {
 }
 
 void DominosInterface::handleEvent(const sf::Event& event) {
-    // TODO
+    if (event.type == sf::Event::Resized) {
+        window.setSize(sf::Vector2u(board.getWidth() * tileSize.x, board.getHeight() * tileSize.y));
+    }
 }
