@@ -1,13 +1,14 @@
 #include "include/board.hpp"
 #include "include/tile.hpp"
 #include "include/dominos.hpp"
+#include "include/interface.hpp"
 
 int main(int argc, char **argv) {
-    std::cout << "Prout!" << std::endl;
-    DominosBoard dBoard(10, 10);
-    Option<DominosTile> origin = dBoard.getTile(0, 0);
-    if (origin.hasValue()) {
-        std::cout << "Origin: " << origin.unwrap().dataStructure().at(TileEdge::LEFT)[0] << std::endl;
-    }
+    DominosBoard dBoard(11, 11);
+    dBoard.setTile(5, 5, DominosTile());
+    sf::Font font;
+    font.loadFromFile("assets/font.ttf");
+    DominosInterface dInterface(dBoard, sf::Vector2i(80, 80), font);
+    dInterface.run();
     return 0;
 }

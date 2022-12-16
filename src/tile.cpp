@@ -22,5 +22,24 @@ template <class P> const P& Tile<P>::dataStructure() const {
     return properties;
 }
 
+TileEdge oppositeEdge(const TileEdge& edge) {
+    TileEdge opposite;
+    switch (edge) {
+        case TileEdge::LEFT:
+            opposite = TileEdge::RIGHT;
+            break;
+        case TileEdge::TOP:
+            opposite = TileEdge::BOTTOM;
+            break;
+        case TileEdge::RIGHT:
+            opposite = TileEdge::LEFT;
+            break;
+        case TileEdge::BOTTOM:
+            opposite = TileEdge::TOP;
+            break;
+    }
+    return opposite;
+}
+
 template class Tile<std::map<TileEdge, std::vector<int>>>;
 template class Tile<std::pair<TraxTileFace, std::map<TileEdge, TraxTileEdge>>>;

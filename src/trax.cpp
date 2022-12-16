@@ -44,7 +44,7 @@ void TraxTile::rotate(const TileRotation& rotation) {
     }
 }
 
-void TraxTile::draw(sf::RenderWindow& window, const sf::Vector2i& position, const sf::Vector2i& size) {
+void TraxTile::draw(sf::RenderWindow& window, const sf::Vector2i& position, const sf::Vector2i& size, const sf::Font& font) {
     // TODO
 }
 
@@ -58,6 +58,19 @@ TraxBoard::TraxBoard(const TraxBoard& board) : Board(board) {
     this->tiles = board.tiles;
 }
 
-void TraxBoard::draw(sf::RenderWindow& window, const sf::Vector2i& position) {
+bool TraxBoard::canSet(const TraxTile& tile, const std::pair<int, int>& position) const {
+    // TODO
+    return true;
+}
+
+void TraxBoard::draw(sf::RenderWindow& window, const sf::Vector2i& position, const sf::Font& font) {
+    // TODO
+}
+
+void TraxInterface::draw() {
+    board.draw(window, sf::Vector2i(0, 0), font);
+}
+
+void TraxInterface::handleEvent(const sf::Event& event) {
     // TODO
 }

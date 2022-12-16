@@ -4,7 +4,7 @@
 #include "proto/tile.hpp"
 #include "proto/board.hpp"
 
-template <typename T> class Board {
+template <class T> class Board {
     protected:
         int width, height;
         std::map<std::pair<int, int>, T> tiles;
@@ -17,5 +17,7 @@ template <typename T> class Board {
         Option<T> getTile(int, int) const;
         void setTile(int, int, const T&);
         std::vector<std::pair<TileEdge, T>> getNeighbors(const std::pair<int, int>&) const;
-        virtual void draw(sf::RenderWindow&, const sf::Vector2i&) = 0;
+        virtual bool canSet(const T&, const std::pair<int, int>&) const = 0;
+        virtual void draw(sf::RenderWindow&, const sf::Vector2i&, const sf::Font&) = 0;
+        Board& operator=(const Board&);
 };

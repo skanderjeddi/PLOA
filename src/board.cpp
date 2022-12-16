@@ -51,5 +51,12 @@ template <class T> std::vector<std::pair<TileEdge, T>> Board<T>::getNeighbors(co
     return neighbors;
 }
 
+template <class T> Board<T>& Board<T>::operator=(const Board& board) {
+    this->width = board.width;
+    this->height = board.height;
+    this->tiles = board.tiles;
+    return *this;
+}
+
 template class Board<DominosTile>;
 template class Board<TraxTile>;

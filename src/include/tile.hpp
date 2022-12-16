@@ -27,5 +27,7 @@ template <class P> class Tile {
         Tile(const Tile&);
         const P& dataStructure() const;
         virtual void rotate(const TileRotation&) = 0;
-        virtual void draw(sf::RenderWindow&, const sf::Vector2i&, const sf::Vector2i&) = 0;
+        virtual void draw(sf::RenderWindow&, const sf::Vector2i&, const sf::Vector2i&, const sf::Font&) = 0;
 };
+
+TileEdge oppositeEdge(const TileEdge&);
