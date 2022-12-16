@@ -1,4 +1,4 @@
 #pragma once
 
-class Dominos;
-class DominosWindow;
+class DominosTile;
+class DominosBoard;

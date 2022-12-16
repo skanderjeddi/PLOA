@@ -1,23 +1,21 @@
 #pragma once
 
-#include "proto/board.hpp"
-#include "proto/tile.hpp"
 #include "proto/common.hpp"
+#include "proto/tile.hpp"
+#include "proto/board.hpp"
 
-class Board {
-    private:
+template <typename T> class Board {
+    protected:
         int width, height;
-        std::map<std::pair<int, int>, Tile> tiles;
-        friend class Tile;
-        friend class Dominos;
+        std::map<std::pair<int, int>, T> tiles;
+
     public:
         Board(int, int);
-        std::vector<std::pair<Side, Tile>> gatherAdjacentTiles(const std::pair<int, int>&) const;
-        bool canPlaceTile(const Tile&, const std::pair<int, int>&) const;
-        void placeTile(const Tile&, const std::pair<int, int>&);
-        Side findFreeSide(const std::vector<Side>&) const; 
-        Tile* getTile(const std::pair<int, int>&);
-        Tile fitNewTile() const;
-        int getWidth() const { return width; }
-        int getHeight() const { return height; }
+        Board(const Board&);
+        int getWidth() const;
+        int getHeight() const;
+        Option<T> getTile(int, int) const;
+        void setTile(int, int, const T&);
+        std::vector<std::pair<TileEdge, T>> getNeighbors(const std::pair<int, int>&) const;
+        virtual void draw(sf::RenderWindow&, const sf::Vector2i&) = 0;
 };

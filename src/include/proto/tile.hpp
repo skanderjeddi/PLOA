@@ -1,5 +1,5 @@
 #pragma once
 
-class Tile;
-enum class Side;
-enum class Rotation;
+enum class TileEdge;
+enum class TileRotation;
+template <typename V> class Tile;

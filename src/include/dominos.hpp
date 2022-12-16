@@ -1,47 +1,25 @@
 #pragma once
 
-#include "proto/dominos.hpp"
+#include <SFML/Graphics.hpp>
 
-#include "board.hpp"
-#include "tile.hpp"
 #include "common.hpp"
+#include "tile.hpp"
+#include "board.hpp"
 
-class DominosWindow {
-    private:
-        Dominos& gameInstance;
-        const std::pair<int, int> tileSize;
-        sf::Font globalFont;
-        void drawBackground(sf::RenderWindow&, std::vector<sf::RectangleShape>&);
-        void drawTileCorners(sf::RenderWindow&, const std::pair<int, int>&, sf::Color);
-        void drawTile(sf::RenderWindow&, const Tile&, const std::pair<int, int>&);
-        void drawBoard(sf::RenderWindow&);
-        int drawScoreboard(sf::RenderWindow&);
-        int drawCurrentTile(sf::RenderWindow&, int);
-        void drawInstructions(sf::RenderWindow&, int);
+#include "dominos.hpp"
+
+class DominosTile : virtual public Tile<std::map<TileEdge, std::vector<int>>> {
     public:
-        DominosWindow(Dominos&, const std::pair<int, int>&);
-        void display();
-        // Override = operator
-        DominosWindow& operator=(const DominosWindow& other) {
-            return *this;
-        }
+        DominosTile();
+        DominosTile(const std::map<TileEdge, std::vector<int>>&);
+        DominosTile(const DominosTile&);
+        void rotate(const TileRotation&);
+        void draw(sf::RenderWindow&, const sf::Vector2i&, const sf::Vector2i&);
 };
 
-class Dominos {
-    private:
-        Board board;
-        int currentPlayerId;
-        Tile currentTile;
-        int maxPlayers;
-        std::vector<Tile> bag;
-        std::map<int, std::pair<std::string, int>> scoreboard;        
-        void registerPlayers(const int);
-        bool nextTurn();
-        void handlePoints(const std::pair<int, int>&);
-        friend class Board;
-        friend class DominosWindow;
+class DominosBoard : virtual public Board<DominosTile> {
     public:
-        Dominos(const std::pair<int, int>& dimensions, int tilesInBag) : board(dimensions.first, dimensions.second), bag(tilesInBag) {};
-        void play(const std::pair<int, int>&, const int);
+        DominosBoard(int, int);
+        DominosBoard(const DominosBoard&);
+        void draw(sf::RenderWindow&, const sf::Vector2i&);
 };
-

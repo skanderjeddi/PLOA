@@ -1,3 +1,3 @@
 #pragma once
 
-class Board;
+template <typename T> class Board;

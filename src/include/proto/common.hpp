@@ -10,3 +10,5 @@
 #include <algorithm>
 #include <sstream>
 #include <SFML/Graphics.hpp>
+
+template <class S> class Option;

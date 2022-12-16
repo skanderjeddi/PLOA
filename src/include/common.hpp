@@ -1,11 +1,17 @@
 #pragma once
 
 #include "proto/common.hpp"
-#include "proto/tile.hpp"
 
-#define DEBUG true
+template <class S> class Option {
+    private:
+        S someValue;
+        bool valueSet;
+    
+    public:
+        Option();
+        Option(const S&);
+        const S& unwrap() const;
+        bool hasValue() const;
+};
 
-int randomInt(int, int);
-float randomFloat(float, float);
-Side getOppositeSide(const Side&);
-std::ostream &operator<<(std::ostream&, const Side&);
+int random(int, int);
