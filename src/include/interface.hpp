@@ -7,6 +7,7 @@
 template <class B> class UserInterface {
     protected:
         B board;
+        std::string title;
         sf::RenderWindow window;
         sf::Vector2i tileSize;
         sf::Font font;

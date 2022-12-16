@@ -1,6 +1,8 @@
 #include "include/board.hpp"
 #include "include/tile.hpp"
 #include "include/common.hpp"
+#include "include/interface.hpp"
+#include "include/game.hpp"
 
 #include "include/trax.hpp"
 
@@ -72,5 +74,23 @@ void TraxInterface::draw() {
 }
 
 void TraxInterface::handleEvent(const sf::Event& event) {
+    if (event.type == sf::Event::Resized) {
+        window.setSize(sf::Vector2u((board.getWidth() + 2) * tileSize.x, board.getHeight() * tileSize.y + 1));
+    }
+}
+
+Trax::Trax(const sf::Vector2i& tileSize, const sf::Font& font) : Game(tileSize, font) {
+    // TODO
+}
+
+TraxInterface& Trax::configure() {
+    // TODO
+}
+
+void Trax::run() {
+    // TODO
+}
+
+void Trax::nextTurn() {
     // TODO
 }

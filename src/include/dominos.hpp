@@ -6,6 +6,7 @@
 #include "tile.hpp"
 #include "board.hpp"
 #include "interface.hpp"
+#include "game.hpp"
 
 #include "dominos.hpp"
 
@@ -33,3 +34,10 @@ class DominosInterface : virtual public UserInterface<DominosBoard> {
         void handleEvent(const sf::Event&);
 };
 
+class Dominos : virtual public Game<DominosInterface> {
+    public:
+        Dominos(const sf::Vector2i&, const sf::Font&);
+        void configure();
+        void run();
+        void nextTurn();
+};

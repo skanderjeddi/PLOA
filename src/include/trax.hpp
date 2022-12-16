@@ -6,6 +6,7 @@
 #include "tile.hpp"
 #include "board.hpp"
 #include "interface.hpp"
+#include "game.hpp"
 
 #include "trax.hpp"
 
@@ -41,4 +42,12 @@ class TraxInterface : virtual public UserInterface<TraxBoard> {
         TraxInterface(const TraxBoard&, const sf::Vector2i&);
         void draw();
         void handleEvent(const sf::Event&);
+};
+
+class Trax : virtual public Game<TraxInterface> {
+    public:
+        Trax(const sf::Vector2i&, const sf::Font&);
+        void configure();
+        void run();
+        void nextTurn();
 };

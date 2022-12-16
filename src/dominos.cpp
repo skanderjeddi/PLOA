@@ -161,3 +161,17 @@ void DominosInterface::handleEvent(const sf::Event& event) {
         window.setSize(sf::Vector2u((board.getWidth() + 2) * tileSize.x, board.getHeight() * tileSize.y + 1));
     }
 }
+
+Dominos::Dominos(const sf::Vector2i& tileSize, const sf::Font& font) : Game(tileSize, font) { }
+
+DominosInterface& Dominos::configure() {
+    // TODO
+}
+
+void Dominos::run() {
+    // TODO
+}
+
+void Dominos::nextTurn() {
+    // TODO
+}
