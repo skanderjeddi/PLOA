@@ -7,8 +7,7 @@ template <class S> Option<S>::Option() {
     this->valueSet = false;
 }
 
-template <class S> Option<S>::Option(const S& value) {
-    this->someValue = value;
+template <class S> Option<S>::Option(const S& value) : someValue(value) {
     this->valueSet = true;
 }
 

@@ -9,11 +9,9 @@
 #include "include/tile.hpp"
 #include "include/interface.hpp"
 
-template <class I> Game<I>::Game(const sf::Vector2i& tileSize, const sf::Font& font) : tileSize(tileSize), font(font) {
+template <class B, class I> Game<B, I>::Game(UserInterfaceProperties uiProperties, BoardProperties boardProperties) : _interface(uiProperties, boardProperties), _board(boardProperties) {
     scoreboard = std::map<int, std::pair<std::string, int>>();
-    configure();
-    run();
 }
 
-template class Game<DominosInterface>;
-template class Game<TraxInterface>;
+template class Game<DominosBoard, DominosInterface>;
+template class Game<TraxBoard, TraxInterface>;

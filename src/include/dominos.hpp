@@ -16,28 +16,26 @@ class DominosTile : virtual public Tile<std::map<TileEdge, std::vector<int>>> {
         DominosTile(const std::map<TileEdge, std::vector<int>>&);
         DominosTile(const DominosTile&);
         void rotate(const TileRotation&);
-        void draw(sf::RenderWindow&, const sf::Vector2i&, const sf::Vector2i&, const sf::Font&);
 };
 
 class DominosBoard : virtual public Board<DominosTile> {
     public:
-        DominosBoard(int, int);
-        DominosBoard(const DominosBoard&);
+        DominosBoard(BoardProperties&);
         bool canSet(const DominosTile&, const std::pair<int, int>&) const;
-        void draw(sf::RenderWindow&, const sf::Vector2i&, const sf::Font&);
 };
 
-class DominosInterface : virtual public UserInterface<DominosBoard> {
+class DominosInterface : virtual public UserInterface<DominosBoard, DominosTile> {
     public:
-        DominosInterface(const DominosBoard&, const sf::Vector2i&, const sf::Font&);
-        void draw();
+        DominosInterface(UserInterfaceProperties&, BoardProperties&);
+        void draw(DominosBoard&);
+        void drawBoard(DominosBoard&);
+        void drawTile(DominosTile&, const sf::Vector2i&);
         void handleEvent(const sf::Event&);
 };
 
-class Dominos : virtual public Game<DominosInterface> {
+class Dominos : virtual public Game<DominosBoard, DominosInterface> {
     public:
-        Dominos(const sf::Vector2i&, const sf::Font&);
-        void configure();
+        Dominos(UserInterfaceProperties, BoardProperties);
         void run();
-        void nextTurn();
+        DominosBoard board();
 };

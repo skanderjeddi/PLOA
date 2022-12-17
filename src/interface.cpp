@@ -8,10 +8,10 @@
 #include "include/dominos.hpp"
 #include "include/trax.hpp"
 
-template <class B> UserInterface<B>::UserInterface(const B& board, const std::string& title, const sf::Vector2i& tileSize, const sf::Font& font) : board(board), title(title), tileSize(tileSize), font(font) { }
+template <class B, class T> UserInterface<B, T>::UserInterface(UserInterfaceProperties& properties, BoardProperties& boardProperties) : properties(properties), boardProperties(boardProperties) { }
 
-template <class B> void UserInterface<B>::run() {
-    window.create(sf::VideoMode(tileSize.x * (board.getWidth() + 2), tileSize.y * board.getHeight() + 1), title, sf::Style::Close);
+template <class B, class T> void UserInterface<B, T>::show(B& board) {
+    window.create(sf::VideoMode(properties.tileSize.x * boardProperties.width, properties.tileSize.y * boardProperties.height), properties.windowTitle, sf::Style::Close);
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -21,7 +21,7 @@ template <class B> void UserInterface<B>::run() {
             handleEvent(event);
         }
         window.clear(sf::Color::White);
-        draw();
+        draw(board);
         window.display();
     }
 }
@@ -41,5 +41,5 @@ void drawGrid(sf::RenderWindow& window, const sf::Vector2i& tileSize, const sf::
     }
 }
 
-template class UserInterface<DominosBoard>;
-template class UserInterface<TraxBoard>;
+template class UserInterface<DominosBoard, DominosTile>;
+template class UserInterface<TraxBoard, TraxTile>;

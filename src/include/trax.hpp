@@ -26,28 +26,27 @@ class TraxTile : virtual public Tile<std::pair<TraxTileFace, std::map<TileEdge, 
         TraxTile(const std::pair<TraxTileFace, std::map<TileEdge, TraxTileEdge>>&);
         TraxTile(const TraxTile&);
         void rotate(const TileRotation&);
-        void draw(sf::RenderWindow&, const sf::Vector2i&, const sf::Vector2i&, const sf::Font&);
 };
 
 class TraxBoard : virtual public Board<TraxTile> {
     public:
         TraxBoard();
-        TraxBoard(const TraxBoard&);
+        TraxBoard(BoardProperties&);
         bool canSet(const TraxTile&, const std::pair<int, int>&) const;
-        void draw(sf::RenderWindow&, const sf::Vector2i&, const sf::Font&);
 };
 
-class TraxInterface : virtual public UserInterface<TraxBoard> {
+class TraxInterface : virtual public UserInterface<TraxBoard, TraxTile> {
     public:
-        TraxInterface(const TraxBoard&, const sf::Vector2i&);
-        void draw();
+        TraxInterface(UserInterfaceProperties&, BoardProperties&);
+        void draw(TraxBoard&);
+        void drawBoard(TraxBoard&);
+        void drawTile(TraxTile&, const sf::Vector2i&);
         void handleEvent(const sf::Event&);
 };
 
-class Trax : virtual public Game<TraxInterface> {
+class Trax : virtual public Game<TraxBoard, TraxInterface> {
     public:
-        Trax(const sf::Vector2i&, const sf::Font&);
-        void configure();
+        Trax(UserInterfaceProperties);
         void run();
-        void nextTurn();
+        TraxBoard board();
 };

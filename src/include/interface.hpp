@@ -4,17 +4,23 @@
 
 #include "proto/interface.hpp"
 
-template <class B> class UserInterface {
+struct UserInterfaceProperties {
+    std::string windowTitle;
+    sf::Vector2i tileSize;
+    sf::Font font;
+};
+
+template <class B, class T> class UserInterface {
     protected:
-        B board;
-        std::string title;
+        UserInterfaceProperties properties;
+        BoardProperties boardProperties;
         sf::RenderWindow window;
-        sf::Vector2i tileSize;
-        sf::Font font;
     public:
-        UserInterface(const B&, const std::string&, const sf::Vector2i&, const sf::Font&);
-        void run();
-        virtual void draw() = 0;
+        UserInterface(UserInterfaceProperties&, BoardProperties&);
+        virtual void draw(B&) = 0;
+        virtual void drawBoard(B&) = 0;
+        virtual void drawTile(T&, const sf::Vector2i&) = 0;
+        void show(B&);
         virtual void handleEvent(const sf::Event&) = 0;
 };
 

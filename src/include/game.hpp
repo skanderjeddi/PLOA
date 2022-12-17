@@ -9,18 +9,15 @@
 #include "tile.hpp"
 #include "interface.hpp"
 
-template <class I> class Game {
+template <class B, class I> class Game {
     protected:
-        const sf::Vector2i& tileSize;
-        const sf::Font& font;
-
+        B _board;
+        I _interface;
         std::map<int, std::pair<std::string, int>> scoreboard;
-        I& interface;
         int currentPlayer;
 
     public:
-        Game(const sf::Vector2i&, const sf::Font&);
-        virtual I& configure() = 0;
+        Game(UserInterfaceProperties, BoardProperties);
         virtual void run() = 0;
-        virtual void nextTurn() = 0;
+        virtual B board() = 0;
 };

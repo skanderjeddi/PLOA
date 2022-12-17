@@ -4,7 +4,7 @@
 
 template <class S> class Option {
     private:
-        S someValue;
+        const S someValue;
         bool valueSet;
     
     public:

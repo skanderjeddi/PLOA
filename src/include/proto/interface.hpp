@@ -1,3 +1,4 @@
 #pragma once
 
-template <class B> class UserInterface;
+struct UserInterfaceProperties;
+template <class B, class T> class UserInterface;

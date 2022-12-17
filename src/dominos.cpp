@@ -6,6 +6,12 @@
 
 #include <SFML/Graphics.hpp>
 
+/**
+ * ------------
+ * DOMINOS TILE
+ * ------------
+ */
+
 DominosTile::DominosTile() : Tile() {
     properties = std::map<TileEdge, std::vector<int>>();
     for (auto side : { TileEdge::LEFT, TileEdge::TOP, TileEdge::RIGHT, TileEdge::BOTTOM }) {
@@ -45,73 +51,13 @@ void DominosTile::rotate(const TileRotation& rotation) {
     }
 }
 
-void DominosTile::draw(sf::RenderWindow& window, const sf::Vector2i& position, const sf::Vector2i& tileSize, const sf::Font& font) {
-    auto corners = std::vector<sf::RectangleShape>(4);
-    for (int i = 0; i < 4; i++) {
-        corners[i] = sf::RectangleShape(sf::Vector2f(tileSize.x / 5, tileSize.y / 5));
-        corners[i].setFillColor(sf::Color::Black);
-        corners[i].setOutlineColor(sf::Color::Black);
-        corners[i].setOutlineThickness(1);
-    }
-    corners[0].setPosition(position.x + 1, position.y + 1);
-    corners[1].setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + 1);
-    corners[2].setPosition(position.x + 1, position.y + tileSize.y - tileSize.y / 5 - 1);
-    corners[3].setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + tileSize.y - tileSize.y / 5 - 1);
-    for (auto corner : corners) {
-        window.draw(corner);
-    }
-    std::vector<sf::RectangleShape> tileRectangles;
-    std::vector<sf::Text> tileTexts;
-    for (int i = 0; i < 4; i++) {
-        auto edge = static_cast<TileEdge>(i);
-        auto values = properties[edge];
-        for (int i = 0; i < 3; i++) {
-            sf::RectangleShape rectangle;
-            rectangle.setSize(sf::Vector2f(tileSize.x / 5, tileSize.y / 5));
-            switch (edge) {
-                case TileEdge::TOP:
-                    rectangle.setPosition(position.x + (i + 1) * tileSize.x / 5, position.y + 1);
-                    break;
-                case TileEdge::RIGHT:
-                    rectangle.setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + (i + 1) * tileSize.y / 5);
-                    break;
-                case TileEdge::BOTTOM:
-                    rectangle.setPosition(position.x + (i + 1) * tileSize.x / 5, position.y + tileSize.y - tileSize.y / 5 - 1);
-                    break;
-                case TileEdge::LEFT:
-                    rectangle.setPosition(position.x + 1, position.y + (i + 1) * tileSize.y / 5);
-                    break;
-            }
-            auto value = values[i];
-            auto text = sf::Text();
-            text.setFont(font);
-            text.setCharacterSize(18);
-            text.setFillColor(sf::Color::Black);
-            text.setString(std::to_string(value));
-            auto textBounds = text.getLocalBounds();
-            text.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
-            text.setPosition(rectangle.getPosition().x + rectangle.getSize().x / 2.0f, rectangle.getPosition().y + rectangle.getSize().y / 2.0f);
-            tileTexts.push_back(text);
-            tileRectangles.push_back(rectangle);
-        }
-    }
-    for (auto rectangle : tileRectangles) {
-        window.draw(rectangle);
-    }
-    for (auto text : tileTexts) {
-        window.draw(text);
-    }
-}
+/**
+ * -------------
+ * DOMINOS BOARD
+ * -------------
+ */
 
-DominosBoard::DominosBoard(int width, int height) : Board(width, height) {
-    tiles = std::map<std::pair<int, int>, DominosTile>();
-}
-
-DominosBoard::DominosBoard(const DominosBoard& board) : Board(board) {
-    this->width = board.width;
-    this->height = board.height;
-    this->tiles = board.tiles;
-}
+DominosBoard::DominosBoard(BoardProperties& properties) : Board(properties) { }
 
 bool DominosBoard::canSet(const DominosTile& tile, const std::pair<int, int>& position) const {
     bool canSet = true;
@@ -141,37 +87,109 @@ bool DominosBoard::canSet(const DominosTile& tile, const std::pair<int, int>& po
     return canSet;
 }
 
-void DominosBoard::draw(sf::RenderWindow& window, const sf::Vector2i& tileSize, const sf::Font& font) {
-    drawGrid(window, tileSize, sf::Vector2i(getWidth(), getHeight()));
-    for (auto tile : tiles) {
-        tile.second.draw(window, sf::Vector2i(tile.first.first * tileSize.x, tile.first.second * tileSize.y), tileSize, font);
+/**
+ * -----------------
+ * DOMINOS INTERFACE
+ * -----------------
+ */
+
+DominosInterface::DominosInterface(UserInterfaceProperties& properties, BoardProperties& boardProperties) : UserInterface(properties, boardProperties) { }
+
+void DominosInterface::draw(DominosBoard& board) {
+    drawBoard(board);
+}
+
+void DominosInterface::drawBoard(DominosBoard& board) {
+    drawGrid(window, properties.tileSize, sf::Vector2i(board.getProperties().width, board.getProperties().height));
+    for (int x = 0; x < boardProperties.width; x++) {
+        for (int y = 0; y < boardProperties.height; y++) {
+            auto optTile = board.getTile(x, y);
+            if (optTile.hasValue()) {
+                std::cout << "Tile at" << x << ", " << y << std::endl;
+                auto tile = optTile.unwrap();
+                drawTile(tile, sf::Vector2i(x * properties.tileSize.x, y * properties.tileSize.y));
+            }
+        }
+    } 
+}
+
+void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position) {
+    auto tileSize = properties.tileSize;
+    auto corners = std::vector<sf::RectangleShape>(4);
+    for (int i = 0; i < 4; i++) {
+        corners[i] = sf::RectangleShape(sf::Vector2f(tileSize.x / 5, tileSize.y / 5));
+        corners[i].setFillColor(sf::Color::Black);
+        corners[i].setOutlineColor(sf::Color::Black);
+        corners[i].setOutlineThickness(1);
     }
-}
-
-DominosInterface::DominosInterface(const DominosBoard& board, const sf::Vector2i& tileSize, const sf::Font& font) : UserInterface(board, "Dominos", tileSize, font) {
-    this->tileSize = tileSize;
-}
-
-void DominosInterface::draw() {
-    board.draw(window, tileSize, font);
+    corners[0].setPosition(position.x + 1, position.y + 1);
+    corners[1].setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + 1);
+    corners[2].setPosition(position.x + 1, position.y + tileSize.y - tileSize.y / 5 - 1);
+    corners[3].setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + tileSize.y - tileSize.y / 5 - 1);
+    for (auto corner : corners) {
+        window.draw(corner);
+    }
+    std::vector<sf::RectangleShape> tileRectangles;
+    std::vector<sf::Text> tileTexts;
+    for (int i = 0; i < 4; i++) {
+        auto edge = static_cast<TileEdge>(i);
+        auto values = tile.dataStructure().at(edge);
+        for (int i = 0; i < 3; i++) {
+            sf::RectangleShape rectangle;
+            rectangle.setSize(sf::Vector2f(tileSize.x / 5, tileSize.y / 5));
+            switch (edge) {
+                case TileEdge::TOP:
+                    rectangle.setPosition(position.x + (i + 1) * tileSize.x / 5, position.y + 1);
+                    break;
+                case TileEdge::RIGHT:
+                    rectangle.setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + (i + 1) * tileSize.y / 5);
+                    break;
+                case TileEdge::BOTTOM:
+                    rectangle.setPosition(position.x + (i + 1) * tileSize.x / 5, position.y + tileSize.y - tileSize.y / 5 - 1);
+                    break;
+                case TileEdge::LEFT:
+                    rectangle.setPosition(position.x + 1, position.y + (i + 1) * tileSize.y / 5);
+                    break;
+            }
+            auto value = values[i];
+            auto text = sf::Text();
+            text.setFont(properties.font);
+            text.setCharacterSize(18);
+            text.setFillColor(sf::Color::Black);
+            text.setString(std::to_string(value));
+            auto textBounds = text.getLocalBounds();
+            text.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
+            text.setPosition(rectangle.getPosition().x + rectangle.getSize().x / 2.0f, rectangle.getPosition().y + rectangle.getSize().y / 2.0f);
+            tileTexts.push_back(text);
+            tileRectangles.push_back(rectangle);
+        }
+    }
+    for (auto rectangle : tileRectangles) {
+        window.draw(rectangle);
+    }
+    for (auto text : tileTexts) {
+        window.draw(text);
+    }
 }
 
 void DominosInterface::handleEvent(const sf::Event& event) {
     if (event.type == sf::Event::Resized) {
-        window.setSize(sf::Vector2u((board.getWidth() + 2) * tileSize.x, board.getHeight() * tileSize.y + 1));
+        window.setSize(sf::Vector2u(properties.tileSize.x * boardProperties.width, properties.tileSize.y * boardProperties.height));
     }
 }
 
-Dominos::Dominos(const sf::Vector2i& tileSize, const sf::Font& font) : Game(tileSize, font) { }
+/**
+ * -------
+ * DOMINOS
+ * -------
+ */
 
-DominosInterface& Dominos::configure() {
-    // TODO
-}
+Dominos::Dominos(UserInterfaceProperties properties, BoardProperties boardProperties) : Game(properties, boardProperties) { }
 
 void Dominos::run() {
-    // TODO
+    _interface.show(_board);
 }
 
-void Dominos::nextTurn() {
-    // TODO
+DominosBoard Dominos::board() {
+    return _board;
 }
