@@ -19,7 +19,11 @@ template <class T, class B, class I> class Game {
 
     public:
         Game(UserInterfaceProperties, BoardProperties);
-        
+        virtual void handleEvent(const sf::Event&, sf::RenderWindow*) = 0;        
+        virtual void run() = 0;
+        void registerPlayer(std::string& name) { scoreboard[scoreboard.size()] = std::make_pair(name, 0); }
+        std::map<int, std::pair<std::string, int>>& getScoreboard() { return scoreboard; }
+
         void setTile(int x, int y, const T& tile) {
             board.setTile(x, y, tile);
         }
@@ -27,7 +31,4 @@ template <class T, class B, class I> class Game {
         Option<T> getTile(int x, int y) {
             return board.getTile(x, y);
         }
-        
-        virtual void run() = 0;
-        virtual void handleEvent(const sf::Event&, sf::RenderWindow*) = 0;
 };

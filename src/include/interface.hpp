@@ -21,6 +21,7 @@ template <class B, class T> class UserInterface {
     public:
         UserInterface(UserInterfaceProperties&, BoardProperties&);
         virtual void draw(B&) = 0;
+        void drawText(std::string, const sf::Vector2f&, const sf::Vector2f&, int);
         virtual void drawGrid() = 0;
         virtual void drawBoard(B&) = 0;
         virtual void drawTile(T&, const sf::Vector2i&) = 0;

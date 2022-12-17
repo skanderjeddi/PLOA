@@ -14,5 +14,22 @@ template <class B, class T> void UserInterface<B, T>::show(B& board) {
     window.create(sf::VideoMode(properties.tileSize.x * boardProperties.width + properties.margin.x, properties.tileSize.y * boardProperties.height + properties.margin.y), properties.windowTitle, sf::Style::Close);
 }
 
+template <class B, class T> void UserInterface<B, T>::drawText(std::string contents, const sf::Vector2f& position, const sf::Vector2f& size, int fontSize) {
+    // Draw text centered in container
+    auto container = new sf::RectangleShape(size);
+    container->setPosition(position);
+    container->setFillColor(sf::Color::Transparent);
+    toRender.push_back(container);
+    auto text = new sf::Text();
+    text->setFont(properties.font);
+    text->setCharacterSize(fontSize);
+    text->setFillColor(sf::Color::Black);
+    text->setString(contents);
+    auto textBounds = text->getLocalBounds();
+    text->setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
+    text->setPosition(container->getPosition().x + container->getSize().x / 2.0f, container->getPosition().y + container->getSize().y / 2.0f);
+    toRender.push_back(text);
+}
+
 template class UserInterface<DominosBoard, DominosTile>;
 template class UserInterface<TraxBoard, TraxTile>;

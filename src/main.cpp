@@ -26,9 +26,24 @@ int main(int argc, char **argv) {
             uiProperties.font = font;
             uiProperties.tileSize = sf::Vector2i(80, 80);
             uiProperties.margin = sf::Vector2i(160, 80);
-            BoardProperties boardProperties(11, 11);
+            // Configuration de la partie
+            std::cout << "Dimensions du plateau (x-y)? ";
+            std::string line;
+            getline(std::cin, line);
+            int width = std::stoi(line.substr(0, line.find('-')));
+            int height = std::stoi(line.substr(line.find('-') + 1));
+            std::cout << "Largeur: " << width << ", longeur: " << height << std::endl;
+            BoardProperties boardProperties(width, height);
             Dominos dominos(uiProperties, boardProperties);
-            dominos.setTile(5, 6, DominosTile());
+            std::cout << "Nombre de joueurs? ";
+            getline(std::cin, line);
+            int players = std::stoi(line);
+            for (int i = 0; i < players; i++) {
+                std::cout << "Joueur " << i + 1 << "? ";
+                std::string name;
+                getline(std::cin, name);
+                dominos.registerPlayer(name);               
+            }
             dominos.run();
             break;
     }

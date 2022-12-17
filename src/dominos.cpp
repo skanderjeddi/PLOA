@@ -102,21 +102,19 @@ void DominosInterface::draw(DominosBoard& board) {
 }
 
 void DominosInterface::drawGrid() {
-    for (int i = 0; i <= boardProperties.height; i++) {
-        sf::RectangleShape* line;
-        line = new sf::RectangleShape(sf::Vector2f(properties.tileSize.y * boardProperties.height, 1));
-        line->setOutlineColor(sf::Color::Black);
-        line->setFillColor(sf::Color::Black);     
-        line->setPosition(0, i * properties.tileSize.y);
-        toRender.push_back(line);
+    std::vector<sf::RectangleShape*> rectangles;
+    for (int x = 0; x < boardProperties.width; x++) {
+        for (int y = 0; y < boardProperties.height; y++) {
+            sf::RectangleShape* tile = new sf::RectangleShape(sf::Vector2f(properties.tileSize.x - 1, properties.tileSize.y - 1));
+            tile->setOutlineColor(sf::Color::Black);
+            tile->setOutlineThickness(1);
+            tile->setFillColor(sf::Color::Transparent);     
+            tile->setPosition(x * properties.tileSize.x + 1, y * properties.tileSize.y + 1);
+            rectangles.push_back(tile);
+        }
     }
-    for (int i = 0; i <= boardProperties.width; i++) {
-        sf::RectangleShape* line2;
-        line2 = new sf::RectangleShape(sf::Vector2f(1, properties.tileSize.x * boardProperties.width));
-        line2->setOutlineColor(sf::Color::Black);
-        line2->setFillColor(sf::Color::Black);
-        line2->setPosition(i * properties.tileSize.x, 0);
-        toRender.push_back(line2);
+    for (auto rect : rectangles) {
+        toRender.push_back(rect);
     }
 }
 
@@ -200,6 +198,7 @@ void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position)
 
 Dominos::Dominos(UserInterfaceProperties properties, BoardProperties boardProperties) : Game(properties, boardProperties) {
     currentTile = DominosTile();
+    currentPlayer = 0;
 }
 
 void Dominos::run() {
@@ -217,10 +216,11 @@ void Dominos::run() {
         }
         window->clear(sf::Color::White);
         interface.draw(board);
-        interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x / 2, uiProperties.tileSize.y / 2));
+        std::string currentPlayerName = scoreboard[currentPlayer].first;
+        interface.drawText(currentPlayerName, sf::Vector2f(uiProperties.tileSize.x * boardProperties.width, 0), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 32);
+        interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x / 2, uiProperties.tileSize.y));
         for (auto drawable : interface.renderables()) {
             window->draw(*drawable);
-            // delete drawable;
         }
         interface.renderables().clear();
         window->display();

@@ -31,7 +31,6 @@ class DominosInterface : virtual public UserInterface<DominosBoard, DominosTile>
         void drawGrid();
         void drawBoard(DominosBoard&);
         void drawTile(DominosTile&, const sf::Vector2i&);
-        
 };
 
 class Dominos : virtual public Game<DominosTile, DominosBoard, DominosInterface> {
