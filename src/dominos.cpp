@@ -101,8 +101,27 @@ void DominosInterface::draw(DominosBoard& board) {
     drawBoard(board);
 }
 
+void DominosInterface::drawGrid() {
+    for (int i = 0; i <= boardProperties.height; i++) {
+        sf::RectangleShape* line;
+        line = new sf::RectangleShape(sf::Vector2f(properties.tileSize.y * boardProperties.height, 1));
+        line->setOutlineColor(sf::Color::Black);
+        line->setFillColor(sf::Color::Black);     
+        line->setPosition(0, i * properties.tileSize.y);
+        toRender.push_back(line);
+    }
+    for (int i = 0; i <= boardProperties.width; i++) {
+        sf::RectangleShape* line2;
+        line2 = new sf::RectangleShape(sf::Vector2f(1, properties.tileSize.x * boardProperties.width));
+        line2->setOutlineColor(sf::Color::Black);
+        line2->setFillColor(sf::Color::Black);
+        line2->setPosition(i * properties.tileSize.x, 0);
+        toRender.push_back(line2);
+    }
+}
+
 void DominosInterface::drawBoard(DominosBoard& board) {
-    drawGrid(window, properties.tileSize, sf::Vector2i(board.getProperties().width, board.getProperties().height));
+    drawGrid();
     for (int x = 0; x < boardProperties.width; x++) {
         for (int y = 0; y < boardProperties.height; y++) {
             auto optTile = board.getTile(x, y);
@@ -116,66 +135,60 @@ void DominosInterface::drawBoard(DominosBoard& board) {
 
 void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position) {
     auto tileSize = properties.tileSize;
-    auto corners = std::vector<sf::RectangleShape>(4);
+    auto corners = std::vector<sf::RectangleShape*>(4);
     for (int i = 0; i < 4; i++) {
-        corners[i] = sf::RectangleShape(sf::Vector2f(tileSize.x / 5, tileSize.y / 5));
-        corners[i].setFillColor(sf::Color::Black);
-        corners[i].setOutlineColor(sf::Color::Black);
-        corners[i].setOutlineThickness(1);
+        corners[i] = new sf::RectangleShape(sf::Vector2f(tileSize.x / 5, tileSize.y / 5));
+        corners[i]->setFillColor(sf::Color::Black);
+        corners[i]->setOutlineColor(sf::Color::Black);
+        corners[i]->setOutlineThickness(1);
     }
-    corners[0].setPosition(position.x + 1, position.y + 1);
-    corners[1].setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + 1);
-    corners[2].setPosition(position.x + 1, position.y + tileSize.y - tileSize.y / 5 - 1);
-    corners[3].setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + tileSize.y - tileSize.y / 5 - 1);
+    corners[0]->setPosition(position.x + 1, position.y + 1);
+    corners[1]->setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + 1);
+    corners[2]->setPosition(position.x + 1, position.y + tileSize.y - tileSize.y / 5 - 1);
+    corners[3]->setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + tileSize.y - tileSize.y / 5 - 1);
     for (auto corner : corners) {
-        window.draw(corner);
+        toRender.push_back(corner);
     }
-    std::vector<sf::RectangleShape> tileRectangles;
-    std::vector<sf::Text> tileTexts;
+    std::vector<sf::RectangleShape*> tileRectangles;
+    std::vector<sf::Text*> tileTexts;
     for (int i = 0; i < 4; i++) {
         auto edge = static_cast<TileEdge>(i);
         auto values = tile.dataStructure().at(edge);
         for (int i = 0; i < 3; i++) {
-            sf::RectangleShape rectangle;
-            rectangle.setSize(sf::Vector2f(tileSize.x / 5, tileSize.y / 5));
+            sf::RectangleShape* rectangle = new sf::RectangleShape();
+            rectangle->setSize(sf::Vector2f(tileSize.x / 5, tileSize.y / 5));
             switch (edge) {
                 case TileEdge::TOP:
-                    rectangle.setPosition(position.x + (i + 1) * tileSize.x / 5, position.y + 1);
+                    rectangle->setPosition(position.x + (i + 1) * tileSize.x / 5, position.y + 1);
                     break;
                 case TileEdge::RIGHT:
-                    rectangle.setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + (i + 1) * tileSize.y / 5);
+                    rectangle->setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + (i + 1) * tileSize.y / 5);
                     break;
                 case TileEdge::BOTTOM:
-                    rectangle.setPosition(position.x + (i + 1) * tileSize.x / 5, position.y + tileSize.y - tileSize.y / 5 - 1);
+                    rectangle->setPosition(position.x + (i + 1) * tileSize.x / 5, position.y + tileSize.y - tileSize.y / 5 - 1);
                     break;
                 case TileEdge::LEFT:
-                    rectangle.setPosition(position.x + 1, position.y + (i + 1) * tileSize.y / 5);
+                    rectangle->setPosition(position.x + 1, position.y + (i + 1) * tileSize.y / 5);
                     break;
             }
             auto value = values[i];
-            auto text = sf::Text();
-            text.setFont(properties.font);
-            text.setCharacterSize(18);
-            text.setFillColor(sf::Color::Black);
-            text.setString(std::to_string(value));
-            auto textBounds = text.getLocalBounds();
-            text.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
-            text.setPosition(rectangle.getPosition().x + rectangle.getSize().x / 2.0f, rectangle.getPosition().y + rectangle.getSize().y / 2.0f);
+            auto text = new sf::Text();
+            text->setFont(properties.font);
+            text->setCharacterSize(18);
+            text->setFillColor(sf::Color::Black);
+            text->setString(std::to_string(value));
+            auto textBounds = text->getLocalBounds();
+            text->setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
+            text->setPosition(rectangle->getPosition().x + rectangle->getSize().x / 2.0f, rectangle->getPosition().y + rectangle->getSize().y / 2.0f);
             tileTexts.push_back(text);
             tileRectangles.push_back(rectangle);
         }
     }
     for (auto rectangle : tileRectangles) {
-        window.draw(rectangle);
+        toRender.push_back(rectangle);
     }
     for (auto text : tileTexts) {
-        window.draw(text);
-    }
-}
-
-void DominosInterface::handleEvent(const sf::Event& event) {
-    if (event.type == sf::Event::Resized) {
-        window.setSize(sf::Vector2u(properties.tileSize.x * boardProperties.width, properties.tileSize.y * boardProperties.height));
+        toRender.push_back(text);
     }
 }
 
@@ -185,8 +198,39 @@ void DominosInterface::handleEvent(const sf::Event& event) {
  * -------
  */
 
-Dominos::Dominos(UserInterfaceProperties properties, BoardProperties boardProperties) : Game(properties, boardProperties) { }
+Dominos::Dominos(UserInterfaceProperties properties, BoardProperties boardProperties) : Game(properties, boardProperties) {
+    currentTile = DominosTile();
+}
 
 void Dominos::run() {
+    auto boardProperties = board.getProperties();
+    auto uiProperties = interface.getProperties();
     interface.show(board);
+    sf::RenderWindow* window = interface.getWindow();
+    while (window->isOpen()) {
+        sf::Event event;
+        while (window->pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window->close();
+            }
+            handleEvent(event, window);
+        }
+        window->clear(sf::Color::White);
+        interface.draw(board);
+        interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x / 2, uiProperties.tileSize.y / 2));
+        for (auto drawable : interface.renderables()) {
+            window->draw(*drawable);
+            // delete drawable;
+        }
+        interface.renderables().clear();
+        window->display();
+    }
+}
+
+void Dominos::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
+    auto boardProperties = board.getProperties();
+    auto uiProperties = interface.getProperties();
+    if (event.type == sf::Event::Resized) {
+        windowPtr->setSize(sf::Vector2u(uiProperties.tileSize.x * boardProperties.width + uiProperties.margin.x, uiProperties.tileSize.y * boardProperties.height + uiProperties.margin.y));
+    }
 }

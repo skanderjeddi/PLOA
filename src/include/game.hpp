@@ -15,6 +15,7 @@ template <class T, class B, class I> class Game {
         I interface;
         std::map<int, std::pair<std::string, int>> scoreboard;
         int currentPlayer;
+        T currentTile;
 
     public:
         Game(UserInterfaceProperties, BoardProperties);
@@ -28,4 +29,5 @@ template <class T, class B, class I> class Game {
         }
         
         virtual void run() = 0;
+        virtual void handleEvent(const sf::Event&, sf::RenderWindow*) = 0;
 };

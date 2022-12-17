@@ -25,6 +25,7 @@ int main(int argc, char **argv) {
             UserInterfaceProperties uiProperties;
             uiProperties.font = font;
             uiProperties.tileSize = sf::Vector2i(80, 80);
+            uiProperties.margin = sf::Vector2i(160, 80);
             BoardProperties boardProperties(11, 11);
             Dominos dominos(uiProperties, boardProperties);
             dominos.setTile(5, 6, DominosTile());

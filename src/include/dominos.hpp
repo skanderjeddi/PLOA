@@ -28,13 +28,15 @@ class DominosInterface : virtual public UserInterface<DominosBoard, DominosTile>
     public:
         DominosInterface(UserInterfaceProperties&, BoardProperties&);
         void draw(DominosBoard&);
+        void drawGrid();
         void drawBoard(DominosBoard&);
         void drawTile(DominosTile&, const sf::Vector2i&);
-        void handleEvent(const sf::Event&);
+        
 };
 
 class Dominos : virtual public Game<DominosTile, DominosBoard, DominosInterface> {
     public:
         Dominos(UserInterfaceProperties, BoardProperties);
+        void handleEvent(const sf::Event&, sf::RenderWindow*);
         void run();
 };

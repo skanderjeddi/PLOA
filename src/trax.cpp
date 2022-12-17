@@ -82,18 +82,27 @@ TraxInterface::TraxInterface(UserInterfaceProperties& properties, BoardPropertie
 void TraxInterface::draw(TraxBoard& board) { }
 
 void TraxInterface::drawBoard(TraxBoard& board) {
-    drawGrid(window, properties.tileSize, sf::Vector2i(board.getProperties().width, board.getProperties().height));
+    drawGrid();
     // TODO
+}
+
+void TraxInterface::drawGrid() {
+    sf::RectangleShape line(sf::Vector2f(properties.tileSize.y * boardProperties.height, 1));
+    line.setOutlineColor(sf::Color::Black);
+    line.setFillColor(sf::Color::Black);
+    for (int i = 0; i <= boardProperties.height; i++) {
+        line.setPosition(0, i * properties.tileSize.y);
+        toRender.push_back(&line);
+    }
+    line.setSize(sf::Vector2f(1, properties.tileSize.x * boardProperties.width));
+    for (int i = 0; i <= boardProperties.width; i++) {
+        line.setPosition(i * properties.tileSize.x, 0);
+        toRender.push_back(&line);
+    }
 }
 
 void TraxInterface::drawTile(TraxTile& tile, const sf::Vector2i& position) {
     // TODO
-}
-
-void TraxInterface::handleEvent(const sf::Event& event) {
-    if (event.type == sf::Event::Resized) {
-        window.setSize(sf::Vector2u(properties.tileSize.x * boardProperties.width, properties.tileSize.y * boardProperties.height));
-    }
 }
 
 /**
@@ -105,5 +114,34 @@ void TraxInterface::handleEvent(const sf::Event& event) {
 Trax::Trax(UserInterfaceProperties properties) : Game(properties, BoardProperties(8, 8)) { }
 
 void Trax::run() {
+    auto boardProperties = board.getProperties();
+    auto uiProperties = interface.getProperties();
     interface.show(board);
+    sf::RenderWindow* window = interface.getWindow();
+    while (window->isOpen()) {
+        sf::Event event;
+        while (window->pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window->close();
+            }
+            handleEvent(event, window);
+        }
+        window->clear(sf::Color::White);
+        interface.draw(board);
+        interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x / 2, uiProperties.tileSize.y / 2));
+        for (auto drawable : interface.renderables()) {
+            window->draw(*drawable);
+            // delete drawable;
+        }
+        interface.renderables().clear();
+        window->display();
+    }
+}
+
+void Trax::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
+    auto boardProperties = board.getProperties();
+    auto uiProperties = interface.getProperties();
+    if (event.type == sf::Event::Resized) {
+        windowPtr->setSize(sf::Vector2u(uiProperties.tileSize.x * boardProperties.width + uiProperties.margin.x, uiProperties.tileSize.y * boardProperties.height + uiProperties.margin.y));
+    }
 }

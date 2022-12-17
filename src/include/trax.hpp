@@ -39,13 +39,14 @@ class TraxInterface : virtual public UserInterface<TraxBoard, TraxTile> {
     public:
         TraxInterface(UserInterfaceProperties&, BoardProperties&);
         void draw(TraxBoard&);
+        void drawGrid();
         void drawBoard(TraxBoard&);
         void drawTile(TraxTile&, const sf::Vector2i&);
-        void handleEvent(const sf::Event&);
 };
 
 class Trax : virtual public Game<TraxTile, TraxBoard, TraxInterface> {
     public:
         Trax(UserInterfaceProperties);
+        void handleEvent(const sf::Event&, sf::RenderWindow*);
         void run();
 };
