@@ -1,3 +1,3 @@
 #pragma once
 
-template <class B, class I> class Game;
+template <class T, class B, class I> class Game;

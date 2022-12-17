@@ -27,9 +27,7 @@ int main(int argc, char **argv) {
             uiProperties.tileSize = sf::Vector2i(80, 80);
             BoardProperties boardProperties(11, 11);
             Dominos dominos(uiProperties, boardProperties);
-            dominos.board().setTile(5, 5, DominosTile());
-            auto tileOpt = dominos.board().getTile(5, 5);
-            std::cout << tileOpt.hasValue() << std::endl;
+            dominos.setTile(5, 6, DominosTile());
             dominos.run();
             break;
     }

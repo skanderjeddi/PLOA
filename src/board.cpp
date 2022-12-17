@@ -13,15 +13,15 @@ template <class T> Board<T>::Board(const Board& board) : properties(board.proper
     this->tiles = board.tiles;
 }
 
+template <class T> void Board<T>::setTile(int x, int y, const T& tile) {
+    this->tiles[std::make_pair(x, y)] = tile;
+}
+
 template <class T> Option<T> Board<T>::getTile(int x, int y) const {
     if (tiles.find(std::make_pair(x, y)) != tiles.end()) {
         return Option<T>(tiles.at(std::make_pair(x, y)));
     }
     return Option<T>();
-}
-
-template <class T> void Board<T>::setTile(int x, int y, const T& tile) {
-    tiles[std::make_pair(x, y)] = tile;
 }
 
 template <class T> std::vector<std::pair<TileEdge, T>> Board<T>::getNeighbors(const std::pair<int, int>& pos) const {

@@ -44,9 +44,8 @@ class TraxInterface : virtual public UserInterface<TraxBoard, TraxTile> {
         void handleEvent(const sf::Event&);
 };
 
-class Trax : virtual public Game<TraxBoard, TraxInterface> {
+class Trax : virtual public Game<TraxTile, TraxBoard, TraxInterface> {
     public:
         Trax(UserInterfaceProperties);
         void run();
-        TraxBoard board();
 };

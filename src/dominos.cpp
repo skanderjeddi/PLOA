@@ -57,7 +57,9 @@ void DominosTile::rotate(const TileRotation& rotation) {
  * -------------
  */
 
-DominosBoard::DominosBoard(BoardProperties& properties) : Board(properties) { }
+DominosBoard::DominosBoard(BoardProperties& properties) : Board(properties) {
+    this->setTile(properties.width / 2, properties.height / 2, DominosTile());
+}
 
 bool DominosBoard::canSet(const DominosTile& tile, const std::pair<int, int>& position) const {
     bool canSet = true;
@@ -105,7 +107,6 @@ void DominosInterface::drawBoard(DominosBoard& board) {
         for (int y = 0; y < boardProperties.height; y++) {
             auto optTile = board.getTile(x, y);
             if (optTile.hasValue()) {
-                std::cout << "Tile at" << x << ", " << y << std::endl;
                 auto tile = optTile.unwrap();
                 drawTile(tile, sf::Vector2i(x * properties.tileSize.x, y * properties.tileSize.y));
             }
@@ -187,9 +188,5 @@ void DominosInterface::handleEvent(const sf::Event& event) {
 Dominos::Dominos(UserInterfaceProperties properties, BoardProperties boardProperties) : Game(properties, boardProperties) { }
 
 void Dominos::run() {
-    _interface.show(_board);
-}
-
-DominosBoard Dominos::board() {
-    return _board;
+    interface.show(board);
 }

@@ -105,9 +105,5 @@ void TraxInterface::handleEvent(const sf::Event& event) {
 Trax::Trax(UserInterfaceProperties properties) : Game(properties, BoardProperties(8, 8)) { }
 
 void Trax::run() {
-    _interface.show(_board);
-}
-
-TraxBoard Trax::board() {
-    return _board;
+    interface.show(board);
 }

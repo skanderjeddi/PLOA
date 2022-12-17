@@ -7,9 +7,7 @@
 struct BoardProperties {
     int width, height;
 
-    BoardProperties(int w, int h) : width(w), height(h) {
-        
-    } 
+    BoardProperties(int w, int h) : width(w), height(h) { } 
 };
 
 template <class T> class Board {

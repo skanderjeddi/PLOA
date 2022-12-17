@@ -9,15 +9,23 @@
 #include "tile.hpp"
 #include "interface.hpp"
 
-template <class B, class I> class Game {
+template <class T, class B, class I> class Game {
     protected:
-        B _board;
-        I _interface;
+        B board;
+        I interface;
         std::map<int, std::pair<std::string, int>> scoreboard;
         int currentPlayer;
 
     public:
         Game(UserInterfaceProperties, BoardProperties);
+        
+        void setTile(int x, int y, const T& tile) {
+            board.setTile(x, y, tile);
+        }
+
+        Option<T> getTile(int x, int y) {
+            return board.getTile(x, y);
+        }
+        
         virtual void run() = 0;
-        virtual B board() = 0;
 };

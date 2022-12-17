@@ -33,9 +33,8 @@ class DominosInterface : virtual public UserInterface<DominosBoard, DominosTile>
         void handleEvent(const sf::Event&);
 };
 
-class Dominos : virtual public Game<DominosBoard, DominosInterface> {
+class Dominos : virtual public Game<DominosTile, DominosBoard, DominosInterface> {
     public:
         Dominos(UserInterfaceProperties, BoardProperties);
         void run();
-        DominosBoard board();
 };
