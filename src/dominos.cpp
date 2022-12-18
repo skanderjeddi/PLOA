@@ -114,7 +114,7 @@ void DominosInterface::drawGrid() {
         }
     }
     for (auto rect : rectangles) {
-        toRender.push_back(rect);
+        registerForRendering(rect, true);
     }
 }
 
@@ -145,7 +145,7 @@ void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position)
     corners[2]->setPosition(position.x + 1, position.y + tileSize.y - tileSize.y / 5 - 1);
     corners[3]->setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + tileSize.y - tileSize.y / 5 - 1);
     for (auto corner : corners) {
-        toRender.push_back(corner);
+        registerForRendering(corner, true);
     }
     std::vector<sf::RectangleShape*> tileRectangles;
     std::vector<sf::Text*> tileTexts;
@@ -183,10 +183,10 @@ void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position)
         }
     }
     for (auto rectangle : tileRectangles) {
-        toRender.push_back(rectangle);
+        registerForRendering(rectangle, true);
     }
     for (auto text : tileTexts) {
-        toRender.push_back(text);
+        registerForRendering(text, true);
     }
 }
 
@@ -220,7 +220,8 @@ void Dominos::run() {
         interface.drawText(currentPlayerName, sf::Vector2f(uiProperties.tileSize.x * boardProperties.width, 0), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 32);
         interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x / 2, uiProperties.tileSize.y));
         for (auto drawable : interface.renderables()) {
-            window->draw(*drawable);
+            sf::Drawable* ptr = drawable.first;
+            window->draw(*ptr);
         }
         interface.renderables().clear();
         window->display();

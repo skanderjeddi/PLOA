@@ -19,7 +19,7 @@ template <class B, class T> void UserInterface<B, T>::drawText(std::string conte
     auto container = new sf::RectangleShape(size);
     container->setPosition(position);
     container->setFillColor(sf::Color::Transparent);
-    toRender.push_back(container);
+    registerForRendering(container, true);
     auto text = new sf::Text();
     text->setFont(properties.font);
     text->setCharacterSize(fontSize);
@@ -28,7 +28,7 @@ template <class B, class T> void UserInterface<B, T>::drawText(std::string conte
     auto textBounds = text->getLocalBounds();
     text->setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
     text->setPosition(container->getPosition().x + container->getSize().x / 2.0f, container->getPosition().y + container->getSize().y / 2.0f);
-    toRender.push_back(text);
+    registerForRendering(text, true);
 }
 
 template class UserInterface<DominosBoard, DominosTile>;

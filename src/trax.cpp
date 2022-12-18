@@ -92,12 +92,12 @@ void TraxInterface::drawGrid() {
     line.setFillColor(sf::Color::Black);
     for (int i = 0; i <= boardProperties.height; i++) {
         line.setPosition(0, i * properties.tileSize.y);
-        toRender.push_back(&line);
+        registerForRendering(&line, true);
     }
     line.setSize(sf::Vector2f(1, properties.tileSize.x * boardProperties.width));
     for (int i = 0; i <= boardProperties.width; i++) {
         line.setPosition(i * properties.tileSize.x, 0);
-        toRender.push_back(&line);
+        registerForRendering(&line, true);
     }
 }
 
@@ -130,7 +130,7 @@ void Trax::run() {
         interface.draw(board);
         interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x / 2, uiProperties.tileSize.y / 2));
         for (auto drawable : interface.renderables()) {
-            window->draw(*drawable);
+            window->draw(*drawable.first);
             // delete drawable;
         }
         interface.renderables().clear();
