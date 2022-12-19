@@ -13,4 +13,9 @@
 
 #define DEBUG false
 
+/**
+ * @brief An option type for C++ copied from Rust.
+ * 
+ * @tparam S the type of the value
+ */
 template <class S> class Option;

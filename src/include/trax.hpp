@@ -10,16 +10,25 @@
 
 #include "trax.hpp"
 
+/**
+ * @brief The Trax tile's face.
+ */
 enum class TraxTileFace {
     HEADS,
     TAILS
 };
 
+/**
+ * @brief The Trax tile's edge.
+ */
 enum class TraxTileEdge {
     BLACK,
     WHITE
 };
 
+/**
+ * @brief The Trax tile.
+ */
 class TraxTile : virtual public Tile<std::pair<TraxTileFace, std::map<TileEdge, TraxTileEdge>>> {
     public:
         TraxTile();
@@ -28,6 +37,9 @@ class TraxTile : virtual public Tile<std::pair<TraxTileFace, std::map<TileEdge, 
         void rotate(const TileRotation&);
 };
 
+/**
+ * @brief The Trax board.
+ */
 class TraxBoard : virtual public Board<TraxTile> {
     public:
         TraxBoard();
@@ -36,6 +48,9 @@ class TraxBoard : virtual public Board<TraxTile> {
         int handleTile(const TraxTile&, const std::pair<int, int>&);
 };
 
+/**
+ * @brief The Trax interface.
+ */
 class TraxInterface : virtual public UserInterface<TraxBoard, TraxTile> {
     public:
         TraxInterface(UserInterfaceProperties&, BoardProperties&);
@@ -45,6 +60,9 @@ class TraxInterface : virtual public UserInterface<TraxBoard, TraxTile> {
         void drawTile(TraxTile&, const sf::Vector2i&);
 };
 
+/**
+ * @brief The Trax game.
+ */
 class Trax : virtual public Game<TraxTile, TraxBoard, TraxInterface> {
     public:
         Trax(UserInterfaceProperties);

@@ -10,6 +10,10 @@
 
 #include "dominos.hpp"
 
+/**
+ * @brief A tile for the Dominos game.
+ * 
+ */
 class DominosTile : virtual public Tile<std::map<TileEdge, std::vector<int>>> {
     public:
         DominosTile();
@@ -18,6 +22,10 @@ class DominosTile : virtual public Tile<std::map<TileEdge, std::vector<int>>> {
         void rotate(const TileRotation&);
 };
 
+/**
+ * @brief A board for the Dominos game.
+ * 
+ */
 class DominosBoard : virtual public Board<DominosTile> {
     public:
         DominosBoard(BoardProperties&);
@@ -25,6 +33,10 @@ class DominosBoard : virtual public Board<DominosTile> {
         int handleTile(const DominosTile&, const std::pair<int, int>&);
 };
 
+/**
+ * @brief A user interface for the Dominos game.
+ * 
+ */
 class DominosInterface : virtual public UserInterface<DominosBoard, DominosTile> {
     public:
         DominosInterface(UserInterfaceProperties&, BoardProperties&);
@@ -34,6 +46,10 @@ class DominosInterface : virtual public UserInterface<DominosBoard, DominosTile>
         void drawTile(DominosTile&, const sf::Vector2i&);
 };
 
+/**
+ * @brief The Dominos game.
+ * 
+ */
 class Dominos : virtual public Game<DominosTile, DominosBoard, DominosInterface> {
     public:
         Dominos(UserInterfaceProperties, BoardProperties);
