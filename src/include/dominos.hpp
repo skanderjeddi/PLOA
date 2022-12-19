@@ -10,6 +10,12 @@
 
 #include "dominos.hpp"
 
+#define DOMINOS_TILE_SIZE 90
+#define DOMINOS_BOARD_WIDTH 10
+#define DOMINOS_BOARD_HEIGHT 9
+#define DOMINOS_WINDOW_WIDTH (DOMINOS_BOARD_WIDTH + 2) * DOMINOS_TILE_SIZE
+#define DOMINOS_WINDOW_HEIGHT (DOMINOS_BOARD_HEIGHT + 1) * DOMINOS_TILE_SIZE
+
 /**
  * @brief A tile for the Dominos game.
  * 
@@ -41,9 +47,9 @@ class DominosInterface : virtual public UserInterface<DominosBoard, DominosTile>
     public:
         DominosInterface(UserInterfaceProperties&, BoardProperties&);
         void draw(DominosBoard&);
-        void drawGrid();
-        void drawBoard(DominosBoard&);
-        void drawTile(DominosTile&, const sf::Vector2i&);
+        void drawGrid(const sf::Vector2i& = sf::Vector2i(0, 0));
+        void drawBoard(DominosBoard&, const sf::Vector2i& = sf::Vector2i(0, 0));
+        void drawTile(DominosTile&, const sf::Vector2i&, const sf::Vector2i& = sf::Vector2i(0, 0));
 };
 
 /**

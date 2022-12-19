@@ -85,12 +85,12 @@ TraxInterface::TraxInterface(UserInterfaceProperties& properties, BoardPropertie
 
 void TraxInterface::draw(TraxBoard& board) { }
 
-void TraxInterface::drawBoard(TraxBoard& board) {
-    drawGrid();
+void TraxInterface::drawBoard(TraxBoard& board, const sf::Vector2i& position) {
+    drawGrid(position);
     // TODO
 }
 
-void TraxInterface::drawGrid() {
+void TraxInterface::drawGrid(const sf::Vector2i& position) {
     sf::RectangleShape line(sf::Vector2f(properties.tileSize.y * boardProperties.height, 1));
     line.setOutlineColor(sf::Color::Black);
     line.setFillColor(sf::Color::Black);
@@ -105,7 +105,7 @@ void TraxInterface::drawGrid() {
     }
 }
 
-void TraxInterface::drawTile(TraxTile& tile, const sf::Vector2i& position) {
+void TraxInterface::drawTile(TraxTile& tile, const sf::Vector2i& position, const sf::Vector2i& offset) {
     // TODO
 }
 
@@ -142,6 +142,6 @@ void Trax::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
     auto boardProperties = board.getProperties();
     auto uiProperties = interface.getProperties();
     if (event.type == sf::Event::Resized) {
-        windowPtr->setSize(sf::Vector2u(uiProperties.tileSize.x * boardProperties.width + uiProperties.margin.x, uiProperties.tileSize.y * boardProperties.height + uiProperties.margin.y));
+        windowPtr->setSize(sf::Vector2u(uiProperties.windowSize.x, uiProperties.windowSize.y));
     }
 }

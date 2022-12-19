@@ -11,8 +11,6 @@ int main(int argc, char **argv) {
     sf::Font font;
     font.loadFromFile("assets/font.ttf");
     
-    sf::Vector2i tileSize(80, 80);
-
     std::cout << "1. Dominos" << std::endl;
     std::cout << "2. Trax" << std::endl;
     std::cout << "3. Carcassonne (WIP)" << std::endl;
@@ -26,8 +24,8 @@ int main(int argc, char **argv) {
         case 1:
             UserInterfaceProperties uiProperties;
             uiProperties.font = font;
-            uiProperties.tileSize = tileSize;
-            uiProperties.margin = sf::Vector2i(160, 80);
+            uiProperties.tileSize = sf::Vector2i(DOMINOS_TILE_SIZE, DOMINOS_TILE_SIZE);
+            uiProperties.windowSize = sf::Vector2i(DOMINOS_WINDOW_WIDTH, DOMINOS_WINDOW_HEIGHT);
             // Configuration de la partie
             std::cout << "Dimensions du plateau (x-y)? ";
             std::string line;

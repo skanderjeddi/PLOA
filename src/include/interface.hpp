@@ -7,8 +7,8 @@
 struct UserInterfaceProperties {
     std::string windowTitle;
     sf::Vector2i tileSize;
+    sf::Vector2i windowSize;
     sf::Font font;
-    sf::Vector2i margin;
 };
 
 template <class B, class T> class UserInterface {
@@ -38,15 +38,15 @@ template <class B, class T> class UserInterface {
         /**
          * @brief Draws the grid on the screen.
          */
-        virtual void drawGrid() = 0;
+        virtual void drawGrid(const sf::Vector2i& = sf::Vector2i(0, 0)) = 0;
         /**
          * @brief Draws the board on the screen.
          */
-        virtual void drawBoard(B&) = 0;
+        virtual void drawBoard(B&, const sf::Vector2i& = sf::Vector2i(0, 0)) = 0;
         /**
          * @brief Draws a tile on the screen.
          */
-        virtual void drawTile(T&, const sf::Vector2i&) = 0;
+        virtual void drawTile(T&, const sf::Vector2i&, const sf::Vector2i& = sf::Vector2i(0, 0)) = 0;
         /**
          * @brief Shows the interface (i.e. displays the window).
          */

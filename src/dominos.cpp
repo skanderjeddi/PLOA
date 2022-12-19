@@ -112,14 +112,26 @@ int DominosBoard::handleTile(const DominosTile& tile, const std::pair<int, int>&
  * -----------------
  */
 
-DominosInterface::DominosInterface(UserInterfaceProperties& properties, BoardProperties& boardProperties) : UserInterface(properties, boardProperties) { }
+DominosInterface::DominosInterface(UserInterfaceProperties& properties, BoardProperties& boardProperties) : UserInterface(properties, boardProperties) {
+    if (boardProperties.width > DOMINOS_BOARD_WIDTH) {
+        throw std::invalid_argument("Board width is too large");
+    }
+    if (boardProperties.height > DOMINOS_BOARD_HEIGHT) {
+        throw std::invalid_argument("Board height is too large");
+    }
+    properties.windowSize = sf::Vector2i(DOMINOS_BOARD_WIDTH, DOMINOS_BOARD_HEIGHT);
+    properties.tileSize = sf::Vector2i(DOMINOS_TILE_SIZE, DOMINOS_TILE_SIZE);
+}
 
 void DominosInterface::draw(DominosBoard& board) {
     if (DEBUG) std::cout << "Drawing board..." << std::endl;
-    drawBoard(board);
+    // Find coordinates to center the board 
+    int x = (properties.windowSize.x - (boardProperties.width + 2) * properties.tileSize.x) / 2;
+    int y = (properties.windowSize.y - (boardProperties.height + 1) * properties.tileSize.y) / 2;
+    drawBoard(board, sf::Vector2i(x, y));
 }
 
-void DominosInterface::drawGrid() {
+void DominosInterface::drawGrid(const sf::Vector2i& position) {
     std::vector<sf::RectangleShape*> rectangles;
     for (int x = 0; x < boardProperties.width; x++) {
         for (int y = 0; y < boardProperties.height; y++) {
@@ -128,7 +140,7 @@ void DominosInterface::drawGrid() {
             tile->setOutlineColor(sf::Color::Black);
             tile->setOutlineThickness(1);
             tile->setFillColor(sf::Color::Transparent);     
-            tile->setPosition(x * properties.tileSize.x + 1, y * properties.tileSize.y + 1);
+            tile->setPosition(position.x + x * properties.tileSize.x + 1, position.y + y * properties.tileSize.y + 1);
             rectangles.push_back(tile);
         }
     }
@@ -137,22 +149,22 @@ void DominosInterface::drawGrid() {
     }
 }
 
-void DominosInterface::drawBoard(DominosBoard& board) {
+void DominosInterface::drawBoard(DominosBoard& board, const sf::Vector2i& position) {
     if (DEBUG) std::cout << "Drawing grid..." << std::endl;
-    drawGrid();
+    drawGrid(position);
     for (int x = 0; x < boardProperties.width; x++) {
         for (int y = 0; y < boardProperties.height; y++) {
             auto optTile = board.getTile(x, y);
             if (optTile.hasValue()) {
                 auto tile = optTile.unwrap();
                 if (DEBUG) std::cout << "Drawing tile at (" << x << ", " << y << ")" << std::endl;
-                drawTile(tile, sf::Vector2i(x * properties.tileSize.x, y * properties.tileSize.y));
+                drawTile(tile, sf::Vector2i(x * properties.tileSize.x, y * properties.tileSize.y), position);
             }
         }
     } 
 }
 
-void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position) {
+void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position, const sf::Vector2i& offset) {
     auto tileSize = properties.tileSize;
     auto corners = std::vector<sf::RectangleShape*>(4);
     for (int i = 0; i < 4; i++) {
@@ -161,10 +173,10 @@ void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position)
         corners[i]->setOutlineColor(sf::Color::Black);
         corners[i]->setOutlineThickness(1);
     }
-    corners[0]->setPosition(position.x + 1, position.y + 1);
-    corners[1]->setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + 1);
-    corners[2]->setPosition(position.x + 1, position.y + tileSize.y - tileSize.y / 5 - 1);
-    corners[3]->setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + tileSize.y - tileSize.y / 5 - 1);
+    corners[0]->setPosition(offset.x + position.x + 1, offset.y + position.y + 1);
+    corners[1]->setPosition(offset.x + position.x + tileSize.x - tileSize.x / 5, offset.y + position.y + 1);
+    corners[2]->setPosition(offset.x + position.x + 1, offset.y + position.y + tileSize.y - tileSize.y / 5 - 1);
+    corners[3]->setPosition(offset.x + position.x + tileSize.x - tileSize.x / 5, offset.y + position.y + tileSize.y - tileSize.y / 5 - 1);
     for (auto corner : corners) {
         registerForRendering(corner);
     }
@@ -178,16 +190,16 @@ void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position)
             rectangle->setSize(sf::Vector2f(tileSize.x / 5, tileSize.y / 5));
             switch (edge) {
                 case TileEdge::TOP:
-                    rectangle->setPosition(position.x + (i + 1) * tileSize.x / 5, position.y + 1);
+                    rectangle->setPosition(offset.x + position.x + (i + 1) * tileSize.x / 5, offset.y + position.y + 1);
                     break;
                 case TileEdge::RIGHT:
-                    rectangle->setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + (i + 1) * tileSize.y / 5);
+                    rectangle->setPosition(offset.x + position.x + tileSize.x - tileSize.x / 5, offset.y + position.y + (i + 1) * tileSize.y / 5);
                     break;
                 case TileEdge::BOTTOM:
-                    rectangle->setPosition(position.x + (i + 1) * tileSize.x / 5, position.y + tileSize.y - tileSize.y / 5 - 1);
+                    rectangle->setPosition(offset.x + position.x + (i + 1) * tileSize.x / 5, offset.y + position.y + tileSize.y - tileSize.y / 5 - 1);
                     break;
                 case TileEdge::LEFT:
-                    rectangle->setPosition(position.x + 1, position.y + (i + 1) * tileSize.y / 5);
+                    rectangle->setPosition(offset.x + position.x + 1, offset.y + position.y + (i + 1) * tileSize.y / 5);
                     break;
             }
             auto value = values[i];
@@ -240,13 +252,13 @@ void Dominos::run() {
         interface.draw(board);
         // Draw the current player's name and score
         std::string currentPlayerName = scoreboard[currentPlayer].first + (" (" + std::to_string(scoreboard[currentPlayer].second) + ")");
-        interface.drawText(currentPlayerName, sf::Vector2f(uiProperties.tileSize.x * boardProperties.width, 0), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 22);
+        interface.drawText(currentPlayerName, sf::Vector2f(uiProperties.windowSize.x - 2 * uiProperties.tileSize.x, 0), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 22);
         std::string remainingTilesStr = "Remaining tiles: " + std::to_string(remainingTiles);
         interface.drawText(remainingTilesStr, sf::Vector2f(uiProperties.tileSize.x * boardProperties.width, uiProperties.tileSize.y * 2), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 18);
         std::string instructions = "Press 'RIGHT' to rotate the tile clockwise, 'LEFT' to rotate the tile counterclockwise, 'SPACE' to pass your turn";
         // Draw instructions at the bottom of the screen
-        interface.drawText(instructions, sf::Vector2f(0, uiProperties.tileSize.y * boardProperties.height), sf::Vector2f(uiProperties.tileSize.x * boardProperties.width + uiProperties.margin.x, uiProperties.tileSize.y), 16);
-        interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x / 2, uiProperties.tileSize.y));
+        interface.drawText(instructions, sf::Vector2f(0, uiProperties.windowSize.y - uiProperties.tileSize.y), sf::Vector2f(uiProperties.windowSize.x, uiProperties.tileSize.y), 20);
+        interface.drawTile(currentTile, sf::Vector2i(uiProperties.windowSize.x - 2 * uiProperties.tileSize.x + uiProperties.tileSize.x / 2, uiProperties.tileSize.y));
         interface.render();
         window->display();
     }
@@ -256,7 +268,7 @@ void Dominos::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
     auto boardProperties = board.getProperties();
     auto uiProperties = interface.getProperties();
     if (event.type == sf::Event::Resized) {
-        windowPtr->setSize(sf::Vector2u(uiProperties.tileSize.x * boardProperties.width + uiProperties.margin.x, uiProperties.tileSize.y * boardProperties.height + uiProperties.margin.y));
+        windowPtr->setSize(sf::Vector2u(uiProperties.windowSize.x, uiProperties.windowSize.y));
     }
     if (event.type == sf::Event::MouseButtonPressed) {
         auto mousePosition = sf::Mouse::getPosition(*windowPtr);

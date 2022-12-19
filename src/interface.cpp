@@ -11,7 +11,7 @@
 template <class B, class T> UserInterface<B, T>::UserInterface(UserInterfaceProperties& properties, BoardProperties& boardProperties) : properties(properties), boardProperties(boardProperties) { }
 
 template <class B, class T> void UserInterface<B, T>::show(B& board) {
-    window.create(sf::VideoMode(properties.tileSize.x * boardProperties.width + properties.margin.x, properties.tileSize.y * boardProperties.height + properties.margin.y), properties.windowTitle, sf::Style::Close);
+    window.create(sf::VideoMode(properties.windowSize.x, properties.windowSize.y), properties.windowTitle, sf::Style::Close);
 }
 
 template <class B, class T> void UserInterface<B, T>::drawText(std::string contents, const sf::Vector2f& position, const sf::Vector2f& size, int fontSize) {
