@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
         case 1:
             UserInterfaceProperties uiProperties;
             uiProperties.font = font;
-            uiProperties.tileSize = sf::Vector2i(80, 80);
+            uiProperties.tileSize = tileSize;
             uiProperties.margin = sf::Vector2i(160, 80);
             // Configuration de la partie
             std::cout << "Dimensions du plateau (x-y)? ";
