@@ -239,7 +239,10 @@ void Dominos::run() {
         window->clear(sf::Color::White);
         interface.draw(board);
         std::string currentPlayerName = scoreboard[currentPlayer].first + (" (" + std::to_string(scoreboard[currentPlayer].second) + ")");
-        interface.drawText(currentPlayerName, sf::Vector2f(uiProperties.tileSize.x * boardProperties.width, 0), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 28);
+        interface.drawText(currentPlayerName, sf::Vector2f(uiProperties.tileSize.x * boardProperties.width, 0), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 16);
+        std::string instructions = "Press 'RIGHT' to rotate the tile clockwise, 'LEFT' to rotate the tile counterclockwise, 'SPACE' to pass your turn";
+        // Draw instructions at the bottom of the screen
+        interface.drawText(instructions, sf::Vector2f(0, uiProperties.tileSize.y * boardProperties.height), sf::Vector2f(uiProperties.tileSize.x * boardProperties.width + uiProperties.margin.x, uiProperties.tileSize.y), 22);
         interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x / 2, uiProperties.tileSize.y));
         interface.render();
         window->display();
