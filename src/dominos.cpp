@@ -195,7 +195,7 @@ void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position)
             auto value = values[i];
             auto text = new sf::Text();
             text->setFont(properties.font);
-            text->setCharacterSize(16);
+            text->setCharacterSize(14);
             text->setFillColor(sf::Color::Black);
             text->setString(std::to_string(value));
             auto textBounds = text->getLocalBounds();
@@ -229,6 +229,7 @@ void Dominos::run() {
     auto uiProperties = interface.getProperties();
     interface.show(board);
     sf::RenderWindow* window = interface.getWindow();
+    window->setKeyRepeatEnabled(false);
     while (window->isOpen()) {
         sf::Event event;
         while (window->pollEvent(event)) {
@@ -239,7 +240,7 @@ void Dominos::run() {
         }
         window->clear(sf::Color::White);
         interface.draw(board);
-        std::string currentPlayerName = scoreboard[currentPlayer].first;
+        std::string currentPlayerName = scoreboard[currentPlayer].first + (" (" + std::to_string(scoreboard[currentPlayer].second) + ")");
         interface.drawText(currentPlayerName, sf::Vector2f(uiProperties.tileSize.x * boardProperties.width, 0), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 28);
         interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x / 2, uiProperties.tileSize.y));
         interface.render();
@@ -262,7 +263,17 @@ void Dominos::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
             scoreboard[currentPlayer].second += board.handleTile(currentTile, position);
             currentPlayer += 1;
             currentPlayer %= scoreboard.size();
+            currentTile = DominosTile();
             // TODO: game over
+        }
+    }
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Right) {
+            currentTile.rotate(TileRotation::CLOCKWISE);
+        } else if (event.key.code == sf::Keyboard::Left) {
+            currentTile.rotate(TileRotation::COUNTERCLOCKWISE);
+        } else if (event.key.code == sf::Keyboard::Space) {
+            currentTile = DominosTile();
         }
     }
 }
