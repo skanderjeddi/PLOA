@@ -33,6 +33,7 @@ class TraxBoard : virtual public Board<TraxTile> {
         TraxBoard();
         TraxBoard(BoardProperties&);
         bool canSet(const TraxTile&, const std::pair<int, int>&) const;
+        int handleTile(const TraxTile&, const std::pair<int, int>&);
 };
 
 class TraxInterface : virtual public UserInterface<TraxBoard, TraxTile> {

@@ -89,6 +89,23 @@ bool DominosBoard::canSet(const DominosTile& tile, const std::pair<int, int>& po
     return canSet;
 }
 
+int DominosBoard::handleTile(const DominosTile& tile, const std::pair<int, int>& position) {
+    if (canSet(tile, position)) {
+        this->tiles[position] = tile;
+        auto neighbors = getNeighbors(position);
+        int count = 0;
+        for (auto neighbor : neighbors) {
+            for (auto edge : { TileEdge::TOP, TileEdge::RIGHT, TileEdge::BOTTOM, TileEdge::LEFT }) {
+                if (edge == neighbor.first) {
+                    for (auto value : neighbor.second.dataStructure().at(edge)) count += 2 * value;
+                }
+            }
+        }
+        return count;
+    }
+    return 0;
+}
+
 /**
  * -----------------
  * DOMINOS INTERFACE
@@ -98,33 +115,39 @@ bool DominosBoard::canSet(const DominosTile& tile, const std::pair<int, int>& po
 DominosInterface::DominosInterface(UserInterfaceProperties& properties, BoardProperties& boardProperties) : UserInterface(properties, boardProperties) { }
 
 void DominosInterface::draw(DominosBoard& board) {
+    if (DEBUG) std::cout << "Drawing board..." << std::endl;
     drawBoard(board);
 }
 
 void DominosInterface::drawGrid() {
-    std::vector<sf::RectangleShape*> rectangles;
+    std::vector<sf::RectangleShape*> rectangles(boardProperties.width * boardProperties.height);
+    int i = 0;
     for (int x = 0; x < boardProperties.width; x++) {
         for (int y = 0; y < boardProperties.height; y++) {
             sf::RectangleShape* tile = new sf::RectangleShape(sf::Vector2f(properties.tileSize.x - 1, properties.tileSize.y - 1));
+            if (DEBUG) std::cout << "New rectangle @ " << tile << std::endl;
             tile->setOutlineColor(sf::Color::Black);
             tile->setOutlineThickness(1);
             tile->setFillColor(sf::Color::Transparent);     
             tile->setPosition(x * properties.tileSize.x + 1, y * properties.tileSize.y + 1);
-            rectangles.push_back(tile);
+            rectangles[i] = tile;
+            i++;
         }
     }
-    for (auto rect : rectangles) {
-        registerForRendering(rect, true);
+    for (size_t i = 0; i < rectangles.size(); i++) {
+        registerForRendering(rectangles[i]);
     }
 }
 
 void DominosInterface::drawBoard(DominosBoard& board) {
+    if (DEBUG) std::cout << "Drawing grid..." << std::endl;
     drawGrid();
     for (int x = 0; x < boardProperties.width; x++) {
         for (int y = 0; y < boardProperties.height; y++) {
             auto optTile = board.getTile(x, y);
             if (optTile.hasValue()) {
                 auto tile = optTile.unwrap();
+                if (DEBUG) std::cout << "Drawing tile at (" << x << ", " << y << ")" << std::endl;
                 drawTile(tile, sf::Vector2i(x * properties.tileSize.x, y * properties.tileSize.y));
             }
         }
@@ -145,7 +168,7 @@ void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position)
     corners[2]->setPosition(position.x + 1, position.y + tileSize.y - tileSize.y / 5 - 1);
     corners[3]->setPosition(position.x + tileSize.x - tileSize.x / 5, position.y + tileSize.y - tileSize.y / 5 - 1);
     for (auto corner : corners) {
-        registerForRendering(corner, true);
+        registerForRendering(corner);
     }
     std::vector<sf::RectangleShape*> tileRectangles;
     std::vector<sf::Text*> tileTexts;
@@ -172,7 +195,7 @@ void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position)
             auto value = values[i];
             auto text = new sf::Text();
             text->setFont(properties.font);
-            text->setCharacterSize(18);
+            text->setCharacterSize(16);
             text->setFillColor(sf::Color::Black);
             text->setString(std::to_string(value));
             auto textBounds = text->getLocalBounds();
@@ -183,10 +206,10 @@ void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position)
         }
     }
     for (auto rectangle : tileRectangles) {
-        registerForRendering(rectangle, true);
+        registerForRendering(rectangle);
     }
     for (auto text : tileTexts) {
-        registerForRendering(text, true);
+        registerForRendering(text);
     }
 }
 
@@ -217,13 +240,9 @@ void Dominos::run() {
         window->clear(sf::Color::White);
         interface.draw(board);
         std::string currentPlayerName = scoreboard[currentPlayer].first;
-        interface.drawText(currentPlayerName, sf::Vector2f(uiProperties.tileSize.x * boardProperties.width, 0), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 32);
+        interface.drawText(currentPlayerName, sf::Vector2f(uiProperties.tileSize.x * boardProperties.width, 0), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 28);
         interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x / 2, uiProperties.tileSize.y));
-        for (auto drawable : interface.renderables()) {
-            sf::Drawable* ptr = drawable.first;
-            window->draw(*ptr);
-        }
-        interface.renderables().clear();
+        interface.render();
         window->display();
     }
 }
@@ -233,5 +252,17 @@ void Dominos::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
     auto uiProperties = interface.getProperties();
     if (event.type == sf::Event::Resized) {
         windowPtr->setSize(sf::Vector2u(uiProperties.tileSize.x * boardProperties.width + uiProperties.margin.x, uiProperties.tileSize.y * boardProperties.height + uiProperties.margin.y));
+    }
+    if (event.type == sf::Event::MouseButtonPressed) {
+        auto mousePosition = sf::Mouse::getPosition(*windowPtr);
+        auto x = mousePosition.x / uiProperties.tileSize.x;
+        auto y = mousePosition.y / uiProperties.tileSize.y;
+        auto position = std::make_pair(x, y);
+        if (x < boardProperties.width && y < boardProperties.height) {
+            scoreboard[currentPlayer].second += board.handleTile(currentTile, position);
+            currentPlayer += 1;
+            currentPlayer %= scoreboard.size();
+            // TODO: game over
+        }
     }
 }

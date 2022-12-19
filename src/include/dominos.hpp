@@ -22,6 +22,7 @@ class DominosBoard : virtual public Board<DominosTile> {
     public:
         DominosBoard(BoardProperties&);
         bool canSet(const DominosTile&, const std::pair<int, int>&) const;
+        int handleTile(const DominosTile&, const std::pair<int, int>&);
 };
 
 class DominosInterface : virtual public UserInterface<DominosBoard, DominosTile> {

@@ -71,6 +71,10 @@ bool TraxBoard::canSet(const TraxTile& tile, const std::pair<int, int>& position
     return true;
 }
 
+int TraxBoard::handleTile(const TraxTile& tile, const std::pair<int, int>& position) {
+    return 0;
+}
+
 /**
  * --------------
  * TRAX INTERFACE
@@ -92,12 +96,12 @@ void TraxInterface::drawGrid() {
     line.setFillColor(sf::Color::Black);
     for (int i = 0; i <= boardProperties.height; i++) {
         line.setPosition(0, i * properties.tileSize.y);
-        registerForRendering(&line, true);
+        registerForRendering(&line);
     }
     line.setSize(sf::Vector2f(1, properties.tileSize.x * boardProperties.width));
     for (int i = 0; i <= boardProperties.width; i++) {
         line.setPosition(i * properties.tileSize.x, 0);
-        registerForRendering(&line, true);
+        registerForRendering(&line);
     }
 }
 
@@ -129,11 +133,7 @@ void Trax::run() {
         window->clear(sf::Color::White);
         interface.draw(board);
         interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x / 2, uiProperties.tileSize.y / 2));
-        for (auto drawable : interface.renderables()) {
-            window->draw(*drawable.first);
-            // delete drawable;
-        }
-        interface.renderables().clear();
+        interface.render();
         window->display();
     }
 }

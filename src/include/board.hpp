@@ -20,6 +20,7 @@ template <class T> class Board {
         Board(const Board&);
         Option<T> getTile(int, int) const;
         void setTile(int, int, const T&);
+        virtual int handleTile(const T&, const std::pair<int, int>&) = 0;
         std::vector<std::pair<TileEdge, T>> getNeighbors(const std::pair<int, int>&) const;
         virtual bool canSet(const T&, const std::pair<int, int>&) const = 0;
         BoardProperties getProperties() const { return properties; } 

@@ -11,4 +11,6 @@
 #include <sstream>
 #include <SFML/Graphics.hpp>
 
+#define DEBUG false
+
 template <class S> class Option;

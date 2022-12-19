@@ -16,7 +16,7 @@ template <class B, class T> class UserInterface {
         UserInterfaceProperties properties;
         BoardProperties boardProperties;
         sf::RenderWindow window;
-        std::vector<std::pair<sf::Drawable*, bool>> toRender;
+        std::vector<sf::Drawable*> toRender;
 
     public:
         UserInterface(UserInterfaceProperties&, BoardProperties&);
@@ -26,8 +26,18 @@ template <class B, class T> class UserInterface {
         virtual void drawBoard(B&) = 0;
         virtual void drawTile(T&, const sf::Vector2i&) = 0;
         void show(B&);
-        void registerForRendering(sf::Drawable* ptr, bool b) { toRender.push_back(std::make_pair(ptr, b)); }
+        void registerForRendering(sf::Drawable* ptr) {
+            if (DEBUG) std::cout << "Registering " << ptr << " for rendering..." << std::endl;
+            toRender.push_back(ptr);
+        }
+        void render() {
+            for (size_t i = 0; i < toRender.size(); i++) {
+                window.draw(*toRender[i]);
+                if (DEBUG) std::cout << "Deleting " << toRender[i] << " ..." << std::endl;
+                delete toRender[i];
+                toRender.erase(toRender.begin() + i);
+            }
+        }
         UserInterfaceProperties getProperties() const { return properties; }
         sf::RenderWindow* getWindow() { return &window; }
-        std::vector<std::pair<sf::Drawable*, bool>> renderables() { return toRender; }
 };

@@ -9,7 +9,7 @@
 #include "include/tile.hpp"
 #include "include/interface.hpp"
 
-template <class T, class B, class I> Game<T, B, I>::Game(UserInterfaceProperties uiProperties, BoardProperties boardProperties) : interface(uiProperties, boardProperties), board(boardProperties) {
+template <class T, class B, class I> Game<T, B, I>::Game(UserInterfaceProperties uiProperties, BoardProperties boardProperties) : board(boardProperties), interface(uiProperties, boardProperties)  {
     scoreboard = std::map<int, std::pair<std::string, int>>();
 }
 
