@@ -6,6 +6,8 @@
 #include "include/trax.hpp"
 
 int main(int argc, char **argv) {
+    srand((unsigned int) time(NULL));
+
     sf::Font font;
     font.loadFromFile("assets/font.ttf");
     
