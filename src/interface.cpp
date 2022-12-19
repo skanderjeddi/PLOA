@@ -26,8 +26,8 @@ template <class B, class T> void UserInterface<B, T>::drawText(std::string conte
     text->setFillColor(sf::Color::Black);
     text->setString(contents);
     auto textBounds = text->getLocalBounds();
-    text->setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
-    text->setPosition(container->getPosition().x + container->getSize().x / 2.0f, container->getPosition().y + container->getSize().y / 2.0f);
+    text->setOrigin((int) (textBounds.left + textBounds.width / 2.0f), (int) (textBounds.top + textBounds.height / 2.0f));
+    text->setPosition((int) (container->getPosition().x + container->getSize().x / 2.0f), (int) (container->getPosition().y + container->getSize().y / 2.0f));
     registerForRendering(text);
 }
 

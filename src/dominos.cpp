@@ -17,7 +17,7 @@ DominosTile::DominosTile() : Tile() {
     for (auto side : { TileEdge::LEFT, TileEdge::TOP, TileEdge::RIGHT, TileEdge::BOTTOM }) {
         properties[side] = std::vector<int>(3);
         for (int i = 0; i < 3; i++) {
-            properties[side][i] = random(0, 4);
+            properties[side][i] = random(0, 1);
         }
     }
 }
@@ -197,8 +197,8 @@ void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position)
             text->setFillColor(sf::Color::Black);
             text->setString(std::to_string(value));
             auto textBounds = text->getLocalBounds();
-            text->setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
-            text->setPosition(rectangle->getPosition().x + rectangle->getSize().x / 2.0f, rectangle->getPosition().y + rectangle->getSize().y / 2.0f);
+            text->setOrigin(textBounds.left + textBounds.width / 2.0, textBounds.top + textBounds.height / 2.0);
+            text->setPosition((int) (rectangle->getPosition().x + rectangle->getSize().x / 2.0f), (int) (rectangle->getPosition().y + rectangle->getSize().y / 2.0f));
             tileTexts.push_back(text);
             tileRectangles.push_back(rectangle);
         }
@@ -238,11 +238,14 @@ void Dominos::run() {
         }
         window->clear(sf::Color::White);
         interface.draw(board);
+        // Draw the current player's name and score
         std::string currentPlayerName = scoreboard[currentPlayer].first + (" (" + std::to_string(scoreboard[currentPlayer].second) + ")");
-        interface.drawText(currentPlayerName, sf::Vector2f(uiProperties.tileSize.x * boardProperties.width, 0), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 16);
+        interface.drawText(currentPlayerName, sf::Vector2f(uiProperties.tileSize.x * boardProperties.width, 0), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 22);
+        std::string remainingTilesStr = "Remaining tiles: " + std::to_string(remainingTiles);
+        interface.drawText(remainingTilesStr, sf::Vector2f(uiProperties.tileSize.x * boardProperties.width, uiProperties.tileSize.y * 2), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 18);
         std::string instructions = "Press 'RIGHT' to rotate the tile clockwise, 'LEFT' to rotate the tile counterclockwise, 'SPACE' to pass your turn";
         // Draw instructions at the bottom of the screen
-        interface.drawText(instructions, sf::Vector2f(0, uiProperties.tileSize.y * boardProperties.height), sf::Vector2f(uiProperties.tileSize.x * boardProperties.width + uiProperties.margin.x, uiProperties.tileSize.y), 22);
+        interface.drawText(instructions, sf::Vector2f(0, uiProperties.tileSize.y * boardProperties.height), sf::Vector2f(uiProperties.tileSize.x * boardProperties.width + uiProperties.margin.x, uiProperties.tileSize.y), 16);
         interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x / 2, uiProperties.tileSize.y));
         interface.render();
         window->display();
@@ -265,7 +268,12 @@ void Dominos::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
             currentPlayer += 1;
             currentPlayer %= scoreboard.size();
             currentTile = DominosTile();
-            // TODO: game over
+            remainingTiles -= 1;
+            if (remainingTiles == 0) {
+                std::cout << "Game over!" << std::endl;
+                // TODO: Show scoreboard
+                exit(0);
+            }
         }
     }
     if (event.type == sf::Event::KeyPressed) {
@@ -274,7 +282,15 @@ void Dominos::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
         } else if (event.key.code == sf::Keyboard::Left) {
             currentTile.rotate(TileRotation::COUNTERCLOCKWISE);
         } else if (event.key.code == sf::Keyboard::Space) {
+            currentPlayer += 1;
+            currentPlayer %= scoreboard.size();
             currentTile = DominosTile();
+            remainingTiles -= 1;
+            if (remainingTiles == 0) {
+                std::cout << "Game over!" << std::endl;
+                // TODO: Show scoreboard
+                exit(0);
+            }
         }
     }
 }

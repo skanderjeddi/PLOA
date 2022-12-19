@@ -51,6 +51,8 @@ class DominosInterface : virtual public UserInterface<DominosBoard, DominosTile>
  * 
  */
 class Dominos : virtual public Game<DominosTile, DominosBoard, DominosInterface> {
+    private:
+        int remainingTiles = 30;
     public:
         Dominos(UserInterfaceProperties, BoardProperties);
         void handleEvent(const sf::Event&, sf::RenderWindow*);
