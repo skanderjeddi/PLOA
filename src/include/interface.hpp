@@ -33,6 +33,8 @@ template <class B, class T> class UserInterface {
         void render() {
             for (size_t i = 0; i < toRender.size(); i++) {
                 window.draw(*toRender[i]);
+            }
+            for (size_t i = 0; i < toRender.size(); i++) {
                 if (DEBUG) std::cout << "Deleting " << toRender[i] << " ..." << std::endl;
                 delete toRender[i];
                 toRender.erase(toRender.begin() + i);
