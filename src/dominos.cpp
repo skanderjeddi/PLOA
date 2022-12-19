@@ -97,7 +97,7 @@ int DominosBoard::handleTile(const DominosTile& tile, const std::pair<int, int>&
         for (auto neighbor : neighbors) {
             for (auto edge : { TileEdge::TOP, TileEdge::RIGHT, TileEdge::BOTTOM, TileEdge::LEFT }) {
                 if (edge == neighbor.first) {
-                    for (auto value : neighbor.second.dataStructure().at(edge)) count += 2 * value;
+                    for (auto value : neighbor.second.dataStructure().at(oppositeEdge(edge))) count += 2 * value;
                 }
             }
         }
@@ -120,8 +120,7 @@ void DominosInterface::draw(DominosBoard& board) {
 }
 
 void DominosInterface::drawGrid() {
-    std::vector<sf::RectangleShape*> rectangles(boardProperties.width * boardProperties.height);
-    int i = 0;
+    std::vector<sf::RectangleShape*> rectangles;
     for (int x = 0; x < boardProperties.width; x++) {
         for (int y = 0; y < boardProperties.height; y++) {
             sf::RectangleShape* tile = new sf::RectangleShape(sf::Vector2f(properties.tileSize.x - 1, properties.tileSize.y - 1));
@@ -130,12 +129,11 @@ void DominosInterface::drawGrid() {
             tile->setOutlineThickness(1);
             tile->setFillColor(sf::Color::Transparent);     
             tile->setPosition(x * properties.tileSize.x + 1, y * properties.tileSize.y + 1);
-            rectangles[i] = tile;
-            i++;
+            rectangles.push_back(tile);
         }
     }
-    for (size_t i = 0; i < rectangles.size(); i++) {
-        registerForRendering(rectangles[i]);
+    for (auto rect : rectangles) {
+        registerForRendering(rect);
     }
 }
 
