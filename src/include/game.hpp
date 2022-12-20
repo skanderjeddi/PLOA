@@ -16,6 +16,7 @@ template <class T, class B, class I> class Game {
         std::map<int, std::pair<std::string, int>> scoreboard;
         int currentPlayer;
         T currentTile;
+        bool isGameOver = false;
 
     public:
         /**
