@@ -35,7 +35,7 @@ template <class B, class T> void UserInterface<B, T>::drawGrid(const sf::Vector2
 template <class B, class T> void UserInterface<B, T>::drawText(std::string contents, const sf::Vector2f& position, const sf::Vector2f& size, int fontSize) {
     // Draw text centered in container
     auto container = new sf::RectangleShape(size);
-    container->setPosition(position);
+    container->setPosition(sf::Vector2f((int) position.x, (int) position.y));
     container->setFillColor(sf::Color::Transparent);
     registerForRendering(container);
     auto text = new sf::Text();

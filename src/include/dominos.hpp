@@ -10,9 +10,9 @@
 
 #include "dominos.hpp"
 
-#define DOMINOS_TILE_SIZE 90
+#define DOMINOS_TILE_SIZE 85
 #define DOMINOS_BOARD_WIDTH 10
-#define DOMINOS_BOARD_HEIGHT 9
+#define DOMINOS_BOARD_HEIGHT 10
 #define DOMINOS_WINDOW_WIDTH (DOMINOS_BOARD_WIDTH + 2) * DOMINOS_TILE_SIZE
 #define DOMINOS_WINDOW_HEIGHT (DOMINOS_BOARD_HEIGHT + 1) * DOMINOS_TILE_SIZE
 
@@ -57,9 +57,9 @@ class DominosInterface : virtual public UserInterface<DominosBoard, DominosTile>
  */
 class Dominos : virtual public Game<DominosTile, DominosBoard, DominosInterface> {
     private:
-        int remainingTiles = 30;
+        int remainingTiles;
     public:
-        Dominos(UserInterfaceProperties, BoardProperties);
+        Dominos(UserInterfaceProperties, BoardProperties, int);
         void drawMainGame();
         void drawGameOver();
         void handleEvent(const sf::Event&, sf::RenderWindow*);
