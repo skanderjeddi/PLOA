@@ -266,7 +266,8 @@ void Dominos::handleEvent(const sf::Event & event, sf::RenderWindow * windowPtr)
                 std::cout << "inside tile: " << x << ", " << y << std::endl;
                 int result = board.handleTile(currentTile, position);
                 if (result != -1) {
-                    scoreboard[currentPlayer].second += board.handleTile(currentTile, position);
+                    std::cout << "+ " << result << " points" << std::endl;
+                    scoreboard[currentPlayer].second += result;
                     currentPlayer += 1;
                     currentPlayer %= scoreboard.size();
                     currentTile = DominosTile();
