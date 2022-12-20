@@ -263,18 +263,29 @@ void Dominos::drawMainGame() {
 void Dominos::drawGameOver() {
     auto boardProperties = board.getProperties();
     auto uiProperties = interface.getProperties();
+
+    int tileWidth = uiProperties.tileSize.x;
+    int tileHeight = uiProperties.tileSize.y;
+
+    int windowWidth = uiProperties.windowSize.x;
+    int windowHeight = uiProperties.windowSize.y;
+
     std::string gameOverText = "La partie est finie!";
-    interface.drawText(gameOverText, sf::Vector2f(uiProperties.windowSize.x / 2 - uiProperties.tileSize.x, uiProperties.windowSize.y / 2 - uiProperties.tileSize.y), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 32);
+    interface.drawText(gameOverText, sf::Vector2f(windowWidth / 2 - tileWidth, windowHeight / 2 - tileHeight), sf::Vector2f(tileWidth * 2, tileHeight), 32);
     std::string winnerText = "Le gagnant est: " + scoreboard[0].first + " avec " + std::to_string(scoreboard[0].second) + " points!";
-    interface.drawText(winnerText, sf::Vector2f(uiProperties.windowSize.x / 2 - uiProperties.tileSize.x, uiProperties.windowSize.y / 2), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 32);
+    interface.drawText(winnerText, sf::Vector2f(windowWidth / 2 - tileWidth, windowHeight / 2), sf::Vector2f(tileWidth * 2, tileHeight), 32);
     std::string instructions = "Appuyez sur n'importe quel touche pour quitter";
     // Draw instructions at the bottom of the screen
-    interface.drawText(instructions, sf::Vector2f(0, uiProperties.windowSize.y - uiProperties.tileSize.y), sf::Vector2f(uiProperties.windowSize.x, uiProperties.tileSize.y), 22);
+    interface.drawText(instructions, sf::Vector2f(0, windowHeight - tileHeight), sf::Vector2f(windowWidth, tileHeight), 22);
 }
 
 void Dominos::run() {
     auto boardProperties = board.getProperties();
     auto uiProperties = interface.getProperties();
+    int tileWidth = uiProperties.tileSize.x;
+    int tileHeight = uiProperties.tileSize.y;
+    int windowWidth = uiProperties.windowSize.x;
+    int windowHeight = uiProperties.windowSize.y;
     interface.show(board);
     sf::RenderWindow* window = interface.getWindow();
     window->setKeyRepeatEnabled(false);
@@ -287,16 +298,11 @@ void Dominos::run() {
             handleEvent(event, window);
         }
         window->clear(sf::Color::White);
-        interface.draw(board);
-        // Draw the current player's name and score
-        std::string currentPlayerName = scoreboard[currentPlayer].first + (" (" + std::to_string(scoreboard[currentPlayer].second) + ")");
-        interface.drawText(currentPlayerName, sf::Vector2f(uiProperties.windowSize.x - 2 * uiProperties.tileSize.x, 0), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 22);
-        std::string remainingTilesStr = "Remaining tiles: " + std::to_string(remainingTiles);
-        interface.drawText(remainingTilesStr, sf::Vector2f(uiProperties.tileSize.x * boardProperties.width, uiProperties.tileSize.y * 2), sf::Vector2f(uiProperties.tileSize.x * 2, uiProperties.tileSize.y), 18);
-        std::string instructions = "Press 'RIGHT' to rotate the tile clockwise, 'LEFT' to rotate the tile counterclockwise, 'SPACE' to pass your turn";
-        // Draw instructions at the bottom of the screen
-        interface.drawText(instructions, sf::Vector2f(0, uiProperties.windowSize.y - uiProperties.tileSize.y), sf::Vector2f(uiProperties.windowSize.x, uiProperties.tileSize.y), 20);
-        interface.drawTile(currentTile, sf::Vector2i(uiProperties.windowSize.x - 2 * uiProperties.tileSize.x + uiProperties.tileSize.x / 2, uiProperties.tileSize.y));
+        if (!isGameOver) {
+            drawMainGame();
+        } else {
+            drawGameOver();
+        }
         interface.render();
         window->display();
     }
@@ -305,16 +311,20 @@ void Dominos::run() {
 void Dominos::handleEvent(const sf::Event & event, sf::RenderWindow * windowPtr) {
     auto boardProperties = board.getProperties();
     auto uiProperties = interface.getProperties();
-    int boardOffsetX = (uiProperties.windowSize.x - (boardProperties.width + 2) * uiProperties.tileSize.x) / 2;
-    int boardOffsetY = (uiProperties.windowSize.y - (boardProperties.height + 1) * uiProperties.tileSize.y) / 2;
+    int tileWidth = uiProperties.tileSize.x;
+    int tileHeight = uiProperties.tileSize.y;
+    int windowWidth = uiProperties.windowSize.x;
+    int windowHeight = uiProperties.windowSize.y;
+    int boardOffsetX = (uiProperties.windowSize.x - (boardProperties.width + 2) * tileWidth) / 2;
+    int boardOffsetY = (uiProperties.windowSize.y - (boardProperties.height + 1) * tileHeight) / 2;
     if (event.type == sf::Event::Resized) {
-        windowPtr->setSize(sf::Vector2u(uiProperties.windowSize.x, uiProperties.windowSize.y));
+        windowPtr->setSize(sf::Vector2u(windowWidth, windowHeight));
     }
     if (event.type == sf::Event::MouseButtonPressed) {
         if (!isGameOver) {
             auto mousePosition = sf::Mouse::getPosition(*windowPtr);
-            auto x = (mousePosition.x - boardOffsetX) / uiProperties.tileSize.x;
-            auto y = (mousePosition.y - boardOffsetY) / uiProperties.tileSize.y;
+            auto x = (mousePosition.x - boardOffsetX) / tileWidth;
+            auto y = (mousePosition.y - boardOffsetY) / tileHeight;
             auto position = std::make_pair(x, y);
             if (x < boardProperties.width && y < boardProperties.height) {
                 std::cout << "inside tile: " << x << ", " << y << std::endl;
