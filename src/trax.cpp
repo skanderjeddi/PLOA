@@ -124,7 +124,7 @@ void Trax::run() {
 }
 
 void Trax::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
-    auto boardProperties = board.getProperties();
+    // auto boardProperties = board.getProperties();
     auto uiProperties = interface.getProperties();
     if (event.type == sf::Event::Resized) {
         windowPtr->setSize(sf::Vector2u(uiProperties.windowSize.x, uiProperties.windowSize.y));

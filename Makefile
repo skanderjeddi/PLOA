@@ -8,12 +8,12 @@ OUT = launcher
 .PHONY: all clean
 
 all: $(OUT)
-	./bin/launcher
+	@./bin/launcher
 
 # clean house
 clean:
 	rm -f $(OBJS) $(OUT)
 
 $(OUT): $(OBJS)
-	mkdir -p bin
-	$(CXX) $(CXXFLAGS) -o ./bin/$(OUT) $(SOURCES) -lsfml-graphics -lsfml-window -lsfml-system
+	@mkdir -p bin
+	@$(CXX) $(CXXFLAGS) -o ./bin/$(OUT) $(SOURCES) -lsfml-graphics -lsfml-window -lsfml-system

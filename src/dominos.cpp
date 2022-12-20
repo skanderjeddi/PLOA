@@ -244,7 +244,6 @@ void Dominos::drawMainGame() {
         return a.second > b.second;
     });
     for (size_t i = 0; i < scores.size(); i++) {
-        auto playerAndScore = scores[i];
         auto mapEntry = scoreboard[scores[i].first];
         std::string playerName = mapEntry.first + (" - " + std::to_string(mapEntry.second) + "pts");
         interface.drawText(playerName, sf::Vector2f(windowWidth - 2 * tileWidth, 0), sf::Vector2f(tileWidth * 2, (int) (windowHeight / 1.45f) + (int) (windowHeight / 1.45f) / 16 * (i + 1)), 16);
@@ -261,15 +260,11 @@ void Dominos::drawMainGame() {
 }
 
 void Dominos::drawGameOver() {
-    auto boardProperties = board.getProperties();
     auto uiProperties = interface.getProperties();
-
     int tileWidth = uiProperties.tileSize.x;
     int tileHeight = uiProperties.tileSize.y;
-
     int windowWidth = uiProperties.windowSize.x;
     int windowHeight = uiProperties.windowSize.y;
-
     std::string gameOverText = "La partie est finie!";
     interface.drawText(gameOverText, sf::Vector2f(windowWidth / 2 - tileWidth, windowHeight / 2 - tileHeight), sf::Vector2f(tileWidth * 2, tileHeight), 32);
     std::string winnerText = "Le gagnant est: " + scoreboard[0].first + " avec " + std::to_string(scoreboard[0].second) + " points!";
@@ -280,12 +275,6 @@ void Dominos::drawGameOver() {
 }
 
 void Dominos::run() {
-    auto boardProperties = board.getProperties();
-    auto uiProperties = interface.getProperties();
-    int tileWidth = uiProperties.tileSize.x;
-    int tileHeight = uiProperties.tileSize.y;
-    int windowWidth = uiProperties.windowSize.x;
-    int windowHeight = uiProperties.windowSize.y;
     interface.show(board);
     sf::RenderWindow* window = interface.getWindow();
     window->setKeyRepeatEnabled(false);
