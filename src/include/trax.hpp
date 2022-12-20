@@ -55,7 +55,6 @@ class TraxInterface : virtual public UserInterface<TraxBoard, TraxTile> {
     public:
         TraxInterface(UserInterfaceProperties&, BoardProperties&);
         void draw(TraxBoard&);
-        void drawGrid(const sf::Vector2i& = sf::Vector2i(0, 0));
         void drawBoard(TraxBoard&, const sf::Vector2i& = sf::Vector2i(0, 0));
         void drawTile(TraxTile&, const sf::Vector2i&, const sf::Vector2i& = sf::Vector2i(0, 0));
 };

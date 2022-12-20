@@ -38,7 +38,7 @@ template <class B, class T> class UserInterface {
         /**
          * @brief Draws the grid on the screen.
          */
-        virtual void drawGrid(const sf::Vector2i& = sf::Vector2i(0, 0)) = 0;
+        void drawGrid(const sf::Vector2i& = sf::Vector2i(0, 0));
         /**
          * @brief Draws the board on the screen.
          */

@@ -90,21 +90,6 @@ void TraxInterface::drawBoard(TraxBoard& board, const sf::Vector2i& position) {
     // TODO
 }
 
-void TraxInterface::drawGrid(const sf::Vector2i& position) {
-    sf::RectangleShape line(sf::Vector2f(properties.tileSize.y * boardProperties.height, 1));
-    line.setOutlineColor(sf::Color::Black);
-    line.setFillColor(sf::Color::Black);
-    for (int i = 0; i <= boardProperties.height; i++) {
-        line.setPosition(0, i * properties.tileSize.y);
-        registerForRendering(&line);
-    }
-    line.setSize(sf::Vector2f(1, properties.tileSize.x * boardProperties.width));
-    for (int i = 0; i <= boardProperties.width; i++) {
-        line.setPosition(i * properties.tileSize.x, 0);
-        registerForRendering(&line);
-    }
-}
-
 void TraxInterface::drawTile(TraxTile& tile, const sf::Vector2i& position, const sf::Vector2i& offset) {
     // TODO
 }

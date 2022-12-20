@@ -14,6 +14,24 @@ template <class B, class T> void UserInterface<B, T>::show(B& board) {
     window.create(sf::VideoMode(properties.windowSize.x, properties.windowSize.y), properties.windowTitle, sf::Style::Close);
 }
 
+template <class B, class T> void UserInterface<B, T>::drawGrid(const sf::Vector2i& position) {
+    std::vector<sf::RectangleShape*> rectangles;
+    for (int x = 0; x < boardProperties.width; x++) {
+        for (int y = 0; y < boardProperties.height; y++) {
+            sf::RectangleShape* tile = new sf::RectangleShape(sf::Vector2f(properties.tileSize.x - 1, properties.tileSize.y - 1));
+            if (DEBUG) std::cout << "New rectangle @ " << tile << std::endl;
+            tile->setOutlineColor(sf::Color::Black);
+            tile->setOutlineThickness(1);
+            tile->setFillColor(sf::Color::Transparent);     
+            tile->setPosition(position.x + x * properties.tileSize.x + 1, position.y + y * properties.tileSize.y + 1);
+            rectangles.push_back(tile);
+        }
+    }
+    for (auto rect : rectangles) {
+        registerForRendering(rect);
+    }
+}
+
 template <class B, class T> void UserInterface<B, T>::drawText(std::string contents, const sf::Vector2f& position, const sf::Vector2f& size, int fontSize) {
     // Draw text centered in container
     auto container = new sf::RectangleShape(size);

@@ -103,7 +103,7 @@ int DominosBoard::handleTile(const DominosTile& tile, const std::pair<int, int>&
         }
         return count;
     }
-    return 0;
+    return -1;
 }
 
 /**
@@ -129,24 +129,6 @@ void DominosInterface::draw(DominosBoard& board) {
     int x = (properties.windowSize.x - (boardProperties.width + 2) * properties.tileSize.x) / 2;
     int y = (properties.windowSize.y - (boardProperties.height + 1) * properties.tileSize.y) / 2;
     drawBoard(board, sf::Vector2i(x, y));
-}
-
-void DominosInterface::drawGrid(const sf::Vector2i& position) {
-    std::vector<sf::RectangleShape*> rectangles;
-    for (int x = 0; x < boardProperties.width; x++) {
-        for (int y = 0; y < boardProperties.height; y++) {
-            sf::RectangleShape* tile = new sf::RectangleShape(sf::Vector2f(properties.tileSize.x - 1, properties.tileSize.y - 1));
-            if (DEBUG) std::cout << "New rectangle @ " << tile << std::endl;
-            tile->setOutlineColor(sf::Color::Black);
-            tile->setOutlineThickness(1);
-            tile->setFillColor(sf::Color::Transparent);     
-            tile->setPosition(position.x + x * properties.tileSize.x + 1, position.y + y * properties.tileSize.y + 1);
-            rectangles.push_back(tile);
-        }
-    }
-    for (auto rect : rectangles) {
-        registerForRendering(rect);
-    }
 }
 
 void DominosInterface::drawBoard(DominosBoard& board, const sf::Vector2i& position) {
@@ -276,15 +258,18 @@ void Dominos::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
         auto y = mousePosition.y / uiProperties.tileSize.y;
         auto position = std::make_pair(x, y);
         if (x < boardProperties.width && y < boardProperties.height) {
-            scoreboard[currentPlayer].second += board.handleTile(currentTile, position);
-            currentPlayer += 1;
-            currentPlayer %= scoreboard.size();
-            currentTile = DominosTile();
-            remainingTiles -= 1;
-            if (remainingTiles == 0) {
-                std::cout << "Game over!" << std::endl;
-                // TODO: Show scoreboard
-                exit(0);
+            int result = board.handleTile(currentTile, position);
+            if (result != -1) {
+                scoreboard[currentPlayer].second += board.handleTile(currentTile, position);
+                currentPlayer += 1;
+                currentPlayer %= scoreboard.size();
+                currentTile = DominosTile();
+                remainingTiles -= 1;
+                if (remainingTiles == 0) {
+                    std::cout << "Game over!" << std::endl;
+                    // TODO: Show scoreboard
+                    exit(0);
+                }
             }
         }
     }

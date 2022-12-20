@@ -47,7 +47,6 @@ class DominosInterface : virtual public UserInterface<DominosBoard, DominosTile>
     public:
         DominosInterface(UserInterfaceProperties&, BoardProperties&);
         void draw(DominosBoard&);
-        void drawGrid(const sf::Vector2i& = sf::Vector2i(0, 0));
         void drawBoard(DominosBoard&, const sf::Vector2i& = sf::Vector2i(0, 0));
         void drawTile(DominosTile&, const sf::Vector2i&, const sf::Vector2i& = sf::Vector2i(0, 0));
 };
