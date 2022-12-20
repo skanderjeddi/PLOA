@@ -60,6 +60,8 @@ class Dominos : virtual public Game<DominosTile, DominosBoard, DominosInterface>
         int remainingTiles = 30;
     public:
         Dominos(UserInterfaceProperties, BoardProperties);
+        void drawMainGame();
+        void drawGameOver();
         void handleEvent(const sf::Event&, sf::RenderWindow*);
         void run();
 };

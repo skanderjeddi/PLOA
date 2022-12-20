@@ -42,7 +42,7 @@ template <class T, class B, class I> class Game {
          * 
          * @param name the name of the player.
          */
-        void registerPlayer(std::string& name) { scoreboard[scoreboard.size()] = std::make_pair(name, 0); }
+        void registerPlayer(const std::string& name) { scoreboard[scoreboard.size()] = std::make_pair(name, 0); }
         /**
          * @brief Get the Scoreboard object
          * 

@@ -91,6 +91,7 @@ bool DominosBoard::canSet(const DominosTile& tile, const std::pair<int, int>& po
 
 int DominosBoard::handleTile(const DominosTile& tile, const std::pair<int, int>& position) {
     if (canSet(tile, position)) {
+        if (DEBUG) std::cout << "Can set tile!" << std::endl;
         this->tiles[position] = tile;
         auto neighbors = getNeighbors(position);
         int count = 0;
@@ -102,8 +103,9 @@ int DominosBoard::handleTile(const DominosTile& tile, const std::pair<int, int>&
             }
         }
         return count;
+    } else {
+        return -1;
     }
-    return -1;
 }
 
 /**
@@ -246,21 +248,45 @@ void Dominos::run() {
     }
 }
 
-void Dominos::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
+void Dominos::handleEvent(const sf::Event & event, sf::RenderWindow * windowPtr) {
     auto boardProperties = board.getProperties();
     auto uiProperties = interface.getProperties();
+    int boardOffsetX = (uiProperties.windowSize.x - (boardProperties.width + 2) * uiProperties.tileSize.x) / 2;
+    int boardOffsetY = (uiProperties.windowSize.y - (boardProperties.height + 1) * uiProperties.tileSize.y) / 2;
     if (event.type == sf::Event::Resized) {
         windowPtr->setSize(sf::Vector2u(uiProperties.windowSize.x, uiProperties.windowSize.y));
     }
     if (event.type == sf::Event::MouseButtonPressed) {
-        auto mousePosition = sf::Mouse::getPosition(*windowPtr);
-        auto x = mousePosition.x / uiProperties.tileSize.x;
-        auto y = mousePosition.y / uiProperties.tileSize.y;
-        auto position = std::make_pair(x, y);
-        if (x < boardProperties.width && y < boardProperties.height) {
-            int result = board.handleTile(currentTile, position);
-            if (result != -1) {
-                scoreboard[currentPlayer].second += board.handleTile(currentTile, position);
+        if (!isGameOver) {
+            auto mousePosition = sf::Mouse::getPosition(*windowPtr);
+            auto x = (mousePosition.x - boardOffsetX) / uiProperties.tileSize.x;
+            auto y = (mousePosition.y - boardOffsetY) / uiProperties.tileSize.y;
+            auto position = std::make_pair(x, y);
+            if (x < boardProperties.width && y < boardProperties.height) {
+                std::cout << "inside tile: " << x << ", " << y << std::endl;
+                int result = board.handleTile(currentTile, position);
+                if (result != -1) {
+                    scoreboard[currentPlayer].second += board.handleTile(currentTile, position);
+                    currentPlayer += 1;
+                    currentPlayer %= scoreboard.size();
+                    currentTile = DominosTile();
+                    remainingTiles -= 1;
+                    if (remainingTiles == 0) {
+                        std::cout << "Game over!" << std::endl;
+                        // TODO: Show scoreboard
+                        exit(0);
+                    }
+                }
+            }
+        }
+    }
+    if (event.type == sf::Event::KeyPressed) {
+        if (!isGameOver) {
+            if (event.key.code == sf::Keyboard::Right) {
+                currentTile.rotate(TileRotation::CLOCKWISE);
+            } else if (event.key.code == sf::Keyboard::Left) {
+                currentTile.rotate(TileRotation::COUNTERCLOCKWISE);
+            } else if (event.key.code == sf::Keyboard::Space) {
                 currentPlayer += 1;
                 currentPlayer %= scoreboard.size();
                 currentTile = DominosTile();
@@ -271,22 +297,9 @@ void Dominos::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
                     exit(0);
                 }
             }
-        }
-    }
-    if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Right) {
-            currentTile.rotate(TileRotation::CLOCKWISE);
-        } else if (event.key.code == sf::Keyboard::Left) {
-            currentTile.rotate(TileRotation::COUNTERCLOCKWISE);
-        } else if (event.key.code == sf::Keyboard::Space) {
-            currentPlayer += 1;
-            currentPlayer %= scoreboard.size();
-            currentTile = DominosTile();
-            remainingTiles -= 1;
-            if (remainingTiles == 0) {
-                std::cout << "Game over!" << std::endl;
-                // TODO: Show scoreboard
-                exit(0);
+        } else {
+            if (event.type == sf::Event::KeyPressed) {
+                // TODO
             }
         }
     }
