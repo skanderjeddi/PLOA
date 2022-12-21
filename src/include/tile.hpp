@@ -1,9 +1,8 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include "proto/interface.hpp"
 
-#include "proto/common.hpp"
-#include "proto/tile.hpp"
+#include "common.hpp"
 
 enum class TileRotation {
     CLOCKWISE,

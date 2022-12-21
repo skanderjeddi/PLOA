@@ -1,8 +1,9 @@
 #pragma once
 
-#include "proto/common.hpp"
-#include "proto/tile.hpp"
 #include "proto/board.hpp"
+
+#include "common.hpp"
+#include "tile.hpp"
 
 struct BoardProperties {
     int width, height;

@@ -1,12 +1,10 @@
 #pragma once
 
 #include "proto/game.hpp"
-#include "proto/trax.hpp"
-#include "proto/dominos.hpp"
 
 #include "common.hpp"
-#include "board.hpp"
 #include "tile.hpp"
+#include "board.hpp"
 #include "interface.hpp"
 
 template <class T, class B, class I> class Game {

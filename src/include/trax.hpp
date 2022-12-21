@@ -1,14 +1,12 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include "proto/trax.hpp"
 
 #include "common.hpp"
 #include "tile.hpp"
 #include "board.hpp"
 #include "interface.hpp"
 #include "game.hpp"
-
-#include "trax.hpp"
 
 /**
  * @brief The Trax tile's face.

@@ -1,14 +1,12 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include "proto/dominos.hpp"
 
 #include "common.hpp"
 #include "tile.hpp"
 #include "board.hpp"
 #include "interface.hpp"
 #include "game.hpp"
-
-#include "dominos.hpp"
 
 #define DOMINOS_TILE_SIZE 85
 #define DOMINOS_BOARD_WIDTH 10

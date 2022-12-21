@@ -1,8 +1,8 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-
 #include "proto/interface.hpp"
+
+#include "common.hpp"
 
 struct UserInterfaceProperties {
     std::string windowTitle;

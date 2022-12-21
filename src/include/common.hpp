@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
+
 #include "proto/common.hpp"
 
 template <class S> class Option {
