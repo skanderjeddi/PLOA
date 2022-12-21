@@ -219,7 +219,7 @@ Dominos::Dominos(UserInterfaceProperties properties, BoardProperties boardProper
     currentPlayer = 0;
 }
 
-void Dominos::drawMainGame() {
+void Dominos::drawGameScreen() {
     auto boardProperties = board.getProperties();
     auto uiProperties = interface.getProperties();
 
@@ -259,7 +259,7 @@ void Dominos::drawMainGame() {
     interface.drawTile(currentTile, sf::Vector2i(windowWidth - 2 * tileWidth + tileWidth / 2, windowHeight / 12));
 }
 
-void Dominos::drawGameOver() {
+void Dominos::drawGameOverScreen() {
     auto uiProperties = interface.getProperties();
     int tileWidth = uiProperties.tileSize.x;
     int tileHeight = uiProperties.tileSize.y;
@@ -272,29 +272,6 @@ void Dominos::drawGameOver() {
     std::string instructions = "Appuyez sur n'importe quel touche pour quitter";
     // Draw instructions at the bottom of the screen
     interface.drawText(instructions, sf::Vector2f(0, windowHeight - tileHeight), sf::Vector2f(windowWidth, tileHeight), 22);
-}
-
-void Dominos::run() {
-    interface.show(board);
-    sf::RenderWindow* window = interface.getWindow();
-    window->setKeyRepeatEnabled(false);
-    while (window->isOpen()) {
-        sf::Event event;
-        while (window->pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window->close();
-            }
-            handleEvent(event, window);
-        }
-        window->clear(sf::Color::White);
-        if (!isGameOver) {
-            drawMainGame();
-        } else {
-            drawGameOver();
-        }
-        interface.render();
-        window->display();
-    }
 }
 
 void Dominos::handleEvent(const sf::Event & event, sf::RenderWindow * windowPtr) {

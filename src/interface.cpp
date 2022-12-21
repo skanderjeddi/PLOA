@@ -7,6 +7,7 @@
 
 #include "include/dominos.hpp"
 #include "include/trax.hpp"
+#include "include/carcassonne.hpp"
 
 template <class B, class T> UserInterface<B, T>::UserInterface(UserInterfaceProperties& properties, BoardProperties& boardProperties) : properties(properties), boardProperties(boardProperties) { }
 
@@ -51,3 +52,4 @@ template <class B, class T> void UserInterface<B, T>::drawText(std::string conte
 
 template class UserInterface<DominosBoard, DominosTile>;
 template class UserInterface<TraxBoard, TraxTile>;
+template class UserInterface<CarcassonneBoard, CarcassonneTile>;

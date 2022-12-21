@@ -3,6 +3,10 @@
 #include "proto/interface.hpp"
 
 #include "common.hpp"
+#include "tile.hpp"
+#include "board.hpp"
+#include "interface.hpp"
+#include "game.hpp"
 
 struct UserInterfaceProperties {
     std::string windowTitle;

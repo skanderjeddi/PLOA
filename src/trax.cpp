@@ -102,25 +102,12 @@ void TraxInterface::drawTile(TraxTile& tile, const sf::Vector2i& position, const
 
 Trax::Trax(UserInterfaceProperties properties) : Game(properties, BoardProperties(8, 8)) { }
 
-void Trax::run() {
-    auto boardProperties = board.getProperties();
-    auto uiProperties = interface.getProperties();
-    interface.show(board);
-    sf::RenderWindow* window = interface.getWindow();
-    while (window->isOpen()) {
-        sf::Event event;
-        while (window->pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window->close();
-            }
-            handleEvent(event, window);
-        }
-        window->clear(sf::Color::White);
-        interface.draw(board);
-        interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x / 2, uiProperties.tileSize.y / 2));
-        interface.render();
-        window->display();
-    }
+void Trax::drawGameScreen() {
+    // TODO
+}
+
+void Trax::drawGameOverScreen() {
+    // TODO
 }
 
 void Trax::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {

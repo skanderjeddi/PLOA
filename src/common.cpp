@@ -2,6 +2,7 @@
 
 #include "include/dominos.hpp"
 #include "include/trax.hpp"
+#include "include/carcassonne.hpp"
 
 template <class S> Option<S>::Option() {
     this->valueSet = false;
@@ -25,3 +26,4 @@ int random(int min, int max) {
 
 template class Option<DominosTile>;
 template class Option<TraxTile>;
+template class Option<CarcassonneTile>;

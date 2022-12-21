@@ -1,9 +1,8 @@
 #include "include/board.hpp"
-#include "include/tile.hpp"
-#include "include/common.hpp"
 
 #include "include/dominos.hpp"
 #include "include/trax.hpp"
+#include "include/carcassonne.hpp"
 
 template <class T> Board<T>::Board(const BoardProperties& properties) : properties(properties) {
     this->tiles = std::map<std::pair<int, int>, T>();
@@ -42,3 +41,4 @@ template <class T> std::vector<std::pair<TileEdge, T>> Board<T>::getNeighbors(co
 
 template class Board<DominosTile>;
 template class Board<TraxTile>;
+template class Board<CarcassonneTile>;

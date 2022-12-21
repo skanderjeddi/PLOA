@@ -8,14 +8,34 @@
 #include "interface.hpp"
 #include "game.hpp"
 
+enum class CarcassonneTileType {
+    ROAD,
+    CITY,
+    FIELD,
+    MONASTERY
+};
+
+enum class CarcassonnePawnType {
+    KNIGHT,
+    MONK,
+    PEASANT,
+    THIEF
+};
+
+enum class CarcassonnePawnPlacement {
+    CENTER,
+    CORNER,
+    EDGE
+};
+
 /**
  * @brief A tile for the Dominos game.
  * 
  */
-class CarcassonneTile : virtual public Tile<std::pair<CarcassoneTileType, std::vector<CarcassonePawnType, CarcassonePawnPlacement>>> {
+class CarcassonneTile : virtual public Tile<std::pair<CarcassonneTileType, std::vector<std::map<CarcassonnePawnType, CarcassonnePawnPlacement>>>> {
     public:
         CarcassonneTile();
-        CarcassonneTile(const std::pair<CarcassoneTileType, std::vector<CarcassonePawnType, CarcassonePawnPlacement>>&);
+        CarcassonneTile(const std::pair<CarcassonneTileType, std::vector<std::map<CarcassonnePawnType, CarcassonnePawnPlacement>>>&);
         CarcassonneTile(const CarcassonneTile&);
         void rotate(const TileRotation&);
 };
@@ -24,9 +44,9 @@ class CarcassonneTile : virtual public Tile<std::pair<CarcassoneTileType, std::v
  * @brief A board for the Dominos game.
  * 
  */
-class CarcassoneBoard : virtual public Board<CarcassonneTile> {
+class CarcassonneBoard : virtual public Board<CarcassonneTile> {
     public:
-        CarcassoneBoard(BoardProperties&);
+        CarcassonneBoard(BoardProperties&);
         bool canSet(const CarcassonneTile&, const std::pair<int, int>&) const;
         int handleTile(const CarcassonneTile&, const std::pair<int, int>&);
 };
@@ -35,23 +55,23 @@ class CarcassoneBoard : virtual public Board<CarcassonneTile> {
  * @brief A user interface for the Dominos game.
  * 
  */
-class CarcassoneInterface : virtual public UserInterface<CarcassoneBoard, CarcassonneTile> {
+class CarcassonneInterface : virtual public UserInterface<CarcassonneBoard, CarcassonneTile> {
     public:
-        CarcassoneInterface(UserInterfaceProperties&, BoardProperties&);
-        void draw(CarcassoneBoard&);
-        void drawBoard(CarcassoneBoard&, const sf::Vector2i& = sf::Vector2i(0, 0));
-        void drawTile(CarcassoneBoard&, const sf::Vector2i&, const sf::Vector2i& = sf::Vector2i(0, 0));
+        CarcassonneInterface(UserInterfaceProperties&, BoardProperties&);
+        void draw(CarcassonneBoard&);
+        void drawBoard(CarcassonneBoard&, const sf::Vector2i& = sf::Vector2i(0, 0));
+        void drawTile(CarcassonneTile&, const sf::Vector2i&, const sf::Vector2i& = sf::Vector2i(0, 0));
 };
 
 /**
  * @brief The Dominos game.
  * 
  */
-class Carcassonne : virtual public Game<CarcassonneTile, CarcassoneBoard, CarcassoneInterface> {
+class Carcassonne : virtual public Game<CarcassonneTile, CarcassonneBoard, CarcassonneInterface> {
     public:
         Carcassonne(UserInterfaceProperties, BoardProperties);
-        void drawMainGame();
-        void drawGameOver();
+        void drawGameScreen();
+        void drawGameOverScreen();
         void handleEvent(const sf::Event&, sf::RenderWindow*);
         void run();
 };
