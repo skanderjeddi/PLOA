@@ -21,7 +21,8 @@ int main(int argc, char **argv) {
     int choiceInt = std::stoi(choice);
 
     switch (choiceInt) {
-        case 1:
+        
+        /*case 1:
             UserInterfaceProperties uiProperties;
             uiProperties.font = font;
             uiProperties.tileSize = sf::Vector2i(DOMINOS_TILE_SIZE, DOMINOS_TILE_SIZE);
@@ -45,6 +46,29 @@ int main(int argc, char **argv) {
                 dominos.registerPlayer(name);               
             }
             dominos.run();
+            break;
+    */
+        case 2: 
+             UserInterfaceProperties uiProperties;
+            uiProperties.font = font;
+            uiProperties.tileSize = sf::Vector2i(90, 90);
+            uiProperties.windowSize = sf::Vector2i(DOMINOS_WINDOW_WIDTH, DOMINOS_WINDOW_HEIGHT);
+            // Configuration de la partie
+            
+            std::string line;
+           
+            
+            Trax trax(uiProperties);
+            std::cout << "Nombre de joueurs? ";
+            getline(std::cin, line);
+            int players = std::stoi(line);
+            for (int i = 0; i < players; i++) {
+                std::cout << "Joueur " << i + 1 << "? ";
+                std::string name;
+                getline(std::cin, name);
+                trax.registerPlayer(name);               
+            }
+            trax.run();
             break;
     }
     return 0;

@@ -35,6 +35,7 @@ class TraxTile : virtual public Tile<std::pair<TraxTileFace, std::map<TileEdge, 
         TraxTile(const std::pair<TraxTileFace, std::map<TileEdge, TraxTileEdge>>&);
         TraxTile(const TraxTile&);
         void rotate(const TileRotation&);
+        void flip();
 };
 
 /**
@@ -46,6 +47,8 @@ class TraxBoard : virtual public Board<TraxTile> {
         TraxBoard(BoardProperties&);
         bool canSet(const TraxTile&, const std::pair<int, int>&) const;
         int handleTile(const TraxTile&, const std::pair<int, int>&);
+        bool checkForced( const std::pair<int, int>&);
+        bool isEmpty();
 };
 
 /**

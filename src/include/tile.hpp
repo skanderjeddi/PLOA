@@ -45,3 +45,5 @@ template <class P> class Tile {
  * @return TileEdge the opposite edge
  */
 TileEdge oppositeEdge(const TileEdge&);
+bool testForced();
+void handleForced(); 
