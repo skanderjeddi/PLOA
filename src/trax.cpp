@@ -131,6 +131,7 @@ bool TraxBoard::isEmpty(){
 int TraxBoard::handleTile(const TraxTile& tile, const std::pair<int, int>& position) {
 //TODO : coups forcés + handleTIle
  if (canSet(tile, position)) {
+    std::cout<<
     this->tiles[position] = tile;
     if  (checkForced( std::pair<int, int>(position.first - 1, position.second))||
         checkForced( std::pair<int, int>(position.first - 1, position.second))||
@@ -189,6 +190,7 @@ void TraxInterface::drawBoard(TraxBoard& board, const sf::Vector2i& position) {
     drawGrid(position);
     for (int x = 0; x < boardProperties.width; x++) {
         for (int y = 0; y < boardProperties.height; y++) {
+
             auto optTile = board.getTile(x, y);
             if (optTile.hasValue()) {
                 auto tile = optTile.unwrap();
@@ -202,18 +204,43 @@ void TraxInterface::drawBoard(TraxBoard& board, const sf::Vector2i& position) {
 void TraxInterface::drawTile(TraxTile& tile, const sf::Vector2i& position, const sf::Vector2i& offset) {
     sf::Texture facetuile; 
     sf::Texture tailstuile;
-    sf::Sprite facetuileS(facetuile);
-    sf::Sprite tailstuileS(tailstuile);
-    if (!facetuile.loadFromFile("assets/traxTile1.PNG")||(!tailstuile.loadFromFile("assets/traxTile2.PNG"))){
+     if (!facetuile.loadFromFile("assets/traxTile1.PNG")||(!tailstuile.loadFromFile("assets/traxTile2.PNG"))){
         std::cout<<"erreur image"<<std::endl;
 
     }
+    sf::Sprite facetuileS(facetuile);
+    sf::Sprite tailstuileS(tailstuile);
+   
     sf::Vector2u sizeFace = facetuile.getSize();
     sf::Vector2u sizeTails = tailstuile.getSize();
     facetuileS.setOrigin(sizeFace.x/2, sizeFace.y/2);
     tailstuileS.setOrigin(sizeTails.x/2, sizeTails.y/2);
-    facetuileS.setPosition(position.x, position.y);
-    //j'y comprends rien
+    tailstuileS.setScale(0.5,0.5);
+    facetuileS.setScale(0.5,0.5);
+
+    if (tile.dataStructure().first == TraxTileFace::HEADS){
+        if (tile.dataStructure().second.at(TileEdge::LEFT)==TraxTileEdge::BLACK){
+            facetuileS.setRotation(90);
+        }
+
+        facetuileS.setPosition(position.x, position.y);
+        window.draw(facetuileS);
+    }
+    
+    if (tile.dataStructure().first == TraxTileFace::TAILS){
+        if (tile.dataStructure().second.at(TileEdge::LEFT)==TraxTileEdge::BLACK&&tile.dataStructure().second.at(TileEdge::TOP)==TraxTileEdge::BLACK){
+            tailstuileS.setRotation(90);
+        }
+        else if (tile.dataStructure().second.at(TileEdge::TOP)==TraxTileEdge::BLACK&&tile.dataStructure().second.at(TileEdge::RIGHT)==TraxTileEdge::BLACK){
+            tailstuileS.setRotation(180);
+        }
+         else if (tile.dataStructure().second.at(TileEdge::RIGHT)==TraxTileEdge::BLACK&&tile.dataStructure().second.at(TileEdge::BOTTOM)==TraxTileEdge::BLACK){
+            tailstuileS.setRotation(270);
+        }
+        tailstuileS.setPosition(position.x, position.y);
+        window.draw(tailstuileS);
+    }
+    
 }
 
 /**
@@ -245,7 +272,7 @@ void Trax::run() {
         }
         window->clear(sf::Color::White);
         interface.draw(board);
-        interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x / 2, uiProperties.tileSize.y / 2));
+        interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x +200 / 2 , uiProperties.tileSize.y+200 / 2));
         interface.render();
         window->display();
     }
