@@ -40,6 +40,7 @@ void TraxTile::rotate(const TileRotation& rotation) {
                 { TileEdge::RIGHT, properties.second[TileEdge::TOP] },
                 { TileEdge::BOTTOM, properties.second[TileEdge::RIGHT] }
             });
+            std::cout<<"rotated"<<std::endl;
             break;
         case TileRotation::COUNTERCLOCKWISE:
             properties.second = std::map<TileEdge, TraxTileEdge>({
@@ -48,15 +49,27 @@ void TraxTile::rotate(const TileRotation& rotation) {
                 { TileEdge::RIGHT, properties.second[TileEdge::BOTTOM] },
                 { TileEdge::BOTTOM, properties.second[TileEdge::LEFT] }
             });
+            std::cout<<"rotated"<<std::endl;
             break;
     }
 }
 void TraxTile::flip(){
     if (properties.first==TraxTileFace::HEADS){
-    properties.first=TraxTileFace::TAILS;
+        std::cout<<"flipped heads to tails"<<std::endl;
+    
+        properties.first=TraxTileFace::TAILS;
+        properties.second[TileEdge::LEFT]=TraxTileEdge::BLACK;
+        properties.second[TileEdge::TOP] =  TraxTileEdge::WHITE;
+        properties.second[TileEdge::RIGHT] = TraxTileEdge::WHITE;
+        properties.second[TileEdge::BOTTOM] = TraxTileEdge::BLACK;
     }
-    else {
+    else if (properties.first==TraxTileFace::TAILS) {
+        std::cout<<"flipped tails to heads"<<std::endl;
         properties.first=TraxTileFace::HEADS;
+        properties.second[TileEdge::LEFT] = TraxTileEdge::WHITE ;
+        properties.second[TileEdge::TOP] = TraxTileEdge::BLACK ;
+        properties.second[TileEdge::RIGHT] = TraxTileEdge::WHITE;
+        properties.second[TileEdge::BOTTOM] = TraxTileEdge::BLACK;
     }
 }
 
@@ -76,11 +89,12 @@ TraxBoard::TraxBoard(BoardProperties& properties) : Board(BoardProperties(8, 8))
 
 bool TraxBoard::canSet(const TraxTile& tile, const std::pair<int, int>& position) const {
    bool canSet = true;
-   bool checkempty;
+   bool checkempty= true;
    for (int i = 0; i<8; i++){
         for( int j = 0; j<8;j++){
             auto neighbors = getNeighbors(std::pair<int,int> (i,j));
             if (neighbors.size() != 0){
+                std::cout<<"board isnt empty"<<std::endl;
                 checkempty= false; 
             }
 
@@ -91,19 +105,28 @@ bool TraxBoard::canSet(const TraxTile& tile, const std::pair<int, int>& position
      return true; 
     }
     if (tiles.find(position) != tiles.end()) {
+        std::cout<<"already a tile"<<std::endl;
         return false;
     }
     auto neighbors = getNeighbors(position);
     if (neighbors.size() == 0) {
+        std::cout<<"no neighbors"<<std::endl;
         return false;
+
     }
     for (auto neighbor : neighbors) {
+        std::cout<<"neighbors"<<std::endl;
         auto edge = neighbor.first;
         auto neighborTile = neighbor.second;
         auto neighborEdge = oppositeEdge(edge);
         auto tileProperties = tile.dataStructure();
         auto neighborTileProperties = neighborTile.dataStructure();
-       
+        if (tileProperties.first==TraxTileFace::HEADS){
+            std::cout<<"heads"<<std::endl;
+        }
+        if (tileProperties.first==TraxTileFace::TAILS){
+            std::cout<<"tails"<<std::endl;
+        }
         if (tileProperties.second.at(edge) != neighborTileProperties.second.at(neighborEdge)) {
             canSet = false;
             break;
@@ -131,18 +154,19 @@ bool TraxBoard::isEmpty(){
 int TraxBoard::handleTile(const TraxTile& tile, const std::pair<int, int>& position) {
 //TODO : coups forcés + handleTIle
  if (canSet(tile, position)) {
-    std::cout<<
+    std::cout << "Can set tile!" << std::endl;
     this->tiles[position] = tile;
     if  (checkForced( std::pair<int, int>(position.first - 1, position.second))||
-        checkForced( std::pair<int, int>(position.first - 1, position.second))||
-        checkForced( std::pair<int, int>(position.first - 1, position.second))||
-        checkForced( std::pair<int, int>(position.first - 1, position.second))){
+        checkForced( std::pair<int, int>(position.first , position.second-1))||
+        checkForced( std::pair<int, int>(position.first + 1, position.second))||
+        checkForced( std::pair<int, int>(position.first , position.second+1))){
             return 1; 
         }
         
-    
+    return 0;
     }
-    return 0; 
+
+    return 2; 
 }
 
 bool TraxBoard::checkForced( const std::pair<int,int>& position){
@@ -223,7 +247,7 @@ void TraxInterface::drawTile(TraxTile& tile, const sf::Vector2i& position, const
             facetuileS.setRotation(90);
         }
 
-        facetuileS.setPosition(position.x, position.y);
+        facetuileS.setPosition( offset.x/2 + position.x +properties.tileSize.x + 1,  position.y +  properties.tileSize.y + 1);
         window.draw(facetuileS);
     }
     
@@ -237,7 +261,7 @@ void TraxInterface::drawTile(TraxTile& tile, const sf::Vector2i& position, const
          else if (tile.dataStructure().second.at(TileEdge::RIGHT)==TraxTileEdge::BLACK&&tile.dataStructure().second.at(TileEdge::BOTTOM)==TraxTileEdge::BLACK){
             tailstuileS.setRotation(270);
         }
-        tailstuileS.setPosition(position.x, position.y);
+        tailstuileS.setPosition(offset.x/2+position.x +  properties.tileSize.x + 1,  position.y + properties.tileSize.y + 1);
         window.draw(tailstuileS);
     }
     
@@ -283,6 +307,7 @@ void Trax::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
     auto uiProperties = interface.getProperties();
     int boardOffsetX = (uiProperties.windowSize.x - (boardProperties.width + 2) * uiProperties.tileSize.x) / 2;
     int boardOffsetY = (uiProperties.windowSize.y - (boardProperties.height + 1) * uiProperties.tileSize.y) / 2;
+    bool isGameOver = false;
     if (event.type == sf::Event::Resized) {
         windowPtr->setSize(sf::Vector2u(uiProperties.windowSize.x, uiProperties.windowSize.y));
     }
@@ -295,7 +320,8 @@ void Trax::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
             if (x < boardProperties.width && y < boardProperties.height) {
                 std::cout << "inside tile: " << x << ", " << y << std::endl;
                 int result = board.handleTile(currentTile, position);
-                if (result!=1) {
+                
+                if (result==0) {
 
                     currentPlayer += 1;
                     currentPlayer %= scoreboard.size();
@@ -306,6 +332,18 @@ void Trax::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
                         exit(0);
                     }*/
                 }
+                  else if (result==1) {
+
+                    
+                    currentPlayer %= scoreboard.size();
+                    currentTile = TraxTile();                    
+                    /*if (gameOver) {
+                        std::cout << "Game over!" << std::endl;
+                        // TODO: Show scoreboard
+                        exit(0);
+                    }*/
+                }
+               
             }
         }
     }
