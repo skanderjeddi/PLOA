@@ -44,4 +44,4 @@ TileEdge oppositeEdge(const TileEdge& edge) {
 
 template class Tile<std::map<TileEdge, std::vector<int>>>;
 template class Tile<std::pair<TraxTileFace, std::map<TileEdge, TraxTileEdge>>>;
-template class Tile<std::pair<CarcassonneTileType, std::vector<std::map<CarcassonnePawnType, CarcassonnePawnPlacement>>>>;
+template class Tile<std::map<TileEdge, CarcassonneTileType>>;
