@@ -8,10 +8,12 @@
 
 template <class P> Tile<P>::Tile() {
     properties = P();
+ 
 }
 
 template <class P> Tile<P>::Tile(const Tile& tile) {
     properties = tile.properties;
+    
 }
 
 template <class P> Tile<P>::Tile(const P& value) {

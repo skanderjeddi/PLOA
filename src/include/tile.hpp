@@ -20,7 +20,6 @@ enum class TileEdge {
 template <class P> class Tile {
     protected:
         P properties;
-    
     public:
         Tile();
         Tile(const P&);
