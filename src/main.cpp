@@ -83,15 +83,9 @@ int main(int argc, char **argv) {
             uiProperties.tileSize = sf::Vector2i(DOMINOS_TILE_SIZE, DOMINOS_TILE_SIZE);
             uiProperties.windowSize = sf::Vector2i(DOMINOS_WINDOW_WIDTH, DOMINOS_WINDOW_HEIGHT);
             // Configuration de la partie
-            
-            std::string line;
-           
-            
+                       
             Trax trax(uiProperties);
-            std::cout << "Nombre de joueurs? ";
-            getline(std::cin, line);
-            int players = std::stoi(line);
-            for (int i = 0; i < players; i++) {
+            for (int i = 0; i < 2; i++) {
                 std::cout << "Joueur " << i + 1 << "? ";
                 std::string name;
                 getline(std::cin, name);

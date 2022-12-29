@@ -696,7 +696,7 @@ void TraxInterface::drawTile(TraxTile& tile, const sf::Vector2i& position, const
          else if (tile.dataStructure().second.at(TileEdge::RIGHT)==TraxTileEdge::BLACK&&tile.dataStructure().second.at(TileEdge::BOTTOM)==TraxTileEdge::BLACK){
             tailstuileS.setRotation(270);
         }
-        tailstuileS.setPosition(offset.x/2+position.x +  properties.tileSize.x + 1,  position.y + properties.tileSize.y + 1);
+        tailstuileS.setPosition(position.x +properties.tileSize.x / 2 + 1 + offset.x, offset.y + position.y + properties.tileSize.y / 2 + 1);
         window.draw(tailstuileS);
     }
     
