@@ -137,7 +137,7 @@ bool TraxBoard::canSet(const TraxTile& tile, const std::pair<int, int>& position
         if (tileProperties.first==TraxTileFace::TAILS){
             std::cout<<"tails"<<std::endl;
         }
-        std::cout<<"in canset"<<std::endl;
+        std::cout<<"in  "<<std::endl;
         std::cout<<tileProperties.second.size()<<std::endl;
         if (tileProperties.second.at(edge) != neighborTileProperties.second.at(neighborEdge)) {
             canSet = false;
@@ -162,6 +162,225 @@ bool TraxBoard::isEmpty(){
     }
     return true;
 }
+bool TraxBoard::putTile( const std::pair<TileEdge, TraxTile>&n1,std::pair<TileEdge, TraxTile>&n2, const std::pair<int,int>&position ){
+    auto couleur = n1.second.dataStructure().second.at(oppositeEdge(n1.first));
+        if (n1.second.dataStructure().second.at(oppositeEdge(n1.first))==n2.second.dataStructure().second.at(oppositeEdge(n2.first))){
+            std::cout<<"forcéé"<<std::endl;
+            
+            auto face = TraxTileFace::HEADS;
+            auto m =  std::map<TileEdge,TraxTileEdge>() ;
+        
+            if (oppositeEdge(n1.first)==n2.first){
+                std::cout<<"oposé"<<std::endl;
+                
+                face = TraxTileFace::HEADS;
+                switch (n1.first){
+                    case TileEdge::TOP : 
+                    std::cout<<"oposite : TOP"<<std::endl;
+                        if (couleur == TraxTileEdge::BLACK){
+                            m[TileEdge::TOP]=TraxTileEdge::BLACK; 
+                            m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
+                            m[TileEdge::LEFT]=TraxTileEdge::WHITE;
+                            m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
+                        }
+                        else {
+                            m[TileEdge::TOP]=TraxTileEdge::WHITE; 
+                            m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
+                            m[TileEdge::LEFT]=TraxTileEdge::BLACK;
+                            m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
+                        }
+                        break;
+                    case TileEdge::BOTTOM : 
+                    std::cout<<"oposite : BOTTOM"<<std::endl;
+                        if (couleur == TraxTileEdge::BLACK){
+                            m[TileEdge::TOP]=TraxTileEdge::BLACK; 
+                            m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
+                            m[TileEdge::LEFT]=TraxTileEdge::WHITE;
+                            m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
+                        }
+                        else {
+                            m[TileEdge::TOP]=TraxTileEdge::WHITE; 
+                            m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
+                            m[TileEdge::LEFT]=TraxTileEdge::BLACK;
+                            m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
+                        }
+                        break;
+                    case TileEdge::LEFT:
+                    std::cout<<"oposite : LEFT"<<std::endl;
+                        if (couleur==TraxTileEdge::BLACK){
+                            m[TileEdge::LEFT]=TraxTileEdge::BLACK; 
+                            m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
+                            m[TileEdge::TOP]=TraxTileEdge::WHITE;
+                            m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
+                        }
+                        else{
+                            m[TileEdge::LEFT]=TraxTileEdge::WHITE; 
+                            m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
+                            m[TileEdge::TOP]=TraxTileEdge::BLACK;
+                            m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
+                        }
+
+                        break;
+                    case TileEdge::RIGHT :
+                        std::cout<<"oposite : right"<<std::endl;
+                        if (couleur==TraxTileEdge::BLACK){
+                            m[TileEdge::LEFT]=TraxTileEdge::BLACK; 
+                            m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
+                            m[TileEdge::TOP]=TraxTileEdge::WHITE;
+                            m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
+                        }
+                        else{
+                            m[TileEdge::LEFT]=TraxTileEdge::WHITE; 
+                            m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
+                            m[TileEdge::TOP]=TraxTileEdge::BLACK;
+                            m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
+                        }
+
+                        break;
+                    }
+                  
+            }
+            else{
+                std::cout<<"pas opposé"<<std::endl;
+                face = TraxTileFace::TAILS;
+                switch ((n1.first)){
+                    case TileEdge::TOP : 
+                    std::cout<<"oposite : TOP"<<std::endl;
+                        if (couleur == TraxTileEdge::BLACK){
+                            m [TileEdge::TOP]=TraxTileEdge::BLACK; 
+                            if ((n2.first)==TileEdge::RIGHT){
+                                m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
+                                m[TileEdge::LEFT]=TraxTileEdge::WHITE;
+                                m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
+                            }
+                            else{
+                                m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
+                                m[TileEdge::LEFT]=TraxTileEdge::BLACK;
+                                m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
+                            }
+                        }
+                        else {
+                            m[TileEdge::TOP]=TraxTileEdge::WHITE; 
+                            if ((n2.first)==TileEdge::RIGHT){
+                                m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
+                                m[TileEdge::LEFT]=TraxTileEdge::BLACK;
+                                m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
+                            }
+                            else{
+                                m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
+                                m[TileEdge::LEFT]=TraxTileEdge::WHITE;
+                                m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
+                            }
+                        }
+                        break;
+                        case TileEdge::LEFT:
+                        std::cout<<"oposite : LEFT"<<std::endl;
+                            if (couleur==TraxTileEdge::BLACK){
+                                m [TileEdge::LEFT]=TraxTileEdge::BLACK; 
+                                if((n2.first)==TileEdge::TOP){
+                                    m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
+                                    m[TileEdge::TOP]=TraxTileEdge::BLACK;
+                                    m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
+                                }
+                                else{
+                                    m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
+                                    m[TileEdge::TOP]=TraxTileEdge::WHITE;
+                                    m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
+
+                                }
+                            }
+                            else{
+                                m [TileEdge::LEFT]=TraxTileEdge::WHITE; 
+                                if ((n2.first)==TileEdge::TOP){
+
+                                
+                                    m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
+                                    m[TileEdge::TOP]=TraxTileEdge::WHITE;
+                                    m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
+                                }
+                                else{
+                                    m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
+                                    m[TileEdge::TOP]=TraxTileEdge::BLACK;
+                                    m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
+                                }
+                            }
+                            break;
+                        case TileEdge::BOTTOM:
+                        std::cout<<"oposite : BOTTOM"<<std::endl;
+                            if (couleur==TraxTileEdge::BLACK){
+                                m [TileEdge::BOTTOM]=TraxTileEdge::BLACK; 
+                                if((n2.first)==TileEdge::LEFT){
+                                    m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
+                                    m[TileEdge::LEFT]=TraxTileEdge::BLACK;
+                                    m[TileEdge::TOP]=TraxTileEdge::WHITE;
+                                }
+                                else{
+                                    m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
+                                    m[TileEdge::TOP]=TraxTileEdge::WHITE;
+                                    m[TileEdge::LEFT]=TraxTileEdge::WHITE;
+
+                                }
+                            }
+                            else {
+                                m [TileEdge::BOTTOM]=TraxTileEdge::WHITE; 
+                                if((n2.first)==TileEdge::LEFT){
+                                    m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
+                                    m[TileEdge::LEFT]=TraxTileEdge::WHITE;
+                                    m[TileEdge::TOP]=TraxTileEdge::BLACK;
+                                }
+                                else{
+                                    m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
+                                    m[TileEdge::TOP]=TraxTileEdge::BLACK;
+                                    m[TileEdge::LEFT]=TraxTileEdge::BLACK;
+
+                                }
+
+                            }
+                        case TileEdge::RIGHT:
+                        std::cout<<"oposite : right"<<std::endl;
+                            if (couleur==TraxTileEdge::BLACK){
+                                m [TileEdge::RIGHT]=TraxTileEdge::BLACK; 
+                                if((n2.first)==TileEdge::TOP){
+                                    m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
+                                    m[TileEdge::LEFT]=TraxTileEdge::WHITE;
+                                    m[TileEdge::TOP]=TraxTileEdge::BLACK;
+                                }
+                                else{
+                                    m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
+                                    m[TileEdge::TOP]=TraxTileEdge::WHITE;
+                                    m[TileEdge::LEFT]=TraxTileEdge::WHITE;
+
+                                }
+                            }
+                            else{
+                                m [TileEdge::RIGHT]=TraxTileEdge::WHITE; 
+                                if((n2.first)==TileEdge::TOP){
+                                    m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
+                                    m[TileEdge::LEFT]=TraxTileEdge::BLACK;
+                                    m[TileEdge::TOP]=TraxTileEdge::WHITE;
+                                }
+                                else{
+                                    m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
+                                    m[TileEdge::TOP]=TraxTileEdge::BLACK;
+                                    m[TileEdge::LEFT]=TraxTileEdge::BLACK;
+
+                                }
+
+                            }         
+                        }
+                }
+                auto args = std::pair<TraxTileFace, std::map<TileEdge, TraxTileEdge>>(face, m);
+              
+                TraxTile tuile(args);
+
+                handleTile(tuile,position);
+                return true;
+        }
+        else{
+            return false;
+        }
+            
+}
 
 int TraxBoard::handleTile( const TraxTile& tile, const std::pair<int, int>& position) {
 //TODO : coups forcés + handleTIle
@@ -170,13 +389,13 @@ int TraxBoard::handleTile( const TraxTile& tile, const std::pair<int, int>& posi
     this->tiles[position] = tile;
     
   
-    if  (checkForced( std::pair<int, int>(position.first - 1, position.second))||
-        checkForced( std::pair<int, int>(position.first , position.second-1))||
-        checkForced( std::pair<int, int>(position.first + 1, position.second))||
-        checkForced( std::pair<int, int>(position.first , position.second+1))){
-            return 1; 
-        }
+    checkForced( std::pair<int, int>(position.first - 1, position.second));
+        checkForced( std::pair<int, int>(position.first , position.second-1));
+        checkForced( std::pair<int, int>(position.first + 1, position.second));
+        checkForced( std::pair<int, int>(position.first , position.second+1));
+           
         
+    
     return 0;
     }
     else{
@@ -195,162 +414,128 @@ bool TraxBoard::checkForced( const std::pair<int,int>& position){
         return false;
     }
     if (neighbors.size()== 3|| neighbors.size()==4){
-        return true; 
+        std::cout<<"forcéé"<<std::endl;
+        std::pair<TileEdge, TraxTile>n1 = neighbors.at(0);
+        std::pair<TileEdge, TraxTile>n2 = neighbors.at(1);
+        std::pair<TileEdge, TraxTile>n3 = neighbors.at(2);
+        if (n1.second.dataStructure().second.at(oppositeEdge(n1.first))==n2.second.dataStructure().second.at(oppositeEdge(n2.first))){
+            return putTile(n1,n2,position);
+        }
+        else if (n1.second.dataStructure().second.at(oppositeEdge(n1.first))==n3.second.dataStructure().second.at(oppositeEdge(n3.first))){
+            return putTile(n1,n3,position);
+        }
+        else{
+            return putTile(n2,n3, position);
+        }
     }
     else{
         std::cout<<"inside checkforced"<<std::endl;
         std::pair<TileEdge, TraxTile> n1 = neighbors.at(0);
         std::pair<TileEdge, TraxTile>n2 = neighbors.at(1);
-        auto couleur = n1.second.dataStructure().second.at(oppositeEdge(n1.first));
-        if (n1.second.dataStructure().second.at(oppositeEdge(n1.first))==n2.second.dataStructure().second.at(oppositeEdge(n2.first))){
-            std::cout<<"forcéé"<<std::endl;
-            
-              auto face = TraxTileFace::HEADS;
-            auto m =  std::map<TileEdge,TraxTileEdge>() ;
-        
-            if (oppositeEdge(n1.first)==n2.first){
-            
-                
-                 face = TraxTileFace::HEADS;
-                    switch (oppositeEdge(n1.first)){
-                        case TileEdge::TOP : 
-                            if (couleur == TraxTileEdge::BLACK){
-                                m[TileEdge::TOP]=TraxTileEdge::BLACK; 
-                                m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
-                                m[TileEdge::LEFT]=TraxTileEdge::WHITE;
-                                m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
-                            }
-                            else {
-                                m[TileEdge::TOP]=TraxTileEdge::WHITE; 
-                                m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
-                                m[TileEdge::LEFT]=TraxTileEdge::BLACK;
-                                m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
-                            }
-                            break;
-                        case TileEdge::BOTTOM : 
-                            if (couleur == TraxTileEdge::BLACK){
-                                m[TileEdge::TOP]=TraxTileEdge::BLACK; 
-                                m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
-                                m[TileEdge::LEFT]=TraxTileEdge::WHITE;
-                                m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
-                            }
-                            else {
-                                m[TileEdge::TOP]=TraxTileEdge::WHITE; 
-                                m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
-                                m[TileEdge::LEFT]=TraxTileEdge::BLACK;
-                                m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
-                            }
-                            break;
-                        case TileEdge::LEFT:
-                            if (couleur==TraxTileEdge::BLACK){
-                                m[TileEdge::LEFT]=TraxTileEdge::BLACK; 
-                                m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
-                                m[TileEdge::TOP]=TraxTileEdge::WHITE;
-                              m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
-                            }
-                            else{
-                                m[TileEdge::LEFT]=TraxTileEdge::WHITE; 
-                                m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
-                                m[TileEdge::TOP]=TraxTileEdge::BLACK;
-                                m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
-                            }
-
-                            break;
-                        case TileEdge::RIGHT :
-
-                            if (couleur==TraxTileEdge::BLACK){
-                                m[TileEdge::LEFT]=TraxTileEdge::BLACK; 
-                                m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
-                                m[TileEdge::TOP]=TraxTileEdge::WHITE;
-                                m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
-                            }
-                            else{
-                                m[TileEdge::LEFT]=TraxTileEdge::WHITE; 
-                                m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
-                                m[TileEdge::TOP]=TraxTileEdge::BLACK;
-                                m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
-                            }
-
-                            break;
-                    }
-            }
-            else{
-                 face = TraxTileFace::TAILS;
-                    switch (oppositeEdge(n1.first)){
-                        case TileEdge::TOP : 
-                            if (couleur == TraxTileEdge::BLACK){
-                                m [TileEdge::TOP]=TraxTileEdge::BLACK; 
-                                if (oppositeEdge(n2.first)==TileEdge::RIGHT){
-                                    m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
-                                    m[TileEdge::LEFT]=TraxTileEdge::WHITE;
-                                    m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
-                                }
-                                else{
-                                    m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
-                                    m[TileEdge::LEFT]=TraxTileEdge::BLACK;
-                                    m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
-                                }
-                            }
-                            else {
-                                m[TileEdge::TOP]=TraxTileEdge::WHITE; 
-                                if (oppositeEdge(n2.first)==TileEdge::RIGHT){
-
-                                
-                                    m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
-                                    m[TileEdge::LEFT]=TraxTileEdge::BLACK;
-                                    m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
-                                }
-                                else{
-                                    m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
-                                    m[TileEdge::LEFT]=TraxTileEdge::WHITE;
-                                    m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
-                                }
-                            }
-                            break;
-                        case TileEdge::LEFT:
-                            if (couleur==TraxTileEdge::BLACK){
-                                m [TileEdge::LEFT]=TraxTileEdge::BLACK; 
-                                if(oppositeEdge(n2.first)==TileEdge::TOP){
-                                    m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
-                                    m[TileEdge::TOP]=TraxTileEdge::BLACK;
-                                    m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
-                                }
-                                else{
-                                    m[TileEdge::RIGHT]=TraxTileEdge::WHITE;
-                                    m[TileEdge::TOP]=TraxTileEdge::WHITE;
-                                    m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
-
-                                }
-                            }
-                            else{
-                                m [TileEdge::LEFT]=TraxTileEdge::WHITE; 
-                                if (oppositeEdge(n2.first)==TileEdge::TOP){
-
-                                
-                                    m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
-                                    m[TileEdge::TOP]=TraxTileEdge::WHITE;
-                                    m[TileEdge::BOTTOM]=TraxTileEdge::BLACK;
-                                }
-                                else{
-                                    m[TileEdge::RIGHT]=TraxTileEdge::BLACK;
-                                    m[TileEdge::TOP]=TraxTileEdge::BLACK;
-                                    m[TileEdge::BOTTOM]=TraxTileEdge::WHITE;
-                                }
-                            }
-                            break;
-                        }
-                }
-            auto args = std::pair<TraxTileFace, std::map<TileEdge, TraxTileEdge>>(face, m);
-              
-            TraxTile tuile(args);
-
-            handleTile(tuile,position);
-            return true;
-        }
+        return putTile(n1,n2, position);
+       
     }
     return false; 
 }
+bool TraxBoard::isFinishedBorder(){
+    auto position = std::pair<int,int>(0,0);
+    int b= 0;
+    for (int i = 0; i<8&&b==0;i++){
+        position.second=i;
+        if (tiles.find(position)!=tiles.end()){
+            
+            b +=findBorderPath(position, 0);//0 = left border
+        }
+    }
+    position = std::pair<int,int>(0,0);
+    for (int i = 0; i<8&&b==0;i++){
+        position.first=i;
+        if (tiles.find(position)!=tiles.end()){
+            
+            b +=findBorderPath(position, 1);//1 = top border
+        }
+    }
+    return b>0;
+}
 
+int TraxBoard::findBorderPath(const std::pair<int, int>& position,const int& a){
+    auto tile = tiles.find(position)->second;
+    auto neighbors = getNeighbors(position);
+    int count = 0;
+    for(auto neighbor : neighbors){
+        auto color = tile.dataStructure().second.at(neighbor.first);
+        auto actualpos = std::pair<int,int>();
+        switch (neighbor.first){
+                case TileEdge::TOP : 
+                    actualpos= std::pair<int,int>(position.first, position.second-1);
+
+                    break;
+                case TileEdge::BOTTOM :
+                    actualpos= std::pair<int,int>(position.first, position.second+1);         
+                    break;
+                case TileEdge::LEFT : 
+                    actualpos= std::pair<int,int>(position.first-1, position.second);
+                    break;
+                case TileEdge::RIGHT : 
+                    actualpos= std::pair<int,int>(position.first+1, position.second);
+                    break;
+                
+                
+                }         
+                count +=findBorderPathRec(position, actualpos, a, color);
+    }
+    return count;
+}
+int TraxBoard::findBorderPathRec(const std::pair<int, int>& previous, const std::pair<int, int>& position,const int& a, const TraxTileEdge& color ){
+    auto neighbors = getNeighbors(position);
+    int count = 0;
+    if (a ==0){
+        if (position.first==7){
+            return 1;
+        }
+    }
+    else if (a==1){
+        if (position.second==7){
+            return 1;
+        }
+    }
+    int sizeN = neighbors.size();
+    if (sizeN==1){
+        return 0;
+    }
+    else {
+        for(auto neighbor: neighbors){
+            auto actualpos = std::pair<int,int>();
+            if(neighbor.second.dataStructure().second.at(oppositeEdge(neighbor.first))==color){
+            switch (neighbor.first){
+                   case TileEdge::TOP : 
+                    actualpos= std::pair<int,int>(position.first, position.second-1);
+
+                    break;
+                case TileEdge::BOTTOM :
+                    actualpos= std::pair<int,int>(position.first, position.second+1);         
+                    break;
+                case TileEdge::LEFT : 
+                    actualpos= std::pair<int,int>(position.first-1, position.second);
+                    break;
+                case TileEdge::RIGHT : 
+                    actualpos= std::pair<int,int>(position.first+1, position.second);
+                    break;
+                
+            }
+            if (previous != actualpos){
+            count +=findBorderPathRec(position, actualpos, a, color);
+            }
+            }
+
+               
+        }
+  
+    }
+    return count;
+}
+
+    
 bool TraxBoard::isFinishedLoop(const std::pair<int, int>& goal, const TraxTile& tile){
     auto neighbors = getNeighbors(goal);
     int count = 0; 
@@ -579,7 +764,7 @@ void Trax::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
                 
                 int result = board.handleTile(currentTile, position); 
                 if (result==0) {
-                    if (board.isFinishedLoop( position, currentTile)){
+                    if (board.isFinishedLoop( position, currentTile)||board.isFinishedBorder()){
                         std::cout<<"Game over!"<<std::endl;
                         //TODO : show winner;
                         exit(0);
@@ -594,7 +779,7 @@ void Trax::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
                     }*/
                 }
                   else if (result==1) {
-                    if (board.isFinishedLoop( position, currentTile)){
+                    if (board.isFinishedLoop( position, currentTile)||board.isFinishedBorder()){
                         std::cout<<"Game over!"<<std::endl;
                         //TODO : show winner;
                         exit(0);
