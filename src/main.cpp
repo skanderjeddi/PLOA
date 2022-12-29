@@ -10,59 +10,66 @@ int main(int argc, char **argv) {
 
     sf::Font font;
     font.loadFromFile("assets/font.ttf");
-
-    std::cout << "Bienvenue dans le jeu des Dominos à 4 face." << std::endl;
     
-    UserInterfaceProperties uiProperties;
-    uiProperties.windowTitle = "Dominos";
-    uiProperties.font = font;
-    uiProperties.tileSize = sf::Vector2i(DOMINOS_TILE_SIZE, DOMINOS_TILE_SIZE);
-    uiProperties.windowSize = sf::Vector2i(DOMINOS_WINDOW_WIDTH, DOMINOS_WINDOW_HEIGHT);
+    std::cout << "1. Dominos" << std::endl;
+    std::cout << "2. Trax" << std::endl;
+    std::cout << "3. Carcassonne (WIP)" << std::endl;
+    std::cout << "> ";
 
-    // Configuration de la partie
-    std::cout << "Configuration de la partie (laisser vide pour les valeurs par défaut):" << std::endl;
+    std::string choice;
+    getline(std::cin, choice);
+    int choiceInt = std::stoi(choice);
 
-    std::cout << "Dimensions du plateau (x#y)? ";
-    std::string line;
-    getline(std::cin, line);
-    if (line.empty()) {
-        line = "10#10";
+    switch (choiceInt) {
+        
+        /*case 1:
+            UserInterfaceProperties uiProperties;
+            uiProperties.font = font;
+            uiProperties.tileSize = sf::Vector2i(DOMINOS_TILE_SIZE, DOMINOS_TILE_SIZE);
+            uiProperties.windowSize = sf::Vector2i(DOMINOS_WINDOW_WIDTH, DOMINOS_WINDOW_HEIGHT);
+            // Configuration de la partie
+            std::cout << "Dimensions du plateau (x-y)? ";
+            std::string line;
+            getline(std::cin, line);
+            int width = std::stoi(line.substr(0, line.find('-')));
+            int height = std::stoi(line.substr(line.find('-') + 1));
+            std::cout << "Largeur: " << width << ", longeur: " << height << std::endl;
+            BoardProperties boardProperties(width, height);
+            Dominos dominos(uiProperties, boardProperties);
+            std::cout << "Nombre de joueurs? ";
+            getline(std::cin, line);
+            int players = std::stoi(line);
+            for (int i = 0; i < players; i++) {
+                std::cout << "Joueur " << i + 1 << "? ";
+                std::string name;
+                getline(std::cin, name);
+                dominos.registerPlayer(name);               
+            }
+            dominos.run();
+            break;
+    */
+        case 2: 
+             UserInterfaceProperties uiProperties;
+            uiProperties.font = font;
+            uiProperties.tileSize = sf::Vector2i(90, 90);
+            uiProperties.windowSize = sf::Vector2i(DOMINOS_WINDOW_WIDTH, DOMINOS_WINDOW_HEIGHT);
+            // Configuration de la partie
+            
+            std::string line;
+           
+            
+            Trax trax(uiProperties);
+            std::cout << "Nombre de joueurs? ";
+            getline(std::cin, line);
+            int players = std::stoi(line);
+            for (int i = 0; i < players; i++) {
+                std::cout << "Joueur " << i + 1 << "? ";
+                std::string name;
+                getline(std::cin, name);
+                trax.registerPlayer(name);               
+            }
+            trax.run();
+            break;
     }
-    int width = std::stoi(line.substr(0, line.find('#')));
-    int height = std::stoi(line.substr(line.find('#') + 1));
-    if (width > 10) {
-        std::cout << "Largeur trop grande, réduite à 10" << std::endl;
-        width = 10;
-    }
-    if (height > 10) {
-        std::cout << "Longeur trop grande, réduite à 10" << std::endl;
-        height = 10;
-    }
-    std::cout << "Largeur: " << width << ", longeur: " << height << std::endl;
-    BoardProperties boardProperties(width, height);
-    std::cout << "Nombre de tuiles? ";
-    getline(std::cin, line);
-    if (line.empty()) {
-        line = "30";
-    }
-    int tiles = std::stoi(line);
-    std::cout << "Nombre de tuiles: " << tiles << std::endl;
-    Dominos dominos(uiProperties, boardProperties, tiles);
-    std::cout << "Nombre de joueurs? ";
-    getline(std::cin, line);
-    if (line.empty()) {
-        std::cout << "Nombre de joueurs par défaut: 4" << std::endl;
-        line = "4";
-        for (int i = 0; i < 4; i++) dominos.registerPlayer("Joueur " + std::to_string(i + 1));
-    } else {
-        int players = std::stoi(line);
-        for (int i = 0; i < players; i++) {
-            std::cout << "Joueur " << i + 1 << "? ";
-            std::string name;
-            getline(std::cin, name);
-            dominos.registerPlayer(name);               
-        }
-    }
-    dominos.run();
     return 0;
 }

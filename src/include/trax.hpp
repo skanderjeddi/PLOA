@@ -32,7 +32,12 @@ class TraxTile : virtual public Tile<std::pair<TraxTileFace, std::map<TileEdge, 
         TraxTile();
         TraxTile(const std::pair<TraxTileFace, std::map<TileEdge, TraxTileEdge>>&);
         TraxTile(const TraxTile&);
+   
+        bool operator==(const TraxTile& t) const;
+        bool operator!=(const TraxTile& t) const;
         void rotate(const TileRotation&);
+        void flip();
+       
 };
 
 /**
@@ -42,8 +47,17 @@ class TraxBoard : virtual public Board<TraxTile> {
     public:
         TraxBoard();
         TraxBoard(BoardProperties&);
+        std::pair<int,int> getTilePos(TraxTile& t);
         bool canSet(const TraxTile&, const std::pair<int, int>&) const;
         int handleTile(const TraxTile&, const std::pair<int, int>&);
+        bool checkForced( const std::pair<int, int>&);
+        bool isEmpty();
+        bool putTile(const std::pair<TileEdge, TraxTile>&n1,std::pair<TileEdge, TraxTile>&n2, const std::pair<int, int>&);
+        bool isFinishedLoop(const std::pair<int, int>& goal, const TraxTile& tile);
+        int isFinishedLoopRec(const std::pair<int, int>& goal, const std::pair<int, int>& origin,  const TraxTile& tile, const std::pair<int, int>& position, const TraxTileEdge& color);
+        bool isFinishedBorder();
+        int findBorderPath(const std::pair<int, int>& position,const int& a);
+        int findBorderPathRec(const std::pair<int, int>& previous, const std::pair<int, int>& position,const int& a, const TraxTileEdge& color );
 };
 
 /**

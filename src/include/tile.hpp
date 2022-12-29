@@ -19,7 +19,6 @@ enum class TileEdge {
 template <class P> class Tile {
     protected:
         P properties;
-    
     public:
         Tile();
         Tile(const P&);
@@ -44,3 +43,5 @@ template <class P> class Tile {
  * @return TileEdge the opposite edge
  */
 TileEdge oppositeEdge(const TileEdge&);
+bool testForced();
+void handleForced(); 
