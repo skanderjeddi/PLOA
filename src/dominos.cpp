@@ -155,7 +155,7 @@ void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position,
     for (int i = 0; i < 4; i++) {
         corners[i] = new sf::RectangleShape(sf::Vector2f(tileSize.x / 5, tileSize.y / 5));
         corners[i]->setFillColor(sf::Color::Black);
-        corners[i]->setOutlineColor(sf::Color::Black);
+        corners[i]->setOutlineColor(sf::Color::White);
         corners[i]->setOutlineThickness(1);
     }
     corners[0]->setPosition(offset.x + position.x + 1, offset.y + position.y + 1);
@@ -190,8 +190,9 @@ void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position,
             auto value = values[i];
             auto text = new sf::Text();
             text->setFont(properties.font);
-            text->setCharacterSize(14);
             text->setFillColor(sf::Color::Black);
+            text->setOutlineColor(sf::Color::Black);
+            text->setCharacterSize(14);
             text->setString(std::to_string(value));
             auto textBounds = text->getLocalBounds();
             text->setOrigin(textBounds.left + textBounds.width / 2.0, textBounds.top + textBounds.height / 2.0);
@@ -286,7 +287,7 @@ void Dominos::run() {
             }
             handleEvent(event, window);
         }
-        window->clear(sf::Color::White);
+        window->clear(sf::Color::Black);
         if (!isGameOver) {
             drawMainGame();
         } else {

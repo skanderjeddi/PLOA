@@ -20,7 +20,7 @@ template <class B, class T> void UserInterface<B, T>::drawGrid(const sf::Vector2
         for (int y = 0; y < boardProperties.height; y++) {
             sf::RectangleShape* tile = new sf::RectangleShape(sf::Vector2f(properties.tileSize.x - 1, properties.tileSize.y - 1));
             if (DEBUG) std::cout << "New rectangle @ " << tile << std::endl;
-            tile->setOutlineColor(sf::Color::Black);
+            tile->setOutlineColor(sf::Color::White);
             tile->setOutlineThickness(1);
             tile->setFillColor(sf::Color::Transparent);     
             tile->setPosition(position.x + x * properties.tileSize.x + 1, position.y + y * properties.tileSize.y + 1);
@@ -41,7 +41,7 @@ template <class B, class T> void UserInterface<B, T>::drawText(std::string conte
     auto text = new sf::Text();
     text->setFont(properties.font);
     text->setCharacterSize(fontSize);
-    text->setFillColor(sf::Color::Black);
+    text->setFillColor(sf::Color::White);
     text->setString(contents);
     auto textBounds = text->getLocalBounds();
     text->setOrigin((int) (textBounds.left + textBounds.width / 2.0f), (int) (textBounds.top + textBounds.height / 2.0f));

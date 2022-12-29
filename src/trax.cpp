@@ -634,10 +634,7 @@ int TraxBoard::isFinishedLoopRec(const std::pair<int, int>& goal, const std::pai
  * --------------
  */
 
-TraxInterface::TraxInterface(UserInterfaceProperties& properties, BoardProperties& boardProperties) : UserInterface(properties, boardProperties) { 
-    properties.windowSize = sf::Vector2i(8, 8);
-    properties.tileSize = sf::Vector2i(90, 90);
-}
+TraxInterface::TraxInterface(UserInterfaceProperties& properties, BoardProperties& boardProperties) : UserInterface(properties, boardProperties) { }
 
 void TraxInterface::draw(TraxBoard& board) { 
     if (DEBUG) std::cout << "Drawing board..." << std::endl;
@@ -685,7 +682,7 @@ void TraxInterface::drawTile(TraxTile& tile, const sf::Vector2i& position, const
             facetuileS.setRotation(90);
         }
 
-        facetuileS.setPosition( offset.x/2 + position.x +properties.tileSize.x + 1,  position.y +  properties.tileSize.y + 1);
+        facetuileS.setPosition(position.x +properties.tileSize.x / 2 + 1 + offset.x, offset.y + position.y + properties.tileSize.y / 2 + 1);
         window.draw(facetuileS);
     }
     
@@ -736,7 +733,7 @@ void Trax::run() {
             }
             handleEvent(event, window);
         }
-        window->clear(sf::Color::White);
+        window->clear(sf::Color::Black);
         interface.draw(board);
         interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x +200 / 2 , uiProperties.tileSize.y+200 / 2));
         interface.render();
