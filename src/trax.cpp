@@ -383,7 +383,7 @@ bool TraxBoard::putTile( const std::pair<TileEdge, TraxTile>&n1,std::pair<TileEd
 }
 
 int TraxBoard::handleTile( const TraxTile& tile, const std::pair<int, int>& position) {
-//TODO : coups forcés + handleTIle
+
  if (canSet(tile, position)) {
     std::cout << "Can set tile!" << std::endl;
     this->tiles[position] = tile;
@@ -715,10 +715,24 @@ void TraxInterface::drawTile(TraxTile& tile, const sf::Vector2i& position, const
 Trax::Trax(UserInterfaceProperties properties) : Game(properties, BoardProperties(8, 8)) { 
     currentTile = TraxTile();
     currentPlayer = 0 ; 
-
+    
 
 }
+void Trax::drawPlayers(){
+   
+    auto uiProperties = interface.getProperties();
 
+    int tileWidth = uiProperties.tileSize.x;
+   
+
+    int windowWidth = uiProperties.windowSize.x;
+    int windowHeight = uiProperties.windowSize.y;
+
+    interface.draw(board);
+ 
+    std::string currentPlayerName = "Tour de " + scoreboard[currentPlayer].first ;
+    interface.drawText(currentPlayerName, sf::Vector2f(windowWidth - 2 * tileWidth, 0), sf::Vector2f(tileWidth+20 , windowHeight / 4), 21);
+}
 
 void Trax::run() {
     auto boardProperties = board.getProperties();
@@ -733,20 +747,43 @@ void Trax::run() {
             }
             handleEvent(event, window);
         }
+
         window->clear(sf::Color::Black);
+        if (isGameOver){
+            drawWinner();
+        }       
+        else{
+
         interface.draw(board);
         interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x +200 / 2 , uiProperties.tileSize.y+200 / 2));
+        drawPlayers();
+        
+        }
         interface.render();
         window->display();
+        
     }
 }
-
+void Trax::drawWinner(){
+    auto uiProperties = interface.getProperties();
+    int tileWidth = uiProperties.tileSize.x;
+    int tileHeight = uiProperties.tileSize.y;
+    int windowWidth = uiProperties.windowSize.x;
+    int windowHeight = uiProperties.windowSize.y;
+    std::string gameOverText = "La partie est finie!";
+    interface.drawText(gameOverText, sf::Vector2f(windowWidth / 2 - tileWidth, windowHeight / 2 - tileHeight), sf::Vector2f(tileWidth * 2, tileHeight), 32);
+    std::string winnerText = "Le gagnant est: " + scoreboard[0].first;
+    interface.drawText(winnerText, sf::Vector2f(windowWidth / 2 - tileWidth, windowHeight / 2), sf::Vector2f(tileWidth * 2, tileHeight), 32);
+    std::string instructions = "Appuyez sur n'importe quel touche pour quitter";
+    // Draw instructions at the bottom of the screen
+    interface.drawText(instructions, sf::Vector2f(0, windowHeight - tileHeight), sf::Vector2f(windowWidth, tileHeight), 22);
+}
 void Trax::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
   auto boardProperties = board.getProperties();
     auto uiProperties = interface.getProperties();
     int boardOffsetX = (uiProperties.windowSize.x - (boardProperties.width + 2) * uiProperties.tileSize.x) / 2;
     int boardOffsetY = (uiProperties.windowSize.y - (boardProperties.height + 1) * uiProperties.tileSize.y) / 2;
-    bool isGameOver = false;
+    
     if (event.type == sf::Event::Resized) {
         windowPtr->setSize(sf::Vector2u(uiProperties.windowSize.x, uiProperties.windowSize.y));
     }
@@ -763,32 +800,24 @@ void Trax::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
                 if (result==0) {
                     if (board.isFinishedLoop( position, currentTile)||board.isFinishedBorder()){
                         std::cout<<"Game over!"<<std::endl;
-                        //TODO : show winner;
-                        exit(0);
+                        isGameOver = true;                          
                     }
+                    else{
                     currentPlayer += 1;
                     currentPlayer %= scoreboard.size();
                     currentTile = TraxTile();                    
-                    /*if (gameOver) {
-                        std::cout << "Game over!" << std::endl;
-                        // TODO: Show scoreboard
-                        exit(0);
-                    }*/
+                    }
                 }
                   else if (result==1) {
                     if (board.isFinishedLoop( position, currentTile)||board.isFinishedBorder()){
                         std::cout<<"Game over!"<<std::endl;
-                        //TODO : show winner;
+                        drawWinner();
                         exit(0);
                     }
                     
                     currentPlayer %= scoreboard.size();
                     currentTile = TraxTile();                    
-                    /*if (gameOver) {
-                        std::cout << "Game over!" << std::endl;
-                        // TODO: Show scoreboard
-                        exit(0);
-                    }*/
+                  
                 }
               
                
@@ -806,8 +835,9 @@ void Trax::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
             }
         } else {
             if (event.type == sf::Event::KeyPressed) {
-                // TODO
+                exit(0);
             }
         }
     }
+
 }

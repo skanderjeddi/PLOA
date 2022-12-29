@@ -78,5 +78,7 @@ class Trax : virtual public Game<TraxTile, TraxBoard, TraxInterface> {
     public:
         Trax(UserInterfaceProperties);
         void handleEvent(const sf::Event&, sf::RenderWindow*);
+        void drawPlayers();
         void run();
+        void drawWinner();
 };
