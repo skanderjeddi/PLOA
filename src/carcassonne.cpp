@@ -144,9 +144,95 @@ int CarcassonneBoard::closedCityRec(std::vector<std::pair<int,int>> previous,  c
 }
 bool CarcassonneBoard::anyMonastery(const CarcassonneTile& Tile,const std::pair<int, int>& position){ 
     //todo : si une case dans les 9 autour est un monastere on apelle closedMonastery sur le monastere qui verifie juste que autour de lui y'a une tuile placée partout.
+    if (tiles.find(position)!=tiles.end()){
+        auto t = tiles.find(position)->second;
+        if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+            closedMonastery(t, position); 
+        }
+
+    }
+    if (tiles.find(std::pair<int,int> (position.first-1,position.second))!=tiles.end()){
+        auto t = tiles.find(std::pair<int,int> (position.first-1,position.second))->second; 
+        if (t.hasMonastery()){
+            return closedMonastery(t, std::pair<int,int> (position.first-1,position.second)); 
+        } 
+    }
+    if (tiles.find(std::pair<int,int> (position.first-1,position.second+1))!=tiles.end()){
+        auto t = tiles.find(std::pair<int,int> (position.first-1,position.second+1))->second; 
+        if (t.hasMonastery()){
+            closedMonastery(t, std::pair<int,int> (position.first-1,position.second+1)); 
+        }  
+    }
+    if (tiles.find(std::pair<int,int> (position.first,position.second+1))!=tiles.end()){
+        auto t = tiles.find(std::pair<int,int> (position.first,position.second+1))->second; 
+        if (t.hasMonastery()){
+            closedMonastery(t, std::pair<int,int> (position.first,position.second+1)); 
+        }
+    }
+    if (tiles.find(std::pair<int,int> (position.first+1,position.second+1))!=tiles.end()){
+        auto t = tiles.find(std::pair<int,int> (position.first+1,position.second+1))->second; 
+        if (t.hasMonastery()){
+            closedMonastery(t, std::pair<int,int> (position.first+1,position.second+1)); 
+        }  
+    }
+    if (tiles.find(std::pair<int,int> (position.first+1,position.second))!=tiles.end()){
+        auto t = tiles.find(std::pair<int,int> (position.first+1,position.second))->second; 
+        if (t.hasMonastery()){
+            closedMonastery(t, std::pair<int,int> (position.first+1,position.second)); 
+        }  
+    }
+    if (tiles.find(std::pair<int,int> (position.first+1,position.second-1))!=tiles.end()){
+        auto t = tiles.find(std::pair<int,int> (position.first+1,position.second-1))->second; 
+        if (t.hasMonastery()){
+            closedMonastery(t, std::pair<int,int> (position.first+1,position.second-1)); 
+        }  
+    }
+    if (tiles.find(std::pair<int,int> (position.first,position.second-1))!=tiles.end()){
+        auto t = tiles.find(std::pair<int,int> (position.first+1,position.second-1))->second; 
+        if (t.hasMonastery()){
+            closedMonastery(t, std::pair<int,int> (position.first+1,position.second-1)); 
+        }  
+    }
+    if (tiles.find(std::pair<int,int> (position.first-1,position.second-1))!=tiles.end()){
+        auto t = tiles.find(std::pair<int,int> (position.first-1,position.second-1))->second; 
+        if (t.hasMonastery()){
+            closedMonastery(t, std::pair<int,int> (position.first-1,position.second-1)); 
+        }  
+    }
 }
-bool CarcasssonneBoard::closedMonastery(const CarcassonneTile& Tile,const std::pair<int, int>& position){
-    //todo : verifier les 9 cases autour.. 
+bool CarcassonneBoard::closedMonastery(const CarcassonneTile& Tile,const std::pair<int, int>& position){
+    //todo : verifier les 8 cases autour.. 
+    int eight = 0; 
+    if (tiles.find(std::pair<int,int> (position.first-1,position.second))!=tiles.end()){
+        eight +=1;
+    }
+    if (tiles.find(std::pair<int,int> (position.first-1,position.second+1))!=tiles.end()){
+        eight +=1;
+    }
+    if (tiles.find(std::pair<int,int> (position.first,position.second+1))!=tiles.end()){
+        eight +=1;
+    }
+    if (tiles.find(std::pair<int,int> (position.first+1,position.second+1))!=tiles.end()){
+       eight +=1;
+    }
+    if (tiles.find(std::pair<int,int> (position.first+1,position.second))!=tiles.end()){
+        eight +=1;
+    }
+    if (tiles.find(std::pair<int,int> (position.first+1,position.second-1))!=tiles.end()){
+        eight +=1;
+    }
+    if (tiles.find(std::pair<int,int> (position.first,position.second-1))!=tiles.end()){
+        eight +=1;
+    }
+    if (tiles.find(std::pair<int,int> (position.first-1,position.second-1))!=tiles.end()){
+       eight +=1;
+    }
+    //JE SAIS CA AURAIT PU ETRE ECRIT PLUS JOLIMENT MAIS JAI LA GASTRO OK ?
+    //TODO rajouter les points du bonhomme dessus + enlever le bonhomme
+    return eight==8;
+   
+
+
 }
 bool CarcassonneBoard::finishedRoad(const CarcassonneTile& Tile,const std::pair<int, int>& position){
     //todo
