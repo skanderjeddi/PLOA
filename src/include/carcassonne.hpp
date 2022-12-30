@@ -109,6 +109,13 @@ class CarcassonneBoard : virtual public Board<CarcassonneTile> {
         CarcassonneBoard(BoardProperties&);
         bool canSet(const CarcassonneTile&, const std::pair<int, int>&) const;
         int handleTile(const CarcassonneTile&, const std::pair<int, int>&);
+        bool closedCity(const CarcassonneTile&, const std::pair<int,int>&);
+        int closedCityRec(std::vector<std::pair<int,int>> ,  const CarcassonneTile& , const std::pair<int, int>& );
+        bool anyMonastery(const CarcassonneTile& Tile,const std::pair<int, int>& position);
+
+        bool closedMonastery(const CarcassonneTile& ,const std::pair<int, int>& );
+        bool finishedRoad(const CarcassonneTile& ,const std::pair<int, int>& );
+
 };
 
 /**

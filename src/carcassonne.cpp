@@ -103,6 +103,54 @@ bool CarcassonneBoard::canSet(const CarcassonneTile& tile, const std::pair<int, 
 int CarcassonneBoard::handleTile(const CarcassonneTile& tile, const std::pair<int, int>& position) {
     return 0;
 }
+bool CarcassonneBoard::closedCity(const CarcassonneTile& tile, const std::pair<int,int>& position ){
+    //Il faut regarder si un coté d'une tuile de la ville n'est pas adjacent à un trou(i.e pas de tuile)
+    auto neighbors = getNeighbors(position);
+    bool neigh = false; 
+    int cout = 0; 
+    auto previous = std::vector<std::pair<int,int>>();
+    for(auto neighbor : neighbors){
+        auto edge = neighbor.first; 
+        auto neighborTile= neighbor.second; 
+        auto tileProperties = tile.dataStructure(); 
+        if (tileProperties[edge]==CarcassonneTileType::CITY){
+            neigh = true;
+            auto neighborPos = position;
+            switch (edge){
+                case TileEdge::LEFT : 
+                    neighborPos.first = position.first-1; 
+                break;
+                case TileEdge::TOP : 
+                    neighborPos.second = position.second-1;
+                    break; 
+                case TileEdge::BOTTOM : 
+                    neighborPos.second = position.second+1;
+                break; 
+                case TileEdge::RIGHT : 
+                    neighborPos.first = position.first  + 1; 
+                break;
+            }
+            previous.push_back(position);
+            cout += closedCityRec(previous, neighborTile, neighborPos); 
+        }
+
+    }
+    return (neigh&&cout==0);
+
+}
+
+int CarcassonneBoard::closedCityRec(std::vector<std::pair<int,int>> previous,  const CarcassonneTile& Tile, const std::pair<int, int>& position){
+    //todo 
+}
+bool CarcassonneBoard::anyMonastery(const CarcassonneTile& Tile,const std::pair<int, int>& position){ 
+    //todo : si une case dans les 9 autour est un monastere on apelle closedMonastery sur le monastere qui verifie juste que autour de lui y'a une tuile placée partout.
+}
+bool CarcasssonneBoard::closedMonastery(const CarcassonneTile& Tile,const std::pair<int, int>& position){
+    //todo : verifier les 9 cases autour.. 
+}
+bool CarcassonneBoard::finishedRoad(const CarcassonneTile& Tile,const std::pair<int, int>& position){
+    //todo
+}
 
 /**
  * -----------------
