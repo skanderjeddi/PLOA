@@ -140,9 +140,15 @@ class CarcassonneInterface : virtual public UserInterface<CarcassonneBoard, Carc
 class Carcassonne : virtual public Game<CarcassonneTile, CarcassonneBoard, CarcassonneInterface> {
     protected:
         std::vector<CarcassonneTile*> tiles;
+        bool isPlacingPawn = false;
+        std::map<std::string, CarcassonnePawnColor> playerColors;
     public:
         Carcassonne(UserInterfaceProperties, BoardProperties);
         void drawGameScreen();
         void drawGameOverScreen();
         void handleEvent(const sf::Event&, sf::RenderWindow*);
+        void registerPlayer(const std::string& name, CarcassonnePawnColor color) {
+            scoreboard[scoreboard.size()] = std::make_pair(name, 0);
+            playerColors[name] = color;
+        }
 };

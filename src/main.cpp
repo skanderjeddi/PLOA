@@ -28,12 +28,19 @@ int main(int argc, char **argv) {
 
     std::string line;
 
+    auto colors = std::vector<CarcassonnePawnColor> {
+        CarcassonnePawnColor::BLUE,
+        CarcassonnePawnColor::RED,
+        CarcassonnePawnColor::YELLOW,
+        CarcassonnePawnColor::GREEN
+    };
+
     std::cout << "Nombre de joueurs? ";
     getline(std::cin, line);
     if (line.empty()) {
         std::cout << "Nombre de joueurs par défaut: 4" << std::endl;
         line = "4";
-        for (int i = 0; i < 4; i++) carcassonne.registerPlayer("Joueur " + std::to_string(i + 1));
+        for (int i = 0; i < 4; i++) carcassonne.registerPlayer("Joueur " + std::to_string(i + 1), colors[i]);
     } else {
         int players = std::stoi(line);
         if (players > 4) {
@@ -43,7 +50,7 @@ int main(int argc, char **argv) {
             std::cout << "Joueur " << i + 1 << "? ";
             std::string name;
             getline(std::cin, name);
-            carcassonne.registerPlayer(name);               
+            carcassonne.registerPlayer(name, colors[i]);               
         }
     }
 
