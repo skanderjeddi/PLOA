@@ -140,95 +140,235 @@ bool CarcassonneBoard::closedCity(const CarcassonneTile& tile, const std::pair<i
 }
 
 int CarcassonneBoard::closedCityRec(std::vector<std::pair<int,int>> previous,  const CarcassonneTile& Tile, const std::pair<int, int>& position){
+    auto neighbors = getNeighbors(position);
+    for (auto neighbor : neighbors){
+        auto edge = neighbor.first; 
+        auto neighborTile= neighbor.second; 
+        auto tileProperties = tile.dataStructure(); 
+        if (tileProperties[TileEdge::LEFT]==CarcassonneTileType::CITY){
+            if(neighbor.first==TileEdge::LEFT){
+                neighborPos.first = position.first-1; 
+                for (auto paire : previous){
+                    if (neighborPos==paire){
+                    present = true; 
+                    } 
+                }
+                if (!present){
+                    previous.push_back(position); 
+                    closedCityRec(previous, neighborTile, neighborPos);
+                }
+            }
+        }
+        
+            neigh = true;
+            auto neighborPos = position;
+            switch (edge){
+                case TileEdge::LEFT : 
+                    neighborPos.first = position.first-1; 
+                break;
+                case TileEdge::TOP : 
+                    neighborPos.second = position.second-1;
+                    break; 
+                case TileEdge::BOTTOM : 
+                    neighborPos.second = position.second+1;
+                break; 
+                case TileEdge::RIGHT : 
+                    neighborPos.first = position.first  + 1; 
+                break;
+            }
+        bool present = false; 
+       
+        
+    }
     //todo 
 }
-bool CarcassonneBoard::anyMonastery(const CarcassonneTile& Tile,const std::pair<int, int>& position){ 
+bool CarcassonneBoard::anyMonastery(const CarcassonneTile& tile, const std::pair<int, int>& position){ 
+    std::cout<<"entree"<<std::endl;
+    bool b = false; 
     //todo : si une case dans les 9 autour est un monastere on apelle closedMonastery sur le monastere qui verifie juste que autour de lui y'a une tuile placée partout.
-    if (tiles.find(position)!=tiles.end()){
-        auto t = tiles.find(position)->second;
+   auto o = getTile(position.first-1,position.second);
+         if (o.hasValue()){
+        auto t = o.unwrap();
+        t.hasCenter(); 
         if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
-            closedMonastery(t, position); 
+       // if (true){
+        std::cout<<"onyva"<<std::endl;
+        std::cout<<"monastere uwu"<<std::endl;
+            closedMonastery(tile, position); 
+        
         }
 
     }
-    if (tiles.find(std::pair<int,int> (position.first-1,position.second))!=tiles.end()){
-        auto t = tiles.find(std::pair<int,int> (position.first-1,position.second))->second; 
-        if (t.hasMonastery()){
-            return closedMonastery(t, std::pair<int,int> (position.first-1,position.second)); 
-        } 
-    }
-    if (tiles.find(std::pair<int,int> (position.first-1,position.second+1))!=tiles.end()){
-        auto t = tiles.find(std::pair<int,int> (position.first-1,position.second+1))->second; 
-        if (t.hasMonastery()){
-            closedMonastery(t, std::pair<int,int> (position.first-1,position.second+1)); 
-        }  
-    }
-    if (tiles.find(std::pair<int,int> (position.first,position.second+1))!=tiles.end()){
-        auto t = tiles.find(std::pair<int,int> (position.first,position.second+1))->second; 
-        if (t.hasMonastery()){
-            closedMonastery(t, std::pair<int,int> (position.first,position.second+1)); 
+    
+    if ((tiles.count(std::pair<int,int> (position.first-1,position.second)))&&(position.first-1 >=0)&&tiles.find(std::pair<int,int> (position.first-1,position.second))!=tiles.end()){
+        std::cout<<"monastere uwu"<<std::endl;
+        auto o = getTile(position.first-1,position.second);
+         if (o.hasValue()){
+            auto t = o.unwrap();
+            std::cout<<"monastere uwu"<<std::endl;
+            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+                //if (true){
+                std::cout<<"onyva"<<std::endl;
+               b =  closedMonastery(t, std::pair<int,int> (position.first-1,position.second)); 
+                if (b){
+                    return b ;
+                }   
+            }  
         }
     }
-    if (tiles.find(std::pair<int,int> (position.first+1,position.second+1))!=tiles.end()){
-        auto t = tiles.find(std::pair<int,int> (position.first+1,position.second+1))->second; 
-        if (t.hasMonastery()){
-            closedMonastery(t, std::pair<int,int> (position.first+1,position.second+1)); 
-        }  
+  
+    if ((tiles.count(std::pair<int,int> (position.first-1,position.second+1)))&&(position.first-1 >=0&&position.second+1 <=7)&&tiles.find(std::pair<int,int> (position.first-1,position.second+1))!=tiles.end()){
+        auto o = getTile(position.first-1,position.second+1);
+         if (o.hasValue()){
+            auto t = o.unwrap();
+            std::cout<<"monastere uwu"<<std::endl;
+            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+                //if (true){
+                    std::cout<<"onyva"<<std::endl;
+                b = closedMonastery(t, std::pair<int,int> (position.first-1,position.second+1)); 
+                if (b){
+                    return b ;
+                }   
+            }  
+        }
     }
-    if (tiles.find(std::pair<int,int> (position.first+1,position.second))!=tiles.end()){
-        auto t = tiles.find(std::pair<int,int> (position.first+1,position.second))->second; 
-        if (t.hasMonastery()){
-            closedMonastery(t, std::pair<int,int> (position.first+1,position.second)); 
-        }  
+   
+    if (tiles.count(std::pair<int,int> (position.first,position.second+1))&&(position.second+1 <=7)&&tiles.find(std::pair<int,int> (position.first,position.second+1))!=tiles.end()){
+        auto o = getTile(position.first,position.second+1); 
+         if (o.hasValue()){
+            auto t = o.unwrap();
+            std::cout<<"monastere uwu"<<std::endl;
+            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+                //if (true){
+                    std::cout<<"onyva"<<std::endl;
+                b = closedMonastery(t, std::pair<int,int> (position.first,position.second+1)); 
+                if (b){
+                    return b ;
+                }   
+            }  
+        }
     }
-    if (tiles.find(std::pair<int,int> (position.first+1,position.second-1))!=tiles.end()){
-        auto t = tiles.find(std::pair<int,int> (position.first+1,position.second-1))->second; 
-        if (t.hasMonastery()){
-            closedMonastery(t, std::pair<int,int> (position.first+1,position.second-1)); 
-        }  
+    if (tiles.count(std::pair<int,int> (position.first+1,position.second+1))&&(position.first+1 <=7&&position.second+1<=7)&&tiles.find(std::pair<int,int> (position.first+1,position.second+1))!=tiles.end()){
+        auto o = getTile(position.first+1,position.second-1); 
+        if (o.hasValue()){
+            auto t = o.unwrap();
+            std::cout<<"monastere uwu"<<std::endl;
+            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+                //if (true){
+                    std::cout<<"onyva"<<std::endl;
+               b =  closedMonastery(t, std::pair<int,int> (position.first+1,position.second+1)); 
+                 if (b){
+                    return b ;
+                }   
+            }  
+        }
     }
-    if (tiles.find(std::pair<int,int> (position.first,position.second-1))!=tiles.end()){
-        auto t = tiles.find(std::pair<int,int> (position.first+1,position.second-1))->second; 
-        if (t.hasMonastery()){
-            closedMonastery(t, std::pair<int,int> (position.first+1,position.second-1)); 
-        }  
+    if (tiles.count(std::pair<int,int> (position.first+1,position.second))&&(position.first+1 <=7)&&tiles.find(std::pair<int,int> (position.first+1,position.second))!=tiles.end()){
+        auto o = getTile(position.first+1,position.second);
+        std::cout<<"monastere uwu"<<std::endl;
+
+         if (o.hasValue()){
+            auto t = o.unwrap();
+            std::cout<<"monastere uwu"<<std::endl;
+            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+                //if (true){
+                    std::cout<<"onyva"<<std::endl;
+                b = closedMonastery(t, std::pair<int,int> (position.first+1,position.second)); 
+                  if (b){
+                    return b ;
+                }   
+            }  
+        }
     }
-    if (tiles.find(std::pair<int,int> (position.first-1,position.second-1))!=tiles.end()){
-        auto t = tiles.find(std::pair<int,int> (position.first-1,position.second-1))->second; 
-        if (t.hasMonastery()){
-            closedMonastery(t, std::pair<int,int> (position.first-1,position.second-1)); 
-        }  
+    if (tiles.count(std::pair<int,int> (position.first+1,position.second-1))&&(position.first+1<=7&&position.second-1>=0)&&tiles.find(std::pair<int,int> (position.first+1,position.second-1))!=tiles.end()){
+        auto o = getTile(position.first+1,position.second-1);
+        std::cout<<"monastere uwu"<<std::endl;
+         if (o.hasValue()){
+            auto t = o.unwrap();
+            std::cout<<"monastere uwu"<<std::endl;
+            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+                //if (true){
+                    std::cout<<"onyva"<<std::endl;
+               b =  closedMonastery(t, std::pair<int,int> (position.first+1,position.second-1)); 
+                  if (b){
+                    return b ;
+                }   
+            }  
+        }
     }
+    if (tiles.count(std::pair<int,int> (position.first,position.second-1))&&(position.second-1 >=0)&&tiles.find(std::pair<int,int> (position.first,position.second-1))!=tiles.end()){
+       auto o = getTile(position.first,position.second-1);
+        std::cout<<"monastere uwu"<<std::endl;
+        if (o.hasValue()){
+            auto t = o.unwrap();
+            std::cout<<"monastere uwu"<<std::endl;
+            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+                //if (true){
+                    std::cout<<"onyva"<<std::endl;
+              b =   closedMonastery(t, std::pair<int,int> (position.first+1,position.second+1)); 
+              if (b){
+                    return b ;
+                }   
+            }  
+        }
+    }
+    if (tiles.count(std::pair<int,int> (position.first-1,position.second-1))&&(position.first-1 >=0&&position.second-1>=0)&&tiles.find(std::pair<int,int> (position.first-1,position.second-1))!=tiles.end()){
+       auto o = getTile(position.first-1,position.second-1);
+        std::cout<<"monastere uwu"<<std::endl;
+         if (o.hasValue()){
+            auto t = o.unwrap();
+            std::cout<<"monastere uwu"<<std::endl;
+            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+                //if (true){
+                    std::cout<<"onyva"<<std::endl;
+              b =   closedMonastery(t, std::pair<int,int> (position.first+1,position.second+1)); 
+                  if (b){
+                    return b ;
+                }   
+            }  
+        }
+    }
+    return false; 
 }
-bool CarcassonneBoard::closedMonastery(const CarcassonneTile& Tile,const std::pair<int, int>& position){
+bool CarcassonneBoard::closedMonastery(const CarcassonneTile& t,const std::pair<int, int>& position){
     //todo : verifier les 8 cases autour.. 
     int eight = 0; 
-    if (tiles.find(std::pair<int,int> (position.first-1,position.second))!=tiles.end()){
+    if ( (getTile(position.first-1,position.second)).hasValue()){
         eight +=1;
+        std::cout<<eight<<std::endl;
     }
-    if (tiles.find(std::pair<int,int> (position.first-1,position.second+1))!=tiles.end()){
+    if (getTile (position.first-1,position.second+1).hasValue()){
         eight +=1;
+        std::cout<<eight<<std::endl;
     }
-    if (tiles.find(std::pair<int,int> (position.first,position.second+1))!=tiles.end()){
+    if (getTile(position.first,position.second+1).hasValue()){
         eight +=1;
+        std::cout<<eight<<std::endl;
     }
-    if (tiles.find(std::pair<int,int> (position.first+1,position.second+1))!=tiles.end()){
+    if (getTile (position.first+1,position.second+1).hasValue()){
        eight +=1;
+       std::cout<<eight<<std::endl;
     }
-    if (tiles.find(std::pair<int,int> (position.first+1,position.second))!=tiles.end()){
+    if (getTile (position.first+1,position.second).hasValue()){
         eight +=1;
+        std::cout<<eight<<std::endl;
     }
-    if (tiles.find(std::pair<int,int> (position.first+1,position.second-1))!=tiles.end()){
+    if (getTile(position.first+1,position.second-1).hasValue()){
         eight +=1;
+        std::cout<<eight<<std::endl;
     }
-    if (tiles.find(std::pair<int,int> (position.first,position.second-1))!=tiles.end()){
+    if (getTile(position.first,position.second-1).hasValue()){
         eight +=1;
+        std::cout<<eight<<std::endl;
     }
-    if (tiles.find(std::pair<int,int> (position.first-1,position.second-1))!=tiles.end()){
+    if (getTile(position.first-1,position.second-1).hasValue()){
        eight +=1;
+       std::cout<<eight<<std::endl;
     }
     //JE SAIS CA AURAIT PU ETRE ECRIT PLUS JOLIMENT MAIS JAI LA GASTRO OK ?
     //TODO rajouter les points du bonhomme dessus + enlever le bonhomme
+    std::cout<<"monastere uwu"<<std::endl;
+    std::cout<<"fincheck"<<std::endl;
     return eight==8;
    
 
@@ -263,6 +403,7 @@ void CarcassonneInterface::drawBoard(CarcassonneBoard& board, const sf::Vector2i
     for (int x = 0; x < boardProperties.width; x++) {
         for (int y = 0; y < boardProperties.height; y++) {
             auto optTile = board.getTile(x, y);
+            
             if (optTile.hasValue()) {
                 auto tile = optTile.unwrap();
                 if (DEBUG) std::cout << "Drawing tile at (" << x << ", " << y << ")" << std::endl;
@@ -385,6 +526,7 @@ Carcassonne::Carcassonne(UserInterfaceProperties properties, BoardProperties boa
         tile12->setEdges(CarcassonneTileType::CITY, CarcassonneTileType::CITY, CarcassonneTileType::CITY, CarcassonneTileType::FIELD);
         tile12->setGrid(CarcassonneTileType::CITY, CarcassonneTileType::CITY, CarcassonneTileType::CITY, CarcassonneTileType::CITY, CarcassonneTileType::CITY, CarcassonneTileType::CITY, CarcassonneTileType::FIELD, CarcassonneTileType::FIELD, CarcassonneTileType::FIELD);
         for (int i = 0; i < 3; i++) tiles.push_back(tile12);
+
     }
 
     // Tile 13
@@ -392,7 +534,7 @@ Carcassonne::Carcassonne(UserInterfaceProperties properties, BoardProperties boa
         CarcassonneTile* tile13 = new CarcassonneTile(12);
         tile13->setEdges(CarcassonneTileType::FIELD, CarcassonneTileType::FIELD, CarcassonneTileType::FIELD, CarcassonneTileType::FIELD);
         tile13->setGrid(CarcassonneTileType::FIELD, CarcassonneTileType::FIELD, CarcassonneTileType::FIELD, CarcassonneTileType::FIELD, CarcassonneTileType::MONASTERY, CarcassonneTileType::FIELD, CarcassonneTileType::FIELD, CarcassonneTileType::FIELD, CarcassonneTileType::FIELD);
-        for (int i = 0; i < 4; i++) tiles.push_back(tile13);
+        for (int i = 0; i < 40; i++) tiles.push_back(tile13);//40 attention a enlever
     }
 
     // Tile 14
@@ -552,8 +694,13 @@ void Carcassonne::handleEvent(const sf::Event & event, sf::RenderWindow * window
             if (x < boardProperties.width && y < boardProperties.height) {
                 if (board.canSet(currentTile, position)) {
                     board.setTile(x, y, currentTile);
-                    tiles.erase(std::remove(tiles.begin(), tiles.end(), &currentTile), tiles.end());
+                   /* bool b = board.anyMonastery(t, position);
+                    if (b){
+                        std::cout<<"monastere!!!!!!!!!!!!!"<<std::endl;
+                    }*/
+                   // tiles.erase(std::remove(tiles.begin(), tiles.end(), &currentTile), tiles.end());
                     currentTile = *tiles.at(rand() % tiles.size());
+                   
                 }
             }
         }

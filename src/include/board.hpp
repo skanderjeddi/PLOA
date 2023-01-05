@@ -24,7 +24,7 @@ template <class T> class Board {
          * 
          * @return Option<T> the tile at the given coordinates, or an empty Option if there is none.
          */
-        Option<T> getTile(int, int) const;
+        Option<T> getTile(int, int) ;
         /**
          * @brief Set the Tile object at the given coordinates.
          */

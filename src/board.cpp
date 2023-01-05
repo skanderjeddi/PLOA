@@ -12,11 +12,11 @@ template <class T> Board<T>::Board(const Board& board) : properties(board.proper
     this->tiles = board.tiles;
 }
 
-template <class T> void Board<T>::setTile(int x, int y, const T& tile) {
+template <class T>  void Board<T>::setTile(int x, int y, const T& tile) {
     this->tiles[std::make_pair(x, y)] = tile;
 }
 
-template <class T> Option<T> Board<T>::getTile(int x, int y) const {
+template <class T> Option<T> Board<T>::getTile(int x, int y)  {
     if (tiles.find(std::make_pair(x, y)) != tiles.end()) {
         return Option<T>(tiles.at(std::make_pair(x, y)));
     }
