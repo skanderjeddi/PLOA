@@ -11,7 +11,7 @@ CarcassonneTile::CarcassonneTile() : Tile() {
     this->textureId = 0;
     this->rotationAngle = 0;
     this->grid = std::map<CarcassonneTileGrid, CarcassonneTileType>();
-    this->pawns = std::vector<std::pair<CarcassonnePawn, CarcassonnePawnPlacement>>();
+    this->pawns = std::vector<std::pair<CarcassonnePawn, CarcassonneTileGrid>>();
     for (int i = 0; i < 4; i++) {
         properties[(TileEdge) i] = CarcassonneTileType::FIELD;
     }
@@ -22,7 +22,7 @@ CarcassonneTile::CarcassonneTile(int textureId) : Tile() {
     this->textureId = textureId;
     this->rotationAngle = 0;
     this->grid = std::map<CarcassonneTileGrid, CarcassonneTileType>();
-    this->pawns = std::vector<std::pair<CarcassonnePawn, CarcassonnePawnPlacement>>();
+    this->pawns = std::vector<std::pair<CarcassonnePawn, CarcassonneTileGrid>>();
 }
 
 CarcassonneTile::CarcassonneTile(const CarcassonneTile& tile) : Tile(tile) {
@@ -186,22 +186,22 @@ bool CarcassonneBoard::anyMonastery(const CarcassonneTile& tile, const std::pair
     std::cout<<"entree"<<std::endl;
     bool b = false; 
     //todo : si une case dans les 9 autour est un monastere on apelle closedMonastery sur le monastere qui verifie juste que autour de lui y'a une tuile placée partout.
-   auto o = getTile(position.first-1,position.second);
-         if (o.hasValue()){
-        auto t = o.unwrap();
-        t.hasCenter(); 
-        if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
-       // if (true){
-        std::cout<<"onyva"<<std::endl;
-        std::cout<<"monastere uwu"<<std::endl;
+    auto t = getTile(position.first-1,position.second);
+    if (t != nullptr) {
+        t->hasCenter(); 
+        if (t->hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+        // if (true){
+            std::cout<<"onyva"<<std::endl;
+            std::cout<<"monastere uwu"<<std::endl;
             closedMonastery(tile, position); 
-        
+            
         }
-
     }
     
     if ((tiles.count(std::pair<int,int> (position.first-1,position.second)))&&(position.first-1 >=0)&&tiles.find(std::pair<int,int> (position.first-1,position.second))!=tiles.end()){
         std::cout<<"monastere uwu"<<std::endl;
+        // changer ça part auto t = getTile(position.first-1,position.second);
+        // if (t != nullptr) { 
         auto o = getTile(position.first-1,position.second);
          if (o.hasValue()){
             auto t = o.unwrap();
@@ -402,12 +402,10 @@ void CarcassonneInterface::drawBoard(CarcassonneBoard& board, const sf::Vector2i
     drawGrid(position);
     for (int x = 0; x < boardProperties.width; x++) {
         for (int y = 0; y < boardProperties.height; y++) {
-            auto optTile = board.getTile(x, y);
-            
-            if (optTile.hasValue()) {
-                auto tile = optTile.unwrap();
+            auto tile = board.getTile(x, y);
+            if (tile != nullptr) {
                 if (DEBUG) std::cout << "Drawing tile at (" << x << ", " << y << ")" << std::endl;
-                drawTile(tile, sf::Vector2i(x * properties.tileSize.x, y * properties.tileSize.y), position);
+                drawTile(*tile, sf::Vector2i(x * properties.tileSize.x, y * properties.tileSize.y), position);
             }
         }
     } 
@@ -421,6 +419,66 @@ void CarcassonneInterface::drawTile(CarcassonneTile& tile, const sf::Vector2i& p
     sprite->setRotation(tile.getRotationAngle());
     sprite->setPosition(position.x + offset.x + properties.tileSize.x / 2, position.y + offset.y + properties.tileSize.y / 2);
     registerForRendering(sprite);
+    // std::cout << "tile at " << position.x << ", "   << position.y << " has " << tile.getPawns().size() << " pawns" << std::endl;
+    for (auto pawn : tile.getPawns()) {
+        // std::cout << "drawing pawn" << std::endl;
+        sf::Texture* pawnTexture = new sf::Texture();
+        switch (pawn.first.color) {
+            case CarcassonnePawnColor::RED:
+                pawnTexture->loadFromFile("assets/red.png");
+                break;
+            case CarcassonnePawnColor::BLUE:
+                pawnTexture->loadFromFile("assets/blue.png");
+                break;
+            case CarcassonnePawnColor::GREEN:
+                pawnTexture->loadFromFile("assets/green.png");
+                break;
+            case CarcassonnePawnColor::YELLOW:
+                pawnTexture->loadFromFile("assets/yellow.png");
+                break;
+        }
+
+        sf::Sprite* pawnSprite = new sf::Sprite(*pawnTexture);
+        
+        auto tileX = position.x / CARCASSONNE_TILE_SIZE;
+        auto tileY = position.y / CARCASSONNE_TILE_SIZE;
+
+        int squareSize = CARCASSONNE_TILE_SIZE / 3;
+
+        sf::Vector2f centerPos;
+        switch (pawn.second) {
+            case CarcassonneTileGrid::TOP_LEFT:
+                centerPos = sf::Vector2f((tileX * CARCASSONNE_TILE_SIZE) + (squareSize / 2), (tileY * CARCASSONNE_TILE_SIZE) + (squareSize / 2));
+                break;
+            case CarcassonneTileGrid::TOP_CENTER:
+                centerPos = sf::Vector2f((tileX * CARCASSONNE_TILE_SIZE) + squareSize + (squareSize / 2), (tileY * CARCASSONNE_TILE_SIZE) + (squareSize / 2));
+                break;
+            case CarcassonneTileGrid::TOP_RIGHT:
+                centerPos = sf::Vector2f((tileX * CARCASSONNE_TILE_SIZE) + (squareSize * 2) + (squareSize / 2), (tileY * CARCASSONNE_TILE_SIZE) + (squareSize / 2));
+                break;
+            case CarcassonneTileGrid::CENTER_LEFT:
+                centerPos = sf::Vector2f((tileX * CARCASSONNE_TILE_SIZE) + (squareSize / 2), (tileY * CARCASSONNE_TILE_SIZE) + squareSize + (squareSize / 2));
+                break;
+            case CarcassonneTileGrid::CENTER_CENTER:
+                centerPos = sf::Vector2f((tileX * CARCASSONNE_TILE_SIZE) + squareSize + (squareSize / 2), (tileY * CARCASSONNE_TILE_SIZE) + squareSize + (squareSize / 2));
+                break;
+            case CarcassonneTileGrid::CENTER_RIGHT:
+                centerPos = sf::Vector2f((tileX * CARCASSONNE_TILE_SIZE) + (squareSize * 2) + (squareSize / 2), (tileY * CARCASSONNE_TILE_SIZE) + squareSize + (squareSize / 2));
+                break;
+            case CarcassonneTileGrid::BOTTOM_LEFT:
+                centerPos = sf::Vector2f((tileX * CARCASSONNE_TILE_SIZE) + (squareSize / 2), (tileY * CARCASSONNE_TILE_SIZE) + (squareSize * 2) + (squareSize / 2));
+                break;
+            case CarcassonneTileGrid::BOTTOM_CENTER:
+                centerPos = sf::Vector2f((tileX * CARCASSONNE_TILE_SIZE) + squareSize + (squareSize / 2), (tileY * CARCASSONNE_TILE_SIZE) + (squareSize * 2) + (squareSize / 2));
+                break;
+            case CarcassonneTileGrid::BOTTOM_RIGHT:
+                centerPos = sf::Vector2f((tileX * CARCASSONNE_TILE_SIZE) + (squareSize * 2) + (squareSize / 2), (tileY * CARCASSONNE_TILE_SIZE) + (squareSize * 2) + (squareSize / 2));
+                break;
+        }
+        pawnSprite->setOrigin(pawnSprite->getTextureRect().width / 2, pawnSprite->getTextureRect().height / 2);
+        pawnSprite->setPosition(centerPos);   
+        registerForRendering(pawnSprite);
+    }
 }
 
 /**
@@ -630,7 +688,7 @@ Carcassonne::Carcassonne(UserInterfaceProperties properties, BoardProperties boa
 
     board.setTile(board.getProperties().width / 2, board.getProperties().height / 2, *randTile);
 
-    currentTile = *tiles.at(rand() % tiles.size());
+    currentTile = tiles.at(rand() % tiles.size());
     currentPlayer = 0;
 }
 
@@ -663,14 +721,75 @@ void Carcassonne::drawGameScreen() {
         std::string playerName = mapEntry.first + (" - " + std::to_string(mapEntry.second) + "pts");
         interface.drawText(playerName, sf::Vector2f(windowWidth - 2 * tileWidth, 0), sf::Vector2f(tileWidth * 2, (int) (windowHeight / 1.45f) + (int) (windowHeight / 1.45f) / 16 * (i + 1)), 16);
     }
-    interface.drawTile(currentTile, sf::Vector2i(windowWidth - 2 * tileWidth + tileWidth / 2, windowHeight / 12));
-    std::string instructions = "Appuyez sur 'R' pour tourner la tuile";
+    interface.drawTile(*currentTile, sf::Vector2i(windowWidth - 2 * tileWidth + tileWidth / 2, windowHeight / 12));
+    std::string instructions;
+    if (isPlacingPawn) {
+        instructions = "Cliquez sur votre tuile pour placer votre pion"; 
+    } else {
+        instructions = "Appuyez sur 'R' pour tourner la tuile";
+    }
     // Draw instructions at the bottom of the screen
     interface.drawText(instructions, sf::Vector2f(0, windowHeight - 2 * DOMINOS_TILE_SIZE), sf::Vector2f(windowWidth, 2 * DOMINOS_TILE_SIZE), 20);
 }
 
 void Carcassonne::drawGameOverScreen() {
     // TODO
+}
+
+void Carcassonne::handlePawnPlacement(sf::RenderWindow * windowPtr) {
+    CarcassonnePawn newPawn;
+    newPawn.color = playerColors.at(scoreboard.at(currentPlayer).first);
+
+    sf::RectangleShape grid[9];
+    for (int dy = 0; dy < 3; ++dy) {
+        for (int dx = 0; dx < 3; ++dx) {
+            int index = dy * 3 + dx;
+            grid[index].setSize(sf::Vector2f(CARCASSONNE_TILE_SIZE / 3, CARCASSONNE_TILE_SIZE / 3));
+            grid[index].setPosition((currentTileX * CARCASSONNE_TILE_SIZE) + (dx * CARCASSONNE_TILE_SIZE / 3), (currentTileY * CARCASSONNE_TILE_SIZE) + (dy * CARCASSONNE_TILE_SIZE / 3));
+        }
+    }
+
+    auto mousePosition = sf::Mouse::getPosition(*windowPtr);
+
+    for (int i = 0; i < 9; ++i) {
+        if (grid[i].getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition))) {
+            std::cout << "in " << i << std::endl;
+            switch (i) {
+                case 0:
+                    board.getTile(currentTileX, currentTileY)->setPawn(newPawn, CarcassonneTileGrid::TOP_LEFT);
+                    break;
+                case 1:
+                    board.getTile(currentTileX, currentTileY)->setPawn(newPawn, CarcassonneTileGrid::TOP_CENTER);
+                    break;
+                case 2:
+                    board.getTile(currentTileX, currentTileY)->setPawn(newPawn, CarcassonneTileGrid::TOP_RIGHT);
+                    break;
+                case 3:
+                    board.getTile(currentTileX, currentTileY)->setPawn(newPawn, CarcassonneTileGrid::CENTER_LEFT);
+                    break;
+                case 4:
+                    board.getTile(currentTileX, currentTileY)->setPawn(newPawn, CarcassonneTileGrid::CENTER_CENTER);
+                    break;
+                case 5:
+                    board.getTile(currentTileX, currentTileY)->setPawn(newPawn, CarcassonneTileGrid::CENTER_RIGHT);
+                    break;
+                case 6:
+                    board.getTile(currentTileX, currentTileY)->setPawn(newPawn, CarcassonneTileGrid::BOTTOM_LEFT);
+                    break;
+                case 7:
+                    board.getTile(currentTileX, currentTileY)->setPawn(newPawn, CarcassonneTileGrid::BOTTOM_CENTER);
+                    break;
+                case 8:
+                    board.getTile(currentTileX, currentTileY)->setPawn(newPawn, CarcassonneTileGrid::BOTTOM_RIGHT);
+                    break;
+                }
+            }
+        }
+        tiles.erase(std::remove(tiles.begin(), tiles.end(), currentTile), tiles.end());
+        currentTile = tiles.at(rand() % tiles.size());
+        isPlacingPawn = false;
+        currentPlayer += 1;
+        currentPlayer %= scoreboard.size();
 }
 
 void Carcassonne::handleEvent(const sf::Event & event, sf::RenderWindow * windowPtr) {
@@ -692,15 +811,13 @@ void Carcassonne::handleEvent(const sf::Event & event, sf::RenderWindow * window
             auto y = (mousePosition.y - boardOffsetY) / tileHeight;
             auto position = std::make_pair(x, y);
             if (x < boardProperties.width && y < boardProperties.height) {
-                if (board.canSet(currentTile, position)) {
-                    board.setTile(x, y, currentTile);
-                   /* bool b = board.anyMonastery(t, position);
-                    if (b){
-                        std::cout<<"monastere!!!!!!!!!!!!!"<<std::endl;
-                    }*/
-                   // tiles.erase(std::remove(tiles.begin(), tiles.end(), &currentTile), tiles.end());
-                    currentTile = *tiles.at(rand() % tiles.size());
-                   
+                if (isPlacingPawn) {
+                    handlePawnPlacement(windowPtr);
+                } else if (board.canSet(*currentTile, position)) {
+                    board.setTile(x, y, *currentTile);
+                    currentTileX = x;
+                    currentTileY = y;
+                    isPlacingPawn = true;
                 }
             }
         }
@@ -708,7 +825,7 @@ void Carcassonne::handleEvent(const sf::Event & event, sf::RenderWindow * window
     if (event.type == sf::Event::KeyPressed) {
         if (!isGameOver) {
             if (event.key.code == sf::Keyboard::R) {
-                currentTile.rotate(TileRotation::CLOCKWISE);
+                currentTile->rotate(TileRotation::CLOCKWISE);
             }
         } else {
             if (event.type == sf::Event::KeyPressed) {

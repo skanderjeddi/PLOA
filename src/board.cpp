@@ -16,11 +16,11 @@ template <class T>  void Board<T>::setTile(int x, int y, const T& tile) {
     this->tiles[std::make_pair(x, y)] = tile;
 }
 
-template <class T> Option<T> Board<T>::getTile(int x, int y)  {
+template <typename T> T* Board<T>::getTile(int x, int y) {
     if (tiles.find(std::make_pair(x, y)) != tiles.end()) {
-        return Option<T>(tiles.at(std::make_pair(x, y)));
+        return &tiles[std::make_pair(x, y)];
     }
-    return Option<T>();
+    return nullptr;
 }
 
 template <class T> std::vector<std::pair<TileEdge, T>> Board<T>::getNeighbors(const std::pair<int, int>& pos) const {
