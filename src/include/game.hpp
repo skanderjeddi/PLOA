@@ -13,7 +13,7 @@ template <class T, class B, class I> class Game {
         I interface;
         std::map<int, std::pair<std::string, int>> scoreboard;
         int currentPlayer;
-        T currentTile;
+        T* currentTile;
         bool isGameOver = false;
 
     public:
@@ -90,7 +90,7 @@ template <class T, class B, class I> class Game {
          * @param y y coordinate.
          * @return Option<T> the tile at the given coordinates, or an empty Option if there is none.
          */
-        Option<T> getTile(int x, int y) {
+        T* getTile(int x, int y) {
             return board.getTile(x, y);
         }
 };

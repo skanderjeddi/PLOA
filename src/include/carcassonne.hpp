@@ -69,7 +69,7 @@ class CarcassonneTile : virtual public Tile<std::map<TileEdge, CarcassonneTileTy
         int textureId;
         int rotationAngle = 0;
         std::map<CarcassonneTileGrid, CarcassonneTileType> grid;
-        std::vector<std::pair<CarcassonnePawn, CarcassonnePawnPlacement>> pawns;
+        std::vector<std::pair<CarcassonnePawn, CarcassonneTileGrid>> pawns;
     public:
         CarcassonneTile();
         CarcassonneTile(int);
@@ -98,7 +98,49 @@ class CarcassonneTile : virtual public Tile<std::map<TileEdge, CarcassonneTileTy
             grid[CarcassonneTileGrid::BOTTOM_CENTER] = bc;
             grid[CarcassonneTileGrid::BOTTOM_RIGHT] = br;
         }
+
+        void setPawn(CarcassonnePawn p, CarcassonneTileGrid tg) {
+            std::cout << "Placing pawn on ";
+            switch (grid[tg]) {
+                case CarcassonneTileType::CITY:
+                    p.type = CarcassonnePawnType::KNIGHT;
+                    std::cout << " a city";
+                    break;
+                case CarcassonneTileType::ROAD:
+                    p.type = CarcassonnePawnType::THIEF;
+                    std::cout << " a road";
+                    break;
+                case CarcassonneTileType::FIELD:
+                    p.type = CarcassonnePawnType::PEASANT;
+                    std::cout << " a field";
+                    break;
+                case CarcassonneTileType::MONASTERY:
+                    p.type = CarcassonnePawnType::MONK;
+                    std::cout << " a monastery";
+                    break;
+            }
+            std::cout << std::endl;
+            pawns.push_back(std::make_pair(p, tg));
+            std::cout << "Pawn placed" << std::endl;
+            std::cout << std::to_string(pawns.size()) << std::endl;
+            switch (p.type) {
+                case CarcassonnePawnType::KNIGHT:
+                    std::cout << "Knight" << std::endl;
+                    break;
+                case CarcassonnePawnType::MONK:
+                    std::cout << "Monk" << std::endl;
+                    break;
+                case CarcassonnePawnType::PEASANT:
+                    std::cout << "Peasant" << std::endl;
+                    break;
+                case CarcassonnePawnType::THIEF:
+                    std::cout << "Thief" << std::endl;
+                    break;
+            }
+        }
         bool hasMonastery() const { return grid.at(CarcassonneTileGrid::CENTER_CENTER) == CarcassonneTileType::MONASTERY; }
+        // get grid
+        std::vector<std::pair<CarcassonnePawn, CarcassonneTileGrid>> getPawns() const { return pawns; }
 };
 
 /**
@@ -113,10 +155,8 @@ class CarcassonneBoard : virtual public Board<CarcassonneTile> {
         bool closedCity(const CarcassonneTile&, const std::pair<int,int>&);
         int closedCityRec(std::vector<std::pair<int,int>> ,  const CarcassonneTile& , const std::pair<int, int>& );
         bool anyMonastery(const CarcassonneTile& Tile,const std::pair<int, int>& position);
-
         bool closedMonastery(const CarcassonneTile& ,const std::pair<int, int>& );
         bool finishedRoad(const CarcassonneTile& ,const std::pair<int, int>& );
-
 };
 
 /**
@@ -142,11 +182,13 @@ class Carcassonne : virtual public Game<CarcassonneTile, CarcassonneBoard, Carca
         std::vector<CarcassonneTile*> tiles;
         bool isPlacingPawn = false;
         std::map<std::string, CarcassonnePawnColor> playerColors;
+        int currentTileX, currentTileY;
     public:
         Carcassonne(UserInterfaceProperties, BoardProperties);
         void drawGameScreen();
         void drawGameOverScreen();
         void handleEvent(const sf::Event&, sf::RenderWindow*);
+        void handlePawnPlacement(sf::RenderWindow*);
         void registerPlayer(const std::string& name, CarcassonnePawnColor color) {
             scoreboard[scoreboard.size()] = std::make_pair(name, 0);
             playerColors[name] = color;
