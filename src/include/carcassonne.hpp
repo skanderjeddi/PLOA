@@ -98,6 +98,7 @@ class CarcassonneTile : virtual public Tile<std::map<TileEdge, CarcassonneTileTy
             grid[CarcassonneTileGrid::BOTTOM_CENTER] = bc;
             grid[CarcassonneTileGrid::BOTTOM_RIGHT] = br;
         }
+        bool hasMonastery() const { return grid.at(CarcassonneTileGrid::CENTER_CENTER) == CarcassonneTileType::MONASTERY; }
 };
 
 /**
