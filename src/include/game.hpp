@@ -51,7 +51,7 @@ template <class T, class B, class I> class Game {
                     }
                     handleEvent(event, window);
                 }
-                window->clear(sf::Color::White);
+                window->clear(sf::Color(0x171B22));
                 if (!isGameOver) {
                     drawGameScreen();
                 } else {
