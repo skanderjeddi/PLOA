@@ -581,9 +581,33 @@ void Carcassonne::drawGameScreen() {
         interface.drawText(playerName, sf::Vector2f(windowWidth - 2 * tileWidth, 0), sf::Vector2f(tileWidth * 2, (int) (windowHeight / 1.45f) + (int) (windowHeight / 1.45f) / 16 * (i + 1)), 16);
     }
     interface.drawTile(*currentTile, sf::Vector2i(windowWidth - 2 * tileWidth + tileWidth / 2, windowHeight / 12));
+
+    for (int i = 0; i < remainingPawns.at(scoreboard[currentPlayer].first); i++) {
+        // std::cout << "drawing pawn" << std::endl;
+        sf::Texture* pawnTexture = new sf::Texture();
+        auto color = playerColors.at(scoreboard[currentPlayer].first);
+        switch (color) {
+            case CarcassonnePawnColor::RED:
+                pawnTexture->loadFromFile("assets/red.png");
+                break;
+            case CarcassonnePawnColor::BLUE:
+                pawnTexture->loadFromFile("assets/blue.png");
+                break;
+            case CarcassonnePawnColor::GREEN:
+                pawnTexture->loadFromFile("assets/green.png");
+                break;
+            case CarcassonnePawnColor::YELLOW:
+                pawnTexture->loadFromFile("assets/yellow.png");
+                break;
+        }
+        sf::Sprite* pawnSprite = new sf::Sprite(*pawnTexture); 
+        pawnSprite->setPosition(sf::Vector2f(windowWidth - tileWidth - 14, windowHeight / 2 + tileHeight + i * tileHeight / 2));
+        interface.registerForRendering(pawnSprite);
+    }
+
     std::string instructions;
     if (isPlacingPawn) {
-        instructions = "Cliquez sur votre tuile pour placer votre pion"; 
+        instructions = "Cliquez sur votre tuile pour placer votre pion, 'ESPACE' pour sauter votre tour"; 
     } else {
         instructions = "Appuyez sur 'R' pour tourner la tuile";
     }
@@ -596,6 +620,11 @@ void Carcassonne::drawGameOverScreen() {
 }
 
 void Carcassonne::handlePawnPlacement(sf::RenderWindow * windowPtr) {
+    if (remainingPawns.at(scoreboard[currentPlayer].first) == 0) {
+        isPlacingPawn = false;
+        return;
+    }
+    
     CarcassonnePawn newPawn;
     newPawn.color = playerColors.at(scoreboard.at(currentPlayer).first);
 
@@ -609,6 +638,8 @@ void Carcassonne::handlePawnPlacement(sf::RenderWindow * windowPtr) {
     }
 
     auto mousePosition = sf::Mouse::getPosition(*windowPtr);
+
+    bool done = false;
 
     for (int i = 0; i < 9; ++i) {
         if (grid[i].getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition))) {
@@ -642,13 +673,17 @@ void Carcassonne::handlePawnPlacement(sf::RenderWindow * windowPtr) {
                     board.getTile(currentTileX, currentTileY)->setPawn(newPawn, CarcassonneTileGrid::BOTTOM_RIGHT);
                     break;
                 }
-            }
+            done = true;
         }
+    }
+    if (done) {
+        remainingPawns.at(scoreboard[currentPlayer].first) -= 1;
         tiles.erase(std::remove(tiles.begin(), tiles.end(), currentTile), tiles.end());
         currentTile = tiles.at(rand() % tiles.size());
         isPlacingPawn = false;
         currentPlayer += 1;
         currentPlayer %= scoreboard.size();
+    }
 }
 
 void Carcassonne::handleEvent(const sf::Event & event, sf::RenderWindow * windowPtr) {
@@ -683,8 +718,18 @@ void Carcassonne::handleEvent(const sf::Event & event, sf::RenderWindow * window
     }
     if (event.type == sf::Event::KeyPressed) {
         if (!isGameOver) {
-            if (event.key.code == sf::Keyboard::R) {
-                currentTile->rotate(TileRotation::CLOCKWISE);
+            if (isPlacingPawn) {
+                if (event.key.code == sf::Keyboard::Space) {
+                    tiles.erase(std::remove(tiles.begin(), tiles.end(), currentTile), tiles.end());
+                    currentTile = tiles.at(rand() % tiles.size());
+                    isPlacingPawn = false;
+                    currentPlayer += 1;
+                    currentPlayer %= scoreboard.size();
+                }
+            } else {
+                if (event.key.code == sf::Keyboard::R) {
+                    currentTile->rotate(TileRotation::CLOCKWISE);
+                }
             }
         } else {
             if (event.type == sf::Event::KeyPressed) {

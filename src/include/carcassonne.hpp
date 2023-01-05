@@ -183,6 +183,7 @@ class Carcassonne : virtual public Game<CarcassonneTile, CarcassonneBoard, Carca
         bool isPlacingPawn = false;
         std::map<std::string, CarcassonnePawnColor> playerColors;
         int currentTileX, currentTileY;
+        std::map<std::string, int> remainingPawns;
     public:
         Carcassonne(UserInterfaceProperties, BoardProperties);
         void drawGameScreen();
@@ -192,5 +193,6 @@ class Carcassonne : virtual public Game<CarcassonneTile, CarcassonneBoard, Carca
         void registerPlayer(const std::string& name, CarcassonnePawnColor color) {
             scoreboard[scoreboard.size()] = std::make_pair(name, 0);
             playerColors[name] = color;
+            remainingPawns[name] = 4;
         }
 };
