@@ -125,18 +125,18 @@ bool TraxBoard::canSet(const TraxTile &tile, const std::pair<int, int> &position
     }
     if (tiles.find(position) != tiles.end())
     {
-        std::cout << "already a tile " << position.first << position.second << std::endl;
+        
         return false;
     }
     auto neighbors = getNeighbors(position);
     if (neighbors.size() == 0)
     {
-        std::cout << "no neighbors" << std::endl;
+        
         return false;
     }
     for (auto neighbor : neighbors)
     {
-        std::cout << "neighbors" << std::endl;
+        
         auto edge = neighbor.first;
         auto neighborTile = neighbor.second;
         auto neighborEdge = oppositeEdge(edge);
@@ -144,14 +144,14 @@ bool TraxBoard::canSet(const TraxTile &tile, const std::pair<int, int> &position
         auto neighborTileProperties = neighborTile.dataStructure();
         if (tileProperties.first == TraxTileFace::HEADS)
         {
-            std::cout << "heads" << std::endl;
+           
         }
         if (tileProperties.first == TraxTileFace::TAILS)
         {
-            std::cout << "tails" << std::endl;
+           
         }
-        std::cout << "in  " << std::endl;
-        std::cout << tileProperties.second.size() << std::endl;
+       
+       
         if (tileProperties.second.at(edge) != neighborTileProperties.second.at(neighborEdge))
         {
             canSet = false;
@@ -184,20 +184,20 @@ bool TraxBoard::putTile(const std::pair<TileEdge, TraxTile> &n1, std::pair<TileE
     auto couleur = n1.second.dataStructure().second.at(oppositeEdge(n1.first));
     if (n1.second.dataStructure().second.at(oppositeEdge(n1.first)) == n2.second.dataStructure().second.at(oppositeEdge(n2.first)))
     {
-        std::cout << "forcéé" << std::endl;
+         
 
         auto face = TraxTileFace::HEADS;
         auto m = std::map<TileEdge, TraxTileEdge>();
 
         if (oppositeEdge(n1.first) == n2.first)
         {
-            std::cout << "oposé" << std::endl;
+            
 
             face = TraxTileFace::HEADS;
             switch (n1.first)
             {
             case TileEdge::TOP:
-                std::cout << "oposite : TOP" << std::endl;
+                
                 if (couleur == TraxTileEdge::BLACK)
                 {
                     m[TileEdge::TOP] = TraxTileEdge::BLACK;
@@ -214,7 +214,7 @@ bool TraxBoard::putTile(const std::pair<TileEdge, TraxTile> &n1, std::pair<TileE
                 }
                 break;
             case TileEdge::BOTTOM:
-                std::cout << "oposite : BOTTOM" << std::endl;
+               
                 if (couleur == TraxTileEdge::BLACK)
                 {
                     m[TileEdge::TOP] = TraxTileEdge::BLACK;
@@ -231,7 +231,7 @@ bool TraxBoard::putTile(const std::pair<TileEdge, TraxTile> &n1, std::pair<TileE
                 }
                 break;
             case TileEdge::LEFT:
-                std::cout << "oposite : LEFT" << std::endl;
+                
                 if (couleur == TraxTileEdge::BLACK)
                 {
                     m[TileEdge::LEFT] = TraxTileEdge::BLACK;
@@ -249,7 +249,7 @@ bool TraxBoard::putTile(const std::pair<TileEdge, TraxTile> &n1, std::pair<TileE
 
                 break;
             case TileEdge::RIGHT:
-                std::cout << "oposite : right" << std::endl;
+                
                 if (couleur == TraxTileEdge::BLACK)
                 {
                     m[TileEdge::LEFT] = TraxTileEdge::BLACK;
@@ -270,12 +270,12 @@ bool TraxBoard::putTile(const std::pair<TileEdge, TraxTile> &n1, std::pair<TileE
         }
         else
         {
-            std::cout << "pas opposé" << std::endl;
+            
             face = TraxTileFace::TAILS;
             switch ((n1.first))
             {
             case TileEdge::TOP:
-                std::cout << "oposite : TOP" << std::endl;
+                
                 if (couleur == TraxTileEdge::BLACK)
                 {
                     m[TileEdge::TOP] = TraxTileEdge::BLACK;
@@ -310,7 +310,7 @@ bool TraxBoard::putTile(const std::pair<TileEdge, TraxTile> &n1, std::pair<TileE
                 }
                 break;
             case TileEdge::LEFT:
-                std::cout << "oposite : LEFT" << std::endl;
+                
                 if (couleur == TraxTileEdge::BLACK)
                 {
                     m[TileEdge::LEFT] = TraxTileEdge::BLACK;
@@ -346,7 +346,7 @@ bool TraxBoard::putTile(const std::pair<TileEdge, TraxTile> &n1, std::pair<TileE
                 }
                 break;
             case TileEdge::BOTTOM:
-                std::cout << "oposite : BOTTOM" << std::endl;
+                
                 if (couleur == TraxTileEdge::BLACK)
                 {
                     m[TileEdge::BOTTOM] = TraxTileEdge::BLACK;
@@ -380,7 +380,7 @@ bool TraxBoard::putTile(const std::pair<TileEdge, TraxTile> &n1, std::pair<TileE
                     }
                 }
             case TileEdge::RIGHT:
-                std::cout << "oposite : right" << std::endl;
+               
                 if (couleur == TraxTileEdge::BLACK)
                 {
                     m[TileEdge::RIGHT] = TraxTileEdge::BLACK;
@@ -433,7 +433,7 @@ int TraxBoard::handleTile(const TraxTile &tile, const std::pair<int, int> &posit
 
     if (canSet(tile, position))
     {
-        std::cout << "Can set tile!" << std::endl;
+        
         this->tiles[position] = tile;
 
         checkForced(std::pair<int, int>(position.first - 1, position.second));
@@ -445,7 +445,7 @@ int TraxBoard::handleTile(const TraxTile &tile, const std::pair<int, int> &posit
     }
     else
     {
-        std::cout << "can't set tile!" << std::endl;
+        
     }
 
     return 2;
@@ -464,7 +464,7 @@ bool TraxBoard::checkForced(const std::pair<int, int> &position)
     }
     if (neighbors.size() == 3 || neighbors.size() == 4)
     {
-        std::cout << "forcéé" << std::endl;
+       
         std::pair<TileEdge, TraxTile> n1 = neighbors.at(0);
         std::pair<TileEdge, TraxTile> n2 = neighbors.at(1);
         std::pair<TileEdge, TraxTile> n3 = neighbors.at(2);
@@ -483,7 +483,7 @@ bool TraxBoard::checkForced(const std::pair<int, int> &position)
     }
     else
     {
-        std::cout << "inside checkforced" << std::endl;
+   
         std::pair<TileEdge, TraxTile> n1 = neighbors.at(0);
         std::pair<TileEdge, TraxTile> n2 = neighbors.at(1);
         return putTile(n1, n2, position);
@@ -804,9 +804,10 @@ void Trax::drawGameScreen()
 
     int windowWidth = uiProperties.windowSize.x;
     int windowHeight = uiProperties.windowSize.y;
-
+    
     interface.draw(board);
-
+    interface.drawTile(*currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x +200 / 2 , uiProperties.tileSize.y+200 / 2));
+    
     std::string currentPlayerName = "Tour de " + scoreboard[currentPlayer].first;
     interface.drawText(currentPlayerName, sf::Vector2f(windowWidth - 2 * tileWidth, 0), sf::Vector2f(tileWidth + 20, windowHeight / 4), 21);
 
@@ -816,7 +817,7 @@ void Trax::drawGameScreen()
 
 void Trax::drawGameOverScreen()
 {
-    // TODO
+    drawWinner();
 }
 void Trax::drawWinner()
 {
@@ -832,7 +833,7 @@ void Trax::drawWinner()
     std::string instructions = "Appuyez sur n'importe quel touche pour quitter";
     // Draw instructions at the bottom of the screen
     interface.drawText(instructions, sf::Vector2f(0, windowHeight - 2 * tileHeight), sf::Vector2f(windowWidth, tileHeight), 22);
-    interface.drawTile(*currentTile, sf::Vector2i(windowWidth - 2 * tileWidth + tileWidth / 2, windowHeight / 12));
+    
 }
 void Trax::handleEvent(const sf::Event &event, sf::RenderWindow *windowPtr)
 {
