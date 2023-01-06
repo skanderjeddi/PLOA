@@ -153,8 +153,8 @@ void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position,
     auto corners = std::vector<sf::RectangleShape*>(4);
     for (int i = 0; i < 4; i++) {
         corners[i] = new sf::RectangleShape(sf::Vector2f(tileSize.x / 5, tileSize.y / 5));
-        corners[i]->setFillColor(sf::Color::Black);
-        corners[i]->setOutlineColor(sf::Color::White);
+        corners[i]->setFillColor(sf::Color(190, 190, 190, 255));
+        corners[i]->setOutlineColor(sf::Color(190, 190, 190, 255));
         corners[i]->setOutlineThickness(1);
     }
     corners[0]->setPosition(offset.x + position.x + 1, offset.y + position.y + 1);
@@ -293,10 +293,8 @@ void Dominos::handleEvent(const sf::Event & event, sf::RenderWindow * windowPtr)
             auto y = (mousePosition.y - boardOffsetY) / tileHeight;
             auto position = std::make_pair(x, y);
             if (x < boardProperties.width && y < boardProperties.height) {
-                std::cout << "inside tile: " << x << ", " << y << std::endl;
                 int result = board.handleTile(*currentTile, position);
                 if (result != -1) {
-                    std::cout << "+ " << result << " points" << std::endl;
                     scoreboard[currentPlayer].second += result;
                     currentPlayer += 1;
                     currentPlayer %= scoreboard.size();
@@ -324,7 +322,7 @@ void Dominos::handleEvent(const sf::Event & event, sf::RenderWindow * windowPtr)
             }
         } else {
             if (event.type == sf::Event::KeyPressed) {
-                // TODO
+                exit(0);
             }
         }
     }

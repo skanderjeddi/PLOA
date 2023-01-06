@@ -7,39 +7,47 @@
 
 #include <SFML/Graphics.hpp>
 
-template <class P> Tile<P>::Tile() {
+template <class P>
+Tile<P>::Tile()
+{
     properties = P();
- 
 }
 
-template <class P> Tile<P>::Tile(const Tile& tile) {
+template <class P>
+Tile<P>::Tile(const Tile &tile)
+{
     properties = tile.properties;
-    
 }
 
-template <class P> Tile<P>::Tile(const P& value) {
+template <class P>
+Tile<P>::Tile(const P &value)
+{
     this->properties = properties;
 }
 
-template <class P> const P& Tile<P>::dataStructure() const {
+template <class P>
+const P &Tile<P>::dataStructure() const
+{
     return properties;
 }
 
-TileEdge oppositeEdge(const TileEdge& edge) {
+TileEdge oppositeEdge(const TileEdge &edge)
+{
     TileEdge opposite;
-    switch (edge) {
-        case TileEdge::LEFT:
-            opposite = TileEdge::RIGHT;
-            break;
-        case TileEdge::TOP:
-            opposite = TileEdge::BOTTOM;
-            break;
-        case TileEdge::RIGHT:
-            opposite = TileEdge::LEFT;
-            break;
-        case TileEdge::BOTTOM:
-            opposite = TileEdge::TOP;
-            break;
+    switch (edge)
+    {
+    case TileEdge::LEFT:
+        opposite = TileEdge::RIGHT;
+        break;
+    case TileEdge::TOP:
+        opposite = TileEdge::BOTTOM;
+        break;
+    case TileEdge::RIGHT:
+        opposite = TileEdge::LEFT;
+        break;
+    case TileEdge::BOTTOM:
+        opposite = TileEdge::TOP;
+        break;
     }
     return opposite;
 }

@@ -9,20 +9,17 @@
 int main(int argc, char **argv) {
     srand((unsigned int) time(NULL));
 
-    std::cout << "CARCASSONNE" << std::endl;
-
     sf::Font font;
     font.loadFromFile("assets/font.ttf");
 
     UserInterfaceProperties uiProperties;
-    uiProperties.windowTitle = "Carcassonne";
     uiProperties.font = font;
 
     // TODO NO HARDCODED
     
     std::cout << "1. Dominos" << std::endl;
     std::cout << "2. Trax" << std::endl;
-    std::cout << "3. Carcassonne (WIP)" << std::endl;
+    std::cout << "3. Carcassonne" << std::endl;
     std::cout << "> ";
 
     std::string choice;
@@ -34,13 +31,9 @@ int main(int argc, char **argv) {
             std::cout << "DOMINOS" << std::endl;
             
             uiProperties.windowTitle = "Dominos";
-            uiProperties.tileSize = sf::Vector2i(CARCASSONNE_TILE_SIZE, CARCASSONNE_TILE_SIZE);
-            uiProperties.windowSize = sf::Vector2i(CARCASSONNE_WINDOW_WIDTH, CARCASSONNE_WINDOW_HEIGHT);
+            uiProperties.tileSize = sf::Vector2i(DOMINOS_TILE_SIZE, DOMINOS_TILE_SIZE);
+            uiProperties.windowSize = sf::Vector2i(DOMINOS_WINDOW_WIDTH, DOMINOS_WINDOW_HEIGHT);
         
-            BoardProperties boardProperties(CARCASSONNE_BOARD_WIDTH, CARCASSONNE_BOARD_HEIGHT);
-
-            Carcassonne carcassonne(uiProperties, boardProperties);
-
             std::cout << "Dimensions du plateau (x#y)? ";
             std::string line;
             getline(std::cin, line);
@@ -100,6 +93,22 @@ int main(int argc, char **argv) {
             }
             trax.run();
             break;
+        }
+        case 3: {
+            uiProperties.windowTitle = "Carcassonne";
+            uiProperties.tileSize = sf::Vector2i(CARCASSONNE_TILE_SIZE, CARCASSONNE_TILE_SIZE);
+            uiProperties.windowSize = sf::Vector2i(CARCASSONNE_WINDOW_WIDTH, CARCASSONNE_WINDOW_HEIGHT);
+
+            BoardProperties boardProperties(CARCASSONNE_BOARD_WIDTH, CARCASSONNE_BOARD_HEIGHT);
+
+            Carcassonne carcassonne(uiProperties, boardProperties);
+
+            for (int i = 0; i < 4; i++) {
+                std::cout << "Joueur " << i + 1 << "? ";
+                std::string name;
+                getline(std::cin, name);
+                carcassonne.registerPlayer(name, (CarcassonnePawnColor) i);               
+            }
         }
         default:
             break;
