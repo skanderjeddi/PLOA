@@ -98,23 +98,14 @@ class CarcassonneTile : virtual public Tile<std::map<TileEdge, CarcassonneTileTy
             grid[CarcassonneTileGrid::BOTTOM_CENTER] = bc;
             grid[CarcassonneTileGrid::BOTTOM_RIGHT] = br;
         }
+
+        int getTexture(){
+            return textureId;
+        }
         void setGrid(std::map<CarcassonneTileGrid, CarcassonneTileType> g){
             grid = g; 
         }
-        bool hasMonastery() const {
-            std::cout<<"dansHas"<<std::endl;
-            if (grid.count(CarcassonneTileGrid::CENTER_CENTER)){
-                std::cout<<"contient "<<std::endl;
-                if(grid.at(CarcassonneTileGrid::CENTER_CENTER) == CarcassonneTileType::MONASTERY){
-                return true; 
-
-            } 
-            }
-            if (!grid.count(CarcassonneTileGrid::CENTER_CENTER)){
-                std::cout<<"contientpas"<<textureId<<std::endl;
-            }
-            
-            return false; }
+        
         bool hasCenter() const {
             if (grid.count(CarcassonneTileGrid::CENTER_CENTER)){
                 std::cout<<"contient un centre "<<std::endl;
@@ -182,9 +173,11 @@ class CarcassonneBoard : virtual public Board<CarcassonneTile> {
         int handleTile(const CarcassonneTile&, const std::pair<int, int>&);
         bool closedCity(const CarcassonneTile&, const std::pair<int,int>&);
         int closedCityRec(std::vector<std::pair<int,int>> ,  const CarcassonneTile& , const std::pair<int, int>& );
-        bool anyMonastery(const CarcassonneTile&, const std::pair<int, int>& position);
-        bool closedMonastery(const CarcassonneTile& ,const std::pair<int, int>& );
-        bool finishedRoad(const CarcassonneTile& ,const std::pair<int, int>& );
+        bool anyMonastery(const CarcassonneTile&, const std::pair<int, int>& position, std::map<int, std::pair<std::string, int>>& ,std::map<std::string, CarcassonnePawnColor> );
+        bool closedMonastery(const CarcassonneTile& ,const std::pair<int, int>& , std::map<int, std::pair<std::string, int>>& ,std::map<std::string, CarcassonnePawnColor>);
+        bool finishedRoad(const CarcassonneTile& ,const std::pair<int, int>&,std::map<int, std::pair<std::string, int>> &, std::map<std::string, CarcassonnePawnColor>  );
+        int finishedRoadRecFirst(const CarcassonneTile& , const std::pair<int,int>&, const std::pair<int,int>&,std::map<int, std::pair<std::string, int>> &, std::map<std::string, CarcassonnePawnColor>  );
+        bool finishedRoadRecSecond(int ,const CarcassonneTile& , const std::pair<int,int>&, const std::pair<int,int>&, std::map<CarcassonnePawnColor, int>&, std::map<int, std::pair<std::string, int>> &, std::map<std::string, CarcassonnePawnColor>  );
 };
 
 /**
