@@ -274,32 +274,6 @@ void Dominos::drawGameOverScreen() {
     interface.drawText(instructions, sf::Vector2f(0, windowHeight - tileHeight), sf::Vector2f(windowWidth, tileHeight), 22);
 }
 
-<<<<<<< HEAD
-void Dominos::run() {
-    interface.show(board);
-    sf::RenderWindow* window = interface.getWindow();
-    window->setKeyRepeatEnabled(false);
-    while (window->isOpen()) {
-        sf::Event event;
-        while (window->pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window->close();
-            }
-            handleEvent(event, window);
-        }
-        window->clear(sf::Color::Black);
-        if (!isGameOver) {
-            drawMainGame();
-        } else {
-            drawGameOver();
-        }
-        interface.render();
-        window->display();
-    }
-}
-
-=======
->>>>>>> 05-03-carcassonne
 void Dominos::handleEvent(const sf::Event & event, sf::RenderWindow * windowPtr) {
     auto boardProperties = board.getProperties();
     auto uiProperties = interface.getProperties();
