@@ -109,6 +109,7 @@ int main(int argc, char **argv) {
                 getline(std::cin, name);
                 carcassonne.registerPlayer(name, (CarcassonnePawnColor) i);               
             }
+            carcassonne.run();
         }
         default:
             break;
