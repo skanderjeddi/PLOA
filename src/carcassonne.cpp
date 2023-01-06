@@ -390,9 +390,13 @@ bool CarcassonneBoard::closedMonastery(const CarcassonneTile& t,const std::pair<
 
 
 }
-bool CarcassonneBoard::finishedRoad(const CarcassonneTile& tile,const std::pair<int, int>& position){
+bool CarcassonneBoard::finishedRoad(const CarcassonneTile& tile,const std::pair<int, int>& position,std::map<int, std::pair<std::string, int>> &scoreBoard, std::map<std::string, CarcassonnePawnColor> playerColors){
     auto neighbors = getNeighbors(position); 
-    
+    std::map<CarcassonnePawnColor,int>m;
+     m[CarcassonnePawnColor::RED]=0;
+     m[CarcassonnePawnColor::BLUE]=0;
+     m[CarcassonnePawnColor::YELLOW]=0;
+     m[CarcassonnePawnColor::GREEN]=0;
     int c = 0; 
      for (auto neighbor : neighbors) {
         auto neighborPos = position; 
@@ -422,11 +426,34 @@ bool CarcassonneBoard::finishedRoad(const CarcassonneTile& tile,const std::pair<
             }
             if (neighborTile.getTextureId()==6||neighborTile.getTextureId()==8||neighborTile.getTextureId()==21||neighborTile.getTextureId()==3||neighborTile.getTextureId()==13||neighborTile.getTextureId()==19){
                 std::cout<<"tuile speciale banal"<<std::endl;
-                c += finishedRoadRecSecond(tile,position,neighborPos);
+                auto pions = neighborTile.getPawns(); 
+                    for(auto p : pions){
+                        if (neighborEdge == TileEdge::LEFT){
+                            if (p.second==CarcassonneTileGrid::CENTER_LEFT){
+                                m[p.first.color]+=1;
+                            }
+                        }
+                        else if (neighborEdge == TileEdge::RIGHT){
+                            if (p.second==CarcassonneTileGrid::CENTER_CENTER||p.second==CarcassonneTileGrid::CENTER_RIGHT){
+                                m[p.first.color]+=1;
+                            }
+                        }
+                        else if (neighborEdge==TileEdge::TOP){
+                            if (p.second==CarcassonneTileGrid::CENTER_CENTER||p.second==CarcassonneTileGrid::TOP_CENTER){
+                                m[p.first.color]+=1;
+                            }
+                        }
+                        else{
+                            if (p.second==CarcassonneTileGrid::CENTER_CENTER||p.second==CarcassonneTileGrid::BOTTOM_CENTER){
+                                m[p.first.color]+=1;
+                            }
+                        }       
+                    }
+                c += finishedRoadRecSecond(1,tile,position,neighborPos,m, scoreBoard, playerColors);
             }
             else {
                 std::cout<<"appel normal banal "<<neighborPos.first<< " " <<neighborPos.second<<std::endl;
-            c += finishedRoadRecFirst(neighborTile, neighborPos, position); 
+            c += finishedRoadRecFirst(neighborTile, neighborPos, position, scoreBoard, playerColors); 
             }
         }
         
@@ -434,7 +461,13 @@ bool CarcassonneBoard::finishedRoad(const CarcassonneTile& tile,const std::pair<
     return c>0; 
 }
 
-int CarcassonneBoard::finishedRoadRecFirst(const CarcassonneTile& tile, const std::pair<int,int>&position, const std::pair<int,int>& previous){
+int CarcassonneBoard::finishedRoadRecFirst(const CarcassonneTile& tile, const std::pair<int,int>&position, const std::pair<int,int>& previous,std::map<int, std::pair<std::string, int>> &scoreBoard, std::map<std::string, CarcassonnePawnColor> playerColors){
+     std::map<CarcassonnePawnColor,int>m;
+
+     m[CarcassonnePawnColor::RED]=0;
+     m[CarcassonnePawnColor::BLUE]=0;
+     m[CarcassonnePawnColor::YELLOW]=0;
+     m[CarcassonnePawnColor::GREEN]=0;
     auto neighbors = getNeighbors(position); 
     
     int c = 0 ;
@@ -453,6 +486,8 @@ int CarcassonneBoard::finishedRoadRecFirst(const CarcassonneTile& tile, const st
             std::cout<<"type road first"<<neighborPos.first<< " " <<neighborPos.second<<std::endl;
              switch (edge){
                 case TileEdge::LEFT : 
+                   
+
                     neighborPos.first = position.first-1; 
                 break;
                 case TileEdge::TOP : 
@@ -467,23 +502,44 @@ int CarcassonneBoard::finishedRoadRecFirst(const CarcassonneTile& tile, const st
             }
             if (neighborPos != previous){
                 if (neighborTile.getTextureId()==6||neighborTile.getTextureId()==8||neighborTile.getTextureId()==21||neighborTile.getTextureId()==3||neighborTile.getTextureId()==13||neighborTile.getTextureId()==19){
-                 std::cout<<"tuile speciale FIRST"<<neighborPos.first<< " " <<neighborPos.second<<std::endl;
-                c += finishedRoadRecSecond(tile,position, neighborPos);
+                    std::cout<<"tuile speciale FIRST"<<neighborPos.first<< " " <<neighborPos.second<<std::endl;
+                    auto pions = neighborTile.getPawns(); 
+                    for(auto p : pions){
+                        if (neighborEdge == TileEdge::LEFT){
+                            if (p.second==CarcassonneTileGrid::CENTER_LEFT){
+                                m[p.first.color]+=1;
+                            }
+                        }
+                        else if (neighborEdge == TileEdge::RIGHT){
+                            if (p.second==CarcassonneTileGrid::CENTER_CENTER||p.second==CarcassonneTileGrid::CENTER_RIGHT){
+                                m[p.first.color]+=1;
+                            }
+                        }
+                        else if (neighborEdge==TileEdge::TOP){
+                            if (p.second==CarcassonneTileGrid::CENTER_CENTER||p.second==CarcassonneTileGrid::TOP_CENTER){
+                                m[p.first.color]+=1;
+                            }
+                        }
+                    
+                        else{
+                            if (p.second==CarcassonneTileGrid::CENTER_CENTER||p.second==CarcassonneTileGrid::BOTTOM_CENTER){
+                                m[p.first.color]+=1;
+                            }
+                        }       
+                    }
+                c += finishedRoadRecSecond(1,tile,position, neighborPos,m, scoreBoard, playerColors);
                 }
                 else {
                     std::cout<<"appel normal first"<<neighborPos.first<< " " <<neighborPos.second<<std::endl;
-                    c += finishedRoadRecFirst(neighborTile, neighborPos, position); 
+                    c += finishedRoadRecFirst(neighborTile, neighborPos, position, scoreBoard, playerColors); 
                 }
             } 
         }
     }
     return c; 
 }
-bool CarcassonneBoard::finishedRoadRecSecond(const CarcassonneTile& tile, const std::pair<int,int>&position, const std::pair<int,int>& previous){
-    if (tile.getTextureId()==6||tile.getTextureId()==8||tile.getTextureId()==21||tile.getTextureId()==3||tile.getTextureId()==13||tile.getTextureId()==19){
-        std::cout<<"tuile speciale SECOND"<<std::endl;
-       return 1; 
-    }
+bool CarcassonneBoard::finishedRoadRecSecond(int longueur,const CarcassonneTile& tile, const std::pair<int,int>&position, const std::pair<int,int>& previous, std::map<CarcassonnePawnColor, int>& reg,std::map<int, std::pair<std::string, int>> &scoreBoard, std::map<std::string, CarcassonnePawnColor> playerColors){
+    
     auto neighbors = getNeighbors(position); 
     
     int c = 0 ;
@@ -497,10 +553,63 @@ bool CarcassonneBoard::finishedRoadRecSecond(const CarcassonneTile& tile, const 
         auto neighborTileProperties = neighborTile.dataStructure();
         auto edge1 = tileProperties.at(edge);
         auto edge2 = neighborTileProperties.at(neighborEdge);
+        if (tile.getTextureId()==6||tile.getTextureId()==8||tile.getTextureId()==21||tile.getTextureId()==3||tile.getTextureId()==13||tile.getTextureId()==19){
+            auto tileProperties=tile.dataStructure(); 
+            auto pions = tile.getPawns(); 
+            for(auto p : pions){
+            if (edge == TileEdge::LEFT){
+                if (p.second==CarcassonneTileGrid::CENTER_LEFT){
+                    reg[p.first.color]+=1;
+                }
+            }
+            else if (edge == TileEdge::RIGHT){
+                if (p.second==CarcassonneTileGrid::CENTER_CENTER||p.second==CarcassonneTileGrid::CENTER_RIGHT){
+                    reg[p.first.color]+=1;
+                }
+            }
+            else if (edge==TileEdge::TOP){
+                if (p.second==CarcassonneTileGrid::CENTER_CENTER||p.second==CarcassonneTileGrid::TOP_CENTER){
+                    reg[p.first.color]+=1;
+                }
+            }
+            else{
+                if (p.second==CarcassonneTileGrid::CENTER_CENTER||p.second==CarcassonneTileGrid::BOTTOM_CENTER){
+                    reg[p.first.color]+=1;
+                }
+            }
+            std::cout<<"tuile speciale SECOND"<<std::endl;
+            }
+
+            int max = std::max({reg[CarcassonnePawnColor::RED],reg[CarcassonnePawnColor::BLUE],reg[CarcassonnePawnColor::YELLOW], reg[CarcassonnePawnColor::GREEN] });
+            longueur +=1;
+            if (max>0){
+                for(auto el : reg){
+                    if (el.second==max){
+                        for (auto c : playerColors){
+                            std::cout<<"boucle2"<<std::endl;
+                            if (c.second==el.first){
+                                for (auto pl : scoreBoard){
+                                    std::cout<<"boucle3"<<std::endl;
+                                    if (pl.second.first.std::string::compare( c.first)){
+                                        std::cout<<"compare"<<std::endl;
+                                        scoreBoard.at(pl.first).second +=longueur;
+                                    }
+                                }
+                   
+                           }
+                        }
+                    }
+                }
+            }
+
+            return 1; 
+            
+        }
         if (edge1==CarcassonneTileType::ROAD){
             std::cout<<"type road second"<<std::endl;
              switch (edge){
                 case TileEdge::LEFT : 
+                    
                     neighborPos.first = position.first-1; 
                 break;
                 case TileEdge::TOP : 
@@ -514,8 +623,33 @@ bool CarcassonneBoard::finishedRoadRecSecond(const CarcassonneTile& tile, const 
                 break;
             }
             if (neighborPos != previous){
+                auto pions = tile.getPawns(); 
+                for(auto p : pions){
+                    if (edge == TileEdge::LEFT){
+                        if (p.second==CarcassonneTileGrid::CENTER_CENTER||p.second==CarcassonneTileGrid::CENTER_LEFT){
+                            reg[p.first.color]+=1;
+                        }
+                    }
+                    else if (edge == TileEdge::TOP){
+                        if (p.second==CarcassonneTileGrid::CENTER_CENTER||p.second==CarcassonneTileGrid::TOP_CENTER){
+                            reg[p.first.color]+=1;
+                        }
+                    }
+                     else if (edge == TileEdge::BOTTOM){
+                        if (p.second==CarcassonneTileGrid::CENTER_CENTER||p.second==CarcassonneTileGrid::BOTTOM_CENTER){
+                            reg[p.first.color]+=1;
+                        }
+                    }
+                    else{
+                        if (p.second==CarcassonneTileGrid::CENTER_CENTER||p.second==CarcassonneTileGrid::CENTER_RIGHT){
+                            reg[p.first.color]+=1;
+                        }
+                    }
+                }
+                    
+                    
                std::cout<<"appel normal second"<<neighborPos.first<< " " <<neighborPos.second<<std::endl;
-                c += finishedRoadRecSecond(neighborTile, neighborPos, position); 
+                c += finishedRoadRecSecond(longueur +1, neighborTile, neighborPos, position, reg, scoreBoard, playerColors); 
                 
             }
         }
@@ -972,7 +1106,7 @@ void Carcassonne::handleEvent(const sf::Event & event, sf::RenderWindow * window
                     if (b){
                         std::cout<<"monastere !!!!"<<std::endl;
                     }
-                    bool r = board.finishedRoad(*currentTile, position);
+                    bool r = board.finishedRoad(*currentTile, position, scoreboard, playerColors);
                     if (r){
                         std::cout<<"ROUTE!!!"<<std::endl;
                     }

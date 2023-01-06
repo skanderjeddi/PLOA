@@ -175,9 +175,9 @@ class CarcassonneBoard : virtual public Board<CarcassonneTile> {
         int closedCityRec(std::vector<std::pair<int,int>> ,  const CarcassonneTile& , const std::pair<int, int>& );
         bool anyMonastery(const CarcassonneTile&, const std::pair<int, int>& position, std::map<int, std::pair<std::string, int>>& ,std::map<std::string, CarcassonnePawnColor> );
         bool closedMonastery(const CarcassonneTile& ,const std::pair<int, int>& , std::map<int, std::pair<std::string, int>>& ,std::map<std::string, CarcassonnePawnColor>);
-        bool finishedRoad(const CarcassonneTile& ,const std::pair<int, int>& );
-        int finishedRoadRecFirst(const CarcassonneTile& , const std::pair<int,int>&, const std::pair<int,int>& );
-        bool finishedRoadRecSecond(const CarcassonneTile& , const std::pair<int,int>&, const std::pair<int,int>& );
+        bool finishedRoad(const CarcassonneTile& ,const std::pair<int, int>&,std::map<int, std::pair<std::string, int>> &, std::map<std::string, CarcassonnePawnColor>  );
+        int finishedRoadRecFirst(const CarcassonneTile& , const std::pair<int,int>&, const std::pair<int,int>&,std::map<int, std::pair<std::string, int>> &, std::map<std::string, CarcassonnePawnColor>  );
+        bool finishedRoadRecSecond(int ,const CarcassonneTile& , const std::pair<int,int>&, const std::pair<int,int>&, std::map<CarcassonnePawnColor, int>&, std::map<int, std::pair<std::string, int>> &, std::map<std::string, CarcassonnePawnColor>  );
 };
 
 /**
