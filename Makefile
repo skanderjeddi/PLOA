@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -g
+CXXFLAGS = -std=c++11 -g
 
 SOURCES := $(shell find . -name "*.cpp")
 OBJS = $(SOURCES:.cpp=.o)

@@ -188,7 +188,7 @@ bool CarcassonneBoard::isCityClosed(const CarcassonneTile& tile, const std::pair
 
 }
 
-int CarcassonneBoard::isCityClosedRecursive(std::vector<std::pair<int,int>> previous,  const CarcassonneTile& Tile, const std::pair<int, int>& position){
+int CarcassonneBoard::isCityClosedRecursive(std::vector<std::pair<int,int>> previous,  const CarcassonneTile& Tile, const std::pair<int, int>& position) {
     /*auto neighbors = getNeighbors(position);
     for (auto neighbor : neighbors){
         auto edge = neighbor.first; 
@@ -230,7 +230,9 @@ int CarcassonneBoard::isCityClosedRecursive(std::vector<std::pair<int,int>> prev
         
     }*/
     //todo 
+    return 0;
 }
+
 bool CarcassonneBoard::hasMonastery(const CarcassonneTile& tile, const std::pair<int, int>& position, std::map<int, std::pair<std::string, int>> &scoreBoard, std::map<std::string, CarcassonnePawnColor> playerColors){ 
     std::cout<<"entree"<<std::endl;
     bool b = false; 
