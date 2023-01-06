@@ -139,7 +139,7 @@ bool CarcassonneBoard::closedCity(const CarcassonneTile& tile, const std::pair<i
 
 }
 
-int CarcassonneBoard::closedCityRec(std::vector<std::pair<int,int>> previous,  const CarcassonneTile& Tile, const std::pair<int, int>& position){
+int CarcassonneBoard::closedCityRec(std::vector<std::pair<int,int>> previous,  const CarcassonneTile& tile, const std::pair<int, int>& position){
     auto neighbors = getNeighbors(position);
     for (auto neighbor : neighbors){
         auto edge = neighbor.first; 
