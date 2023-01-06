@@ -140,7 +140,7 @@ bool CarcassonneBoard::closedCity(const CarcassonneTile& tile, const std::pair<i
 }
 
 int CarcassonneBoard::closedCityRec(std::vector<std::pair<int,int>> previous,  const CarcassonneTile& Tile, const std::pair<int, int>& position){
-    auto neighbors = getNeighbors(position);
+    /*auto neighbors = getNeighbors(position);
     for (auto neighbor : neighbors){
         auto edge = neighbor.first; 
         auto neighborTile= neighbor.second; 
@@ -179,21 +179,21 @@ int CarcassonneBoard::closedCityRec(std::vector<std::pair<int,int>> previous,  c
         bool present = false; 
        
         
-    }
+    }*/
     //todo 
 }
-bool CarcassonneBoard::anyMonastery(const CarcassonneTile& tile, const std::pair<int, int>& position){ 
+bool CarcassonneBoard::anyMonastery(const CarcassonneTile& tile, const std::pair<int, int>& position, std::map<int, std::pair<std::string, int>> &scoreBoard, std::map<std::string, CarcassonnePawnColor> playerColors){ 
     std::cout<<"entree"<<std::endl;
     bool b = false; 
     //todo : si une case dans les 9 autour est un monastere on apelle closedMonastery sur le monastere qui verifie juste que autour de lui y'a une tuile placée partout.
-    auto t = getTile(position.first-1,position.second);
+    auto t = getTile(position.first,position.second);
     if (t != nullptr) {
         t->hasCenter(); 
         if (t->hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
         // if (true){
             std::cout<<"onyva"<<std::endl;
             std::cout<<"monastere uwu"<<std::endl;
-            closedMonastery(tile, position); 
+            b = closedMonastery(tile, position, scoreBoard, playerColors); 
             
         }
     }
@@ -203,13 +203,12 @@ bool CarcassonneBoard::anyMonastery(const CarcassonneTile& tile, const std::pair
         // changer ça part auto t = getTile(position.first-1,position.second);
         // if (t != nullptr) { 
         auto o = getTile(position.first-1,position.second);
-         if (o.hasValue()){
-            auto t = o.unwrap();
-            std::cout<<"monastere uwu"<<std::endl;
-            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+         if (o!=nullptr){
+            
+            if (t->hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
                 //if (true){
                 std::cout<<"onyva"<<std::endl;
-               b =  closedMonastery(t, std::pair<int,int> (position.first-1,position.second)); 
+               b =  closedMonastery(*o, std::pair<int,int> (position.first-1,position.second), scoreBoard, playerColors); 
                 if (b){
                     return b ;
                 }   
@@ -219,13 +218,12 @@ bool CarcassonneBoard::anyMonastery(const CarcassonneTile& tile, const std::pair
   
     if ((tiles.count(std::pair<int,int> (position.first-1,position.second+1)))&&(position.first-1 >=0&&position.second+1 <=7)&&tiles.find(std::pair<int,int> (position.first-1,position.second+1))!=tiles.end()){
         auto o = getTile(position.first-1,position.second+1);
-         if (o.hasValue()){
-            auto t = o.unwrap();
-            std::cout<<"monastere uwu"<<std::endl;
-            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+          if (o!=nullptr){
+            
+            if (o->hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
                 //if (true){
                     std::cout<<"onyva"<<std::endl;
-                b = closedMonastery(t, std::pair<int,int> (position.first-1,position.second+1)); 
+                b = closedMonastery(*o, std::pair<int,int> (position.first-1,position.second+1), scoreBoard, playerColors); 
                 if (b){
                     return b ;
                 }   
@@ -235,13 +233,12 @@ bool CarcassonneBoard::anyMonastery(const CarcassonneTile& tile, const std::pair
    
     if (tiles.count(std::pair<int,int> (position.first,position.second+1))&&(position.second+1 <=7)&&tiles.find(std::pair<int,int> (position.first,position.second+1))!=tiles.end()){
         auto o = getTile(position.first,position.second+1); 
-         if (o.hasValue()){
-            auto t = o.unwrap();
-            std::cout<<"monastere uwu"<<std::endl;
-            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+          if (o!=nullptr){
+            
+            if (o->hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
                 //if (true){
                     std::cout<<"onyva"<<std::endl;
-                b = closedMonastery(t, std::pair<int,int> (position.first,position.second+1)); 
+                b = closedMonastery(*o, std::pair<int,int> (position.first,position.second+1), scoreBoard, playerColors); 
                 if (b){
                     return b ;
                 }   
@@ -249,14 +246,13 @@ bool CarcassonneBoard::anyMonastery(const CarcassonneTile& tile, const std::pair
         }
     }
     if (tiles.count(std::pair<int,int> (position.first+1,position.second+1))&&(position.first+1 <=7&&position.second+1<=7)&&tiles.find(std::pair<int,int> (position.first+1,position.second+1))!=tiles.end()){
-        auto o = getTile(position.first+1,position.second-1); 
-        if (o.hasValue()){
-            auto t = o.unwrap();
-            std::cout<<"monastere uwu"<<std::endl;
-            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+        auto o = getTile(position.first+1,position.second+1); 
+         if (o!=nullptr){
+            
+            if (o->hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
                 //if (true){
                     std::cout<<"onyva"<<std::endl;
-               b =  closedMonastery(t, std::pair<int,int> (position.first+1,position.second+1)); 
+               b =  closedMonastery(*o, std::pair<int,int> (position.first+1,position.second+1), scoreBoard, playerColors); 
                  if (b){
                     return b ;
                 }   
@@ -267,13 +263,12 @@ bool CarcassonneBoard::anyMonastery(const CarcassonneTile& tile, const std::pair
         auto o = getTile(position.first+1,position.second);
         std::cout<<"monastere uwu"<<std::endl;
 
-         if (o.hasValue()){
-            auto t = o.unwrap();
-            std::cout<<"monastere uwu"<<std::endl;
-            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+          if (o!=nullptr){
+            
+            if (o->hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
                 //if (true){
                     std::cout<<"onyva"<<std::endl;
-                b = closedMonastery(t, std::pair<int,int> (position.first+1,position.second)); 
+                b = closedMonastery(*o, std::pair<int,int> (position.first+1,position.second), scoreBoard, playerColors); 
                   if (b){
                     return b ;
                 }   
@@ -283,13 +278,12 @@ bool CarcassonneBoard::anyMonastery(const CarcassonneTile& tile, const std::pair
     if (tiles.count(std::pair<int,int> (position.first+1,position.second-1))&&(position.first+1<=7&&position.second-1>=0)&&tiles.find(std::pair<int,int> (position.first+1,position.second-1))!=tiles.end()){
         auto o = getTile(position.first+1,position.second-1);
         std::cout<<"monastere uwu"<<std::endl;
-         if (o.hasValue()){
-            auto t = o.unwrap();
-            std::cout<<"monastere uwu"<<std::endl;
-            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+         if (o!=nullptr){
+            
+            if (o->hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
                 //if (true){
                     std::cout<<"onyva"<<std::endl;
-               b =  closedMonastery(t, std::pair<int,int> (position.first+1,position.second-1)); 
+               b =  closedMonastery(*o, std::pair<int,int> (position.first+1,position.second-1), scoreBoard, playerColors); 
                   if (b){
                     return b ;
                 }   
@@ -299,13 +293,12 @@ bool CarcassonneBoard::anyMonastery(const CarcassonneTile& tile, const std::pair
     if (tiles.count(std::pair<int,int> (position.first,position.second-1))&&(position.second-1 >=0)&&tiles.find(std::pair<int,int> (position.first,position.second-1))!=tiles.end()){
        auto o = getTile(position.first,position.second-1);
         std::cout<<"monastere uwu"<<std::endl;
-        if (o.hasValue()){
-            auto t = o.unwrap();
-            std::cout<<"monastere uwu"<<std::endl;
-            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+         if (o!=nullptr){
+            
+            if (o->hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
                 //if (true){
                     std::cout<<"onyva"<<std::endl;
-              b =   closedMonastery(t, std::pair<int,int> (position.first+1,position.second+1)); 
+              b =   closedMonastery(*o, std::pair<int,int> (position.first,position.second-1), scoreBoard, playerColors); 
               if (b){
                     return b ;
                 }   
@@ -315,13 +308,12 @@ bool CarcassonneBoard::anyMonastery(const CarcassonneTile& tile, const std::pair
     if (tiles.count(std::pair<int,int> (position.first-1,position.second-1))&&(position.first-1 >=0&&position.second-1>=0)&&tiles.find(std::pair<int,int> (position.first-1,position.second-1))!=tiles.end()){
        auto o = getTile(position.first-1,position.second-1);
         std::cout<<"monastere uwu"<<std::endl;
-         if (o.hasValue()){
-            auto t = o.unwrap();
-            std::cout<<"monastere uwu"<<std::endl;
-            if (t.hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
+          if (o!=nullptr){
+            
+            if (o->hasMonastery()){ //hasMonastery = fonction qui dit si y'a un monastere au centre. (todo)
                 //if (true){
                     std::cout<<"onyva"<<std::endl;
-              b =   closedMonastery(t, std::pair<int,int> (position.first+1,position.second+1)); 
+              b =   closedMonastery(*o, std::pair<int,int> (position.first-1,position.second-1), scoreBoard, playerColors); 
                   if (b){
                     return b ;
                 }   
@@ -330,38 +322,38 @@ bool CarcassonneBoard::anyMonastery(const CarcassonneTile& tile, const std::pair
     }
     return false; 
 }
-bool CarcassonneBoard::closedMonastery(const CarcassonneTile& t,const std::pair<int, int>& position){
+bool CarcassonneBoard::closedMonastery(const CarcassonneTile& t,const std::pair<int, int>& position, std::map<int, std::pair<std::string, int>> &scoreBoard, std::map<std::string, CarcassonnePawnColor> playerColors){
     //todo : verifier les 8 cases autour.. 
     int eight = 0; 
-    if ( (getTile(position.first-1,position.second)).hasValue()){
+    if ( (getTile(position.first-1,position.second))!=nullptr){
         eight +=1;
         std::cout<<eight<<std::endl;
     }
-    if (getTile (position.first-1,position.second+1).hasValue()){
+    if (getTile (position.first-1,position.second+1)!=nullptr){
         eight +=1;
         std::cout<<eight<<std::endl;
     }
-    if (getTile(position.first,position.second+1).hasValue()){
+    if (getTile(position.first,position.second+1)!=nullptr){
         eight +=1;
         std::cout<<eight<<std::endl;
     }
-    if (getTile (position.first+1,position.second+1).hasValue()){
+    if (getTile (position.first+1,position.second+1)!=nullptr){
        eight +=1;
        std::cout<<eight<<std::endl;
     }
-    if (getTile (position.first+1,position.second).hasValue()){
+    if (getTile (position.first+1,position.second)!=nullptr){
         eight +=1;
         std::cout<<eight<<std::endl;
     }
-    if (getTile(position.first+1,position.second-1).hasValue()){
+    if (getTile(position.first+1,position.second-1)!=nullptr){
         eight +=1;
         std::cout<<eight<<std::endl;
     }
-    if (getTile(position.first,position.second-1).hasValue()){
+    if (getTile(position.first,position.second-1)!=nullptr){
         eight +=1;
         std::cout<<eight<<std::endl;
     }
-    if (getTile(position.first-1,position.second-1).hasValue()){
+    if (getTile(position.first-1,position.second-1)!=nullptr){
        eight +=1;
        std::cout<<eight<<std::endl;
     }
@@ -369,13 +361,166 @@ bool CarcassonneBoard::closedMonastery(const CarcassonneTile& t,const std::pair<
     //TODO rajouter les points du bonhomme dessus + enlever le bonhomme
     std::cout<<"monastere uwu"<<std::endl;
     std::cout<<"fincheck"<<std::endl;
+    auto tilePawns = t.getPawns(); 
+    if (eight==8){
+    for (auto p : tilePawns){
+        std::cout<<"boucle1"<<std::endl;
+        if (p.first.type==CarcassonnePawnType::MONK){
+            for (auto c : playerColors){
+                std::cout<<"boucle2"<<std::endl;
+                if (c.second==p.first.color){
+                    for (auto pl : scoreBoard){
+                        std::cout<<"boucle3"<<std::endl;
+                        if (pl.second.first.std::string::compare( c.first)){
+                            std::cout<<"compare"<<std::endl;
+                            scoreBoard.at(pl.first).second +=9;
+                        }
+                    }
+                   
+                }
+            }
+        }
+    }}//todo : enlever le pion
+
+    for(auto s : scoreBoard){
+        std::cout<<s.second.second<<std::endl;
+    }
     return eight==8;
    
 
 
 }
-bool CarcassonneBoard::finishedRoad(const CarcassonneTile& Tile,const std::pair<int, int>& position){
-    //todo
+bool CarcassonneBoard::finishedRoad(const CarcassonneTile& tile,const std::pair<int, int>& position){
+    auto neighbors = getNeighbors(position); 
+    
+    int c = 0; 
+     for (auto neighbor : neighbors) {
+        auto neighborPos = position; 
+        auto edge = neighbor.first;
+        std::cout<<neighbors.size()<<std::endl;
+        auto neighborTile = neighbor.second;
+        auto neighborEdge = oppositeEdge(edge);
+        auto tileProperties = tile.dataStructure();
+        auto neighborTileProperties = neighborTile.dataStructure();
+        auto edge1 = tileProperties.at(edge);
+        auto edge2 = neighborTileProperties.at(neighborEdge);
+        if (edge1==CarcassonneTileType::ROAD){
+            std::cout<<"roaded"<<std::endl;
+                switch (edge){
+                case TileEdge::LEFT : 
+                    neighborPos.first = position.first-1; 
+                break;
+                case TileEdge::TOP : 
+                    neighborPos.second = position.second-1;
+                    break; 
+                case TileEdge::BOTTOM : 
+                    neighborPos.second = position.second+1;
+                break; 
+                case TileEdge::RIGHT : 
+                    neighborPos.first = position.first  + 1; 
+                break;
+            }
+            if (neighborTile.getTextureId()==6||neighborTile.getTextureId()==8||neighborTile.getTextureId()==21||neighborTile.getTextureId()==3||neighborTile.getTextureId()==13||neighborTile.getTextureId()==19){
+                std::cout<<"tuile speciale banal"<<std::endl;
+                c += finishedRoadRecSecond(tile,position,neighborPos);
+            }
+            else {
+                std::cout<<"appel normal banal "<<neighborPos.first<< " " <<neighborPos.second<<std::endl;
+            c += finishedRoadRecFirst(neighborTile, neighborPos, position); 
+            }
+        }
+        
+    }
+    return c>0; 
+}
+
+int CarcassonneBoard::finishedRoadRecFirst(const CarcassonneTile& tile, const std::pair<int,int>&position, const std::pair<int,int>& previous){
+    auto neighbors = getNeighbors(position); 
+    
+    int c = 0 ;
+    
+    for (auto neighbor : neighbors){
+        auto neighborPos = position;
+        auto edge = neighbor.first;
+        
+        auto neighborTile = neighbor.second;
+        auto neighborEdge = oppositeEdge(edge);
+        auto tileProperties = tile.dataStructure();
+        auto neighborTileProperties = neighborTile.dataStructure();
+        auto edge1 = tileProperties.at(edge);
+        auto edge2 = neighborTileProperties.at(neighborEdge);
+        if (edge1==CarcassonneTileType::ROAD){
+            std::cout<<"type road first"<<neighborPos.first<< " " <<neighborPos.second<<std::endl;
+             switch (edge){
+                case TileEdge::LEFT : 
+                    neighborPos.first = position.first-1; 
+                break;
+                case TileEdge::TOP : 
+                    neighborPos.second = position.second-1;
+                    break; 
+                case TileEdge::BOTTOM : 
+                    neighborPos.second = position.second+1;
+                break; 
+                case TileEdge::RIGHT : 
+                    neighborPos.first = position.first  + 1; 
+                break;
+            }
+            if (neighborPos != previous){
+                if (neighborTile.getTextureId()==6||neighborTile.getTextureId()==8||neighborTile.getTextureId()==21||neighborTile.getTextureId()==3||neighborTile.getTextureId()==13||neighborTile.getTextureId()==19){
+                 std::cout<<"tuile speciale FIRST"<<neighborPos.first<< " " <<neighborPos.second<<std::endl;
+                c += finishedRoadRecSecond(tile,position, neighborPos);
+                }
+                else {
+                    std::cout<<"appel normal first"<<neighborPos.first<< " " <<neighborPos.second<<std::endl;
+                    c += finishedRoadRecFirst(neighborTile, neighborPos, position); 
+                }
+            } 
+        }
+    }
+    return c; 
+}
+bool CarcassonneBoard::finishedRoadRecSecond(const CarcassonneTile& tile, const std::pair<int,int>&position, const std::pair<int,int>& previous){
+    if (tile.getTextureId()==6||tile.getTextureId()==8||tile.getTextureId()==21||tile.getTextureId()==3||tile.getTextureId()==13||tile.getTextureId()==19){
+        std::cout<<"tuile speciale SECOND"<<std::endl;
+       return 1; 
+    }
+    auto neighbors = getNeighbors(position); 
+    
+    int c = 0 ;
+    
+    for (auto neighbor : neighbors){
+        auto edge = neighbor.first;
+        auto neighborPos = position;
+        auto neighborTile = neighbor.second;
+        auto neighborEdge = oppositeEdge(edge);
+        auto tileProperties = tile.dataStructure();
+        auto neighborTileProperties = neighborTile.dataStructure();
+        auto edge1 = tileProperties.at(edge);
+        auto edge2 = neighborTileProperties.at(neighborEdge);
+        if (edge1==CarcassonneTileType::ROAD){
+            std::cout<<"type road second"<<std::endl;
+             switch (edge){
+                case TileEdge::LEFT : 
+                    neighborPos.first = position.first-1; 
+                break;
+                case TileEdge::TOP : 
+                    neighborPos.second = position.second-1;
+                    break; 
+                case TileEdge::BOTTOM : 
+                    neighborPos.second = position.second+1;
+                break; 
+                case TileEdge::RIGHT : 
+                    neighborPos.first = position.first  + 1; 
+                break;
+            }
+            if (neighborPos != previous){
+               std::cout<<"appel normal second"<<neighborPos.first<< " " <<neighborPos.second<<std::endl;
+                c += finishedRoadRecSecond(neighborTile, neighborPos, position); 
+                
+            }
+        }
+    }
+    return c; 
 }
 
 /**
@@ -600,7 +745,7 @@ Carcassonne::Carcassonne(UserInterfaceProperties properties, BoardProperties boa
         CarcassonneTile* tile14 = new CarcassonneTile(13);
         tile14->setEdges(CarcassonneTileType::FIELD, CarcassonneTileType::FIELD, CarcassonneTileType::FIELD, CarcassonneTileType::ROAD);
         tile14->setGrid(CarcassonneTileType::FIELD, CarcassonneTileType::FIELD, CarcassonneTileType::FIELD, CarcassonneTileType::FIELD, CarcassonneTileType::MONASTERY, CarcassonneTileType::FIELD, CarcassonneTileType::FIELD, CarcassonneTileType::ROAD, CarcassonneTileType::FIELD);
-        for (int i = 0; i < 2; i++) tiles.push_back(tile14);
+        for (int i = 0; i < 40; i++) tiles.push_back(tile14);
     }
 
     // Tile 15
@@ -786,7 +931,12 @@ void Carcassonne::handlePawnPlacement(sf::RenderWindow * windowPtr) {
             }
         }
         tiles.erase(std::remove(tiles.begin(), tiles.end(), currentTile), tiles.end());
+        if (tiles.size() == 0) {
+                        isGameOver = true;
+                        return;
+        }
         currentTile = tiles.at(rand() % tiles.size());
+        
         isPlacingPawn = false;
         currentPlayer += 1;
         currentPlayer %= scoreboard.size();
@@ -818,6 +968,14 @@ void Carcassonne::handleEvent(const sf::Event & event, sf::RenderWindow * window
                     currentTileX = x;
                     currentTileY = y;
                     isPlacingPawn = true;
+                    bool b = board.anyMonastery(*currentTile, position, scoreboard,playerColors);
+                    if (b){
+                        std::cout<<"monastere !!!!"<<std::endl;
+                    }
+                    bool r = board.finishedRoad(*currentTile, position);
+                    if (r){
+                        std::cout<<"ROUTE!!!"<<std::endl;
+                    }
                 }
             }
         }
