@@ -624,7 +624,7 @@ void Carcassonne::handlePawnPlacement(sf::RenderWindow * windowPtr) {
         isPlacingPawn = false;
         return;
     }
-    
+
     CarcassonnePawn newPawn;
     newPawn.color = playerColors.at(scoreboard.at(currentPlayer).first);
 
@@ -721,6 +721,10 @@ void Carcassonne::handleEvent(const sf::Event & event, sf::RenderWindow * window
             if (isPlacingPawn) {
                 if (event.key.code == sf::Keyboard::Space) {
                     tiles.erase(std::remove(tiles.begin(), tiles.end(), currentTile), tiles.end());
+                    if (tiles.size() == 0) {
+                        isGameOver = true;
+                        return;
+                    }
                     currentTile = tiles.at(rand() % tiles.size());
                     isPlacingPawn = false;
                     currentPlayer += 1;
