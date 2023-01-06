@@ -2,8 +2,6 @@
 
 #include "proto/interface.hpp"
 
-#include "common.hpp"
-
 enum class TileRotation {
     CLOCKWISE,
     COUNTERCLOCKWISE

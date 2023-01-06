@@ -3,6 +3,7 @@
 
 #include "include/dominos.hpp"
 #include "include/trax.hpp"
+#include "include/carcassonne.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -45,3 +46,4 @@ TileEdge oppositeEdge(const TileEdge& edge) {
 
 template class Tile<std::map<TileEdge, std::vector<int>>>;
 template class Tile<std::pair<TraxTileFace, std::map<TileEdge, TraxTileEdge>>>;
+template class Tile<std::map<TileEdge, CarcassonneTileType>>;

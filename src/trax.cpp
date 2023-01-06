@@ -649,12 +649,10 @@ void TraxInterface::drawBoard(TraxBoard& board, const sf::Vector2i& position) {
     drawGrid(position);
     for (int x = 0; x < boardProperties.width; x++) {
         for (int y = 0; y < boardProperties.height; y++) {
-
-            auto optTile = board.getTile(x, y);
-            if (optTile.hasValue()) {
-                auto tile = optTile.unwrap();
+            auto tile = board.getTile(x, y);
+            if (tile != nullptr) {
                 if (DEBUG) std::cout << "Drawing tile at (" << x << ", " << y << ")" << std::endl;
-                drawTile(tile, sf::Vector2i(x * properties.tileSize.x, y * properties.tileSize.y), position);
+                drawTile(*tile, sf::Vector2i(x * properties.tileSize.x, y * properties.tileSize.y), position);
             }
         }
     } 
@@ -713,11 +711,12 @@ void TraxInterface::drawTile(TraxTile& tile, const sf::Vector2i& position, const
 
 
 Trax::Trax(UserInterfaceProperties properties) : Game(properties, BoardProperties(8, 8)) { 
-    currentTile = TraxTile();
+    currentTile = new TraxTile();
     currentPlayer = 0 ; 
     
 
 }
+
 void Trax::drawPlayers(){
    
     auto uiProperties = interface.getProperties();
@@ -734,35 +733,12 @@ void Trax::drawPlayers(){
     interface.drawText(currentPlayerName, sf::Vector2f(windowWidth - 2 * tileWidth, 0), sf::Vector2f(tileWidth+20 , windowHeight / 4), 21);
 }
 
-void Trax::run() {
-    auto boardProperties = board.getProperties();
-    auto uiProperties = interface.getProperties();
-    interface.show(board);
-    sf::RenderWindow* window = interface.getWindow();
-    while (window->isOpen()) {
-        sf::Event event;
-        while (window->pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window->close();
-            }
-            handleEvent(event, window);
-        }
+void Trax::drawGameScreen() {
+    // TODO
+}
 
-        window->clear(sf::Color::Black);
-        if (isGameOver){
-            drawWinner();
-        }       
-        else{
-
-        interface.draw(board);
-        interface.drawTile(currentTile, sf::Vector2i(uiProperties.tileSize.x * boardProperties.width + uiProperties.tileSize.x +200 / 2 , uiProperties.tileSize.y+200 / 2));
-        drawPlayers();
-        
-        }
-        interface.render();
-        window->display();
-        
-    }
+void Trax::drawGameOverScreen() {
+    // TODO
 }
 void Trax::drawWinner(){
     auto uiProperties = interface.getProperties();
@@ -796,27 +772,27 @@ void Trax::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
             if (x < boardProperties.width && y < boardProperties.height) {
                 std::cout << "inside tile: " << x << ", " << y << std::endl;
                 
-                int result = board.handleTile(currentTile, position); 
+                int result = board.handleTile(*currentTile, position); 
                 if (result==0) {
-                    if (board.isFinishedLoop( position, currentTile)||board.isFinishedBorder()){
+                    if (board.isFinishedLoop( position, *currentTile)||board.isFinishedBorder()){
                         std::cout<<"Game over!"<<std::endl;
                         isGameOver = true;                          
                     }
                     else{
                     currentPlayer += 1;
                     currentPlayer %= scoreboard.size();
-                    currentTile = TraxTile();                    
+                    currentTile = new TraxTile();                    
                     }
                 }
                   else if (result==1) {
-                    if (board.isFinishedLoop( position, currentTile)||board.isFinishedBorder()){
+                    if (board.isFinishedLoop( position, *currentTile)||board.isFinishedBorder()){
                         std::cout<<"Game over!"<<std::endl;
                         drawWinner();
                         exit(0);
                     }
                     
                     currentPlayer %= scoreboard.size();
-                    currentTile = TraxTile();                    
+                    currentTile = new TraxTile();                    
                   
                 }
               
@@ -827,11 +803,11 @@ void Trax::handleEvent(const sf::Event& event, sf::RenderWindow* windowPtr) {
     if (event.type == sf::Event::KeyPressed) {
         if (!isGameOver) {
             if (event.key.code == sf::Keyboard::Right) {
-                currentTile.rotate(TileRotation::CLOCKWISE);
+                currentTile->rotate(TileRotation::CLOCKWISE);
             } else if (event.key.code == sf::Keyboard::Left) {
-                currentTile.rotate(TileRotation::COUNTERCLOCKWISE);
+                currentTile->rotate(TileRotation::COUNTERCLOCKWISE);
             } else if (event.key.code == sf::Keyboard::Space) {
-                currentTile.flip();
+                currentTile->flip();
             }
         } else {
             if (event.type == sf::Event::KeyPressed) {

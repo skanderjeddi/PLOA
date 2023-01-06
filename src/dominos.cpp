@@ -139,11 +139,10 @@ void DominosInterface::drawBoard(DominosBoard& board, const sf::Vector2i& positi
     drawGrid(position);
     for (int x = 0; x < boardProperties.width; x++) {
         for (int y = 0; y < boardProperties.height; y++) {
-            auto optTile = board.getTile(x, y);
-            if (optTile.hasValue()) {
-                auto tile = optTile.unwrap();
+            auto tile = board.getTile(x, y);
+            if (tile != nullptr) {
                 if (DEBUG) std::cout << "Drawing tile at (" << x << ", " << y << ")" << std::endl;
-                drawTile(tile, sf::Vector2i(x * properties.tileSize.x, y * properties.tileSize.y), position);
+                drawTile(*tile, sf::Vector2i(x * properties.tileSize.x, y * properties.tileSize.y), position);
             }
         }
     } 
@@ -216,11 +215,11 @@ void DominosInterface::drawTile(DominosTile& tile, const sf::Vector2i& position,
  */
 
 Dominos::Dominos(UserInterfaceProperties properties, BoardProperties boardProperties, int tilesInBag) : Game(properties, boardProperties), remainingTiles(tilesInBag) {
-    currentTile = DominosTile();
+    currentTile = new DominosTile();
     currentPlayer = 0;
 }
 
-void Dominos::drawMainGame() {
+void Dominos::drawGameScreen() {
     auto boardProperties = board.getProperties();
     auto uiProperties = interface.getProperties();
 
@@ -257,10 +256,10 @@ void Dominos::drawMainGame() {
     // Draw instructions at the bottom of the screen
     interface.drawText(instructions, sf::Vector2f(0, windowHeight - tileHeight), sf::Vector2f(windowWidth, tileHeight), 20);
     // Draw the current tile
-    interface.drawTile(currentTile, sf::Vector2i(windowWidth - 2 * tileWidth + tileWidth / 2, windowHeight / 12));
+    interface.drawTile(*currentTile, sf::Vector2i(windowWidth - 2 * tileWidth + tileWidth / 2, windowHeight / 12));
 }
 
-void Dominos::drawGameOver() {
+void Dominos::drawGameOverScreen() {
     auto uiProperties = interface.getProperties();
     int tileWidth = uiProperties.tileSize.x;
     int tileHeight = uiProperties.tileSize.y;
@@ -275,6 +274,7 @@ void Dominos::drawGameOver() {
     interface.drawText(instructions, sf::Vector2f(0, windowHeight - tileHeight), sf::Vector2f(windowWidth, tileHeight), 22);
 }
 
+<<<<<<< HEAD
 void Dominos::run() {
     interface.show(board);
     sf::RenderWindow* window = interface.getWindow();
@@ -298,6 +298,8 @@ void Dominos::run() {
     }
 }
 
+=======
+>>>>>>> 05-03-carcassonne
 void Dominos::handleEvent(const sf::Event & event, sf::RenderWindow * windowPtr) {
     auto boardProperties = board.getProperties();
     auto uiProperties = interface.getProperties();
@@ -318,13 +320,13 @@ void Dominos::handleEvent(const sf::Event & event, sf::RenderWindow * windowPtr)
             auto position = std::make_pair(x, y);
             if (x < boardProperties.width && y < boardProperties.height) {
                 std::cout << "inside tile: " << x << ", " << y << std::endl;
-                int result = board.handleTile(currentTile, position);
+                int result = board.handleTile(*currentTile, position);
                 if (result != -1) {
                     std::cout << "+ " << result << " points" << std::endl;
                     scoreboard[currentPlayer].second += result;
                     currentPlayer += 1;
                     currentPlayer %= scoreboard.size();
-                    currentTile = DominosTile();
+                    currentTile = new DominosTile();
                     remainingTiles -= 1;
                     if (remainingTiles == 0) {
                         isGameOver = true;
@@ -336,11 +338,11 @@ void Dominos::handleEvent(const sf::Event & event, sf::RenderWindow * windowPtr)
     if (event.type == sf::Event::KeyPressed) {
         if (!isGameOver) {
             if (event.key.code == sf::Keyboard::R) {
-                currentTile.rotate(TileRotation::CLOCKWISE);
+                currentTile->rotate(TileRotation::CLOCKWISE);
             } else if (event.key.code == sf::Keyboard::Space) {
                 currentPlayer += 1;
                 currentPlayer %= scoreboard.size();
-                currentTile = DominosTile();
+                currentTile = new DominosTile();
                 remainingTiles -= 1;
                 if (remainingTiles == 0) {
                     isGameOver = true;

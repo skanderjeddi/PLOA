@@ -13,7 +13,7 @@ template <class T, class B, class I> class Game {
         I interface;
         std::map<int, std::pair<std::string, int>> scoreboard;
         int currentPlayer;
-        T currentTile;
+        T* currentTile;
         bool isGameOver = false;
 
     public:
@@ -31,10 +31,36 @@ template <class T, class B, class I> class Game {
          * @param sf::RenderWindow a pointer to the window to handle the event in.
          */
         virtual void handleEvent(const sf::Event&, sf::RenderWindow*) = 0;
+
+        virtual void drawGameScreen() = 0;
+        virtual void drawGameOverScreen() = 0;
+
         /**
-         * @brief Run the game.
+         * @brief called on update
+         * 
          */
-        virtual void run() = 0;
+        void run() {
+            interface.show(board);
+            sf::RenderWindow* window = interface.getWindow();
+            window->setKeyRepeatEnabled(false);
+            while (window->isOpen()) {
+                sf::Event event;
+                while (window->pollEvent(event)) {
+                    if (event.type == sf::Event::Closed) {
+                        window->close();
+                    }
+                    handleEvent(event, window);
+                }
+                window->clear(sf::Color::White);
+                if (!isGameOver) {
+                    drawGameScreen();
+                } else {
+                    drawGameOverScreen();
+                }
+                interface.render();
+                window->display();
+            }
+        }
         /**
          * @brief Register a player.
          * 
@@ -64,7 +90,7 @@ template <class T, class B, class I> class Game {
          * @param y y coordinate.
          * @return Option<T> the tile at the given coordinates, or an empty Option if there is none.
          */
-        Option<T> getTile(int x, int y) {
+        T* getTile(int x, int y) {
             return board.getTile(x, y);
         }
 };

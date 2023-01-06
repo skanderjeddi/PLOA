@@ -4,15 +4,21 @@
 #include "include/interface.hpp"
 #include "include/game.hpp"
 #include "include/trax.hpp"
+#include "include/carcassonne.hpp"
 
 int main(int argc, char **argv) {
     srand((unsigned int) time(NULL));
+
+    std::cout << "CARCASSONNE" << std::endl;
 
     sf::Font font;
     font.loadFromFile("assets/font.ttf");
 
     UserInterfaceProperties uiProperties;
+    uiProperties.windowTitle = "Carcassonne";
     uiProperties.font = font;
+
+    // TODO NO HARDCODED
     
     std::cout << "1. Dominos" << std::endl;
     std::cout << "2. Trax" << std::endl;
@@ -28,11 +34,12 @@ int main(int argc, char **argv) {
             std::cout << "DOMINOS" << std::endl;
             
             uiProperties.windowTitle = "Dominos";
-            uiProperties.tileSize = sf::Vector2i(DOMINOS_TILE_SIZE, DOMINOS_TILE_SIZE);
-            uiProperties.windowSize = sf::Vector2i(DOMINOS_WINDOW_WIDTH, DOMINOS_WINDOW_HEIGHT);
+            uiProperties.tileSize = sf::Vector2i(CARCASSONNE_TILE_SIZE, CARCASSONNE_TILE_SIZE);
+            uiProperties.windowSize = sf::Vector2i(CARCASSONNE_WINDOW_WIDTH, CARCASSONNE_WINDOW_HEIGHT);
+        
+            BoardProperties boardProperties(CARCASSONNE_BOARD_WIDTH, CARCASSONNE_BOARD_HEIGHT);
 
-            // Configuration de la partie
-            std::cout << "Configuration de la partie (laisser vide pour les valeurs par défaut):" << std::endl;
+            Carcassonne carcassonne(uiProperties, boardProperties);
 
             std::cout << "Dimensions du plateau (x#y)? ";
             std::string line;

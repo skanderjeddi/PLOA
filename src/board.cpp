@@ -1,9 +1,8 @@
 #include "include/board.hpp"
-#include "include/tile.hpp"
-#include "include/common.hpp"
 
 #include "include/dominos.hpp"
 #include "include/trax.hpp"
+#include "include/carcassonne.hpp"
 
 template <class T> Board<T>::Board(const BoardProperties& properties) : properties(properties) {
     this->tiles = std::map<std::pair<int, int>, T>();
@@ -13,15 +12,15 @@ template <class T> Board<T>::Board(const Board& board) : properties(board.proper
     this->tiles = board.tiles;
 }
 
-template <class T> void Board<T>::setTile(int x, int y, const T& tile) {
+template <class T>  void Board<T>::setTile(int x, int y, const T& tile) {
     this->tiles[std::make_pair(x, y)] = tile;
 }
 
-template <class T> Option<T> Board<T>::getTile(int x, int y) const {
+template <typename T> T* Board<T>::getTile(int x, int y) {
     if (tiles.find(std::make_pair(x, y)) != tiles.end()) {
-        return Option<T>(tiles.at(std::make_pair(x, y)));
+        return &tiles[std::make_pair(x, y)];
     }
-    return Option<T>();
+    return nullptr;
 }
 
 template <class T> std::vector<std::pair<TileEdge, T>> Board<T>::getNeighbors(const std::pair<int, int>& pos) const {
@@ -42,3 +41,4 @@ template <class T> std::vector<std::pair<TileEdge, T>> Board<T>::getNeighbors(co
 
 template class Board<DominosTile>;
 template class Board<TraxTile>;
+template class Board<CarcassonneTile>;
